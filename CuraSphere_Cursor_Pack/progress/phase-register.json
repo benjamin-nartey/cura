@@ -1,0 +1,1066 @@
+{
+  "format_version": 1,
+  "authority": "CuraSphere Engineering Specification Pack v1.0",
+  "last_updated": "2026-10-13",
+  "phases": [
+    {
+      "phase": 0,
+      "title": "Company, Product & Quality Constitution",
+      "file": "phase-specs/PHASE_00_company-product-quality-constitution.md",
+      "status": "ACCEPTED",
+      "source_exit_criteria": [
+        {
+          "text": "No application code beyond documentation tooling",
+          "evidence": [
+            "P00-F01 through P00-F05 added documents under docs/constitution and checkers under tools/constitution. No product API or migration was added."
+          ],
+          "status": "MET"
+        },
+        {
+          "text": "Every future feature has an owner, intended user, intended use and risk class",
+          "evidence": [
+            "docs/constitution/intended-use-registry.json has one entry for each of the 158 features in the feature register. Regulatory classification is pending. Owner names are null."
+          ],
+          "status": "MET"
+        },
+        {
+          "text": "Architecture/security/clinical review workflow exists",
+          "evidence": [
+            "DEC-SAMPLE-001 is in review. Architecture, security, and clinical reviewer signatures are null. The checker rejects an accepted state without those signatures."
+          ],
+          "status": "MET"
+        }
+      ],
+      "completed_features": ["P00-F01", "P00-F02", "P00-F03", "P00-F04", "P00-F05"],
+      "executed_test_commands": [
+        "npm run constitution:phase00"
+      ],
+      "test_evidence": [
+        "2026-10-13 npm run constitution:phase00 exit 0; 19 passed, 0 failed."
+      ],
+      "rollback_evidence": [
+        "No migration. Remove docs/constitution, tools/constitution, and the constitution:phase00 script."
+      ],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": "2026-10-13",
+      "blockers": []
+    },
+    {
+      "phase": 1,
+      "title": "Platform Repository & Developer Experience",
+      "file": "phase-specs/PHASE_01_platform-repository-developer-experience.md",
+      "status": "BLOCKED",
+      "source_exit_criteria": [
+        {
+          "text": "One-command local environment",
+          "evidence": [
+            "2026-10-13 bash infra/local/up.sh exit 0 and printed local stack smoke passed."
+          ],
+          "status": "MET"
+        },
+        {
+          "text": "Reproducible builds",
+          "evidence": [
+            "2026-10-13 two docker builds of curasphere-ai-gateway:good with --provenance=false produced sha256:ded04cd7b09b1966863225bd8c34c8a1385789a5ee729fcb6e12fadde4803573 both times. This checkout is not a git repository, so the identity is that digest and the source hash 4ba7c9899cb4708746e380c210a3918f006aac804eb467643ae0f86deecaff82. GitHub Actions was not executed."
+          ],
+          "status": "MET"
+        },
+        {
+          "text": "Protected branches and required reviews",
+          "evidence": [
+            "Not verified. This folder is not a git repository, and no host branch-protection setting was read."
+          ],
+          "status": "PENDING"
+        },
+        {
+          "text": "No critical dependency vulnerabilities",
+          "evidence": [
+            "2026-10-13 npm audit --audit-level=critical exit 0 with 0 critical, 1 high, and 1 moderate. Trivy 0.58.1 reported 2 critical findings in the Debian packages of curasphere-ai-gateway:good. The criterion is not met."
+          ],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": ["P01-F01", "P01-F02", "P01-F03", "P01-F04", "P01-F05"],
+      "executed_test_commands": [
+        "bash infra/local/up.sh",
+        "bash infra/delivery/simulate.sh",
+        "ai/gateway/.venv/Scripts/python.exe tools/platform/observe-trace.py"
+      ],
+      "test_evidence": [
+        "P01-F01 through P01-F05 are accepted. Two source exit criteria remain unmet, so the phase is not accepted."
+      ],
+      "rollback_evidence": [
+        "2026-10-13 infra/delivery/rollback.sh dev restored health after a failed rollout. See docs/platform/P01-F04-evidence.md."
+      ],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": [
+        "Protected branches and required reviews were not verified. This folder is not a git repository.",
+        "No critical dependency vulnerabilities is not met. Trivy 0.58.1 reported 2 critical findings in the Debian packages of curasphere-ai-gateway:good."
+      ]
+    },
+    {
+      "phase": 2,
+      "title": "Identity, Tenancy & Zero Trust",
+      "file": "phase-specs/PHASE_02_identity-tenancy-zero-trust.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Cross-tenant access tests prove isolation",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Privilege escalation tests pass",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "All access decisions are auditable",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 3,
+      "title": "Audit, Consent, Privacy & Data Governance",
+      "file": "phase-specs/PHASE_03_audit-consent-privacy-data-governance.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Every sensitive read/write is attributable",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Retention policies are configurable by jurisdiction",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Break-glass and bulk export are specially monitored",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 4,
+      "title": "Core Healthcare Domain",
+      "file": "phase-specs/PHASE_04_core-healthcare-domain.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "No AI dependency",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Source records are immutable/versioned where required",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Clinical data ownership boundaries documented",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 5,
+      "title": "Terminology & Master Data",
+      "file": "phase-specs/PHASE_05_terminology-master-data.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Unknown codes fail safely",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Terminology versions are recorded with clinical records",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Mapping provenance is visible",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 6,
+      "title": "FHIR & Integration Foundation",
+      "file": "phase-specs/PHASE_06_fhir-integration-foundation.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "FHIR validation in CI",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Conformance statements published",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Round-trip mapping tests for core resources",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 7,
+      "title": "Clinical Timeline",
+      "file": "phase-specs/PHASE_07_clinical-timeline.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Every event links to authoritative source",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Timeline is reproducible",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "No generated facts",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 8,
+      "title": "Patient Twin",
+      "file": "phase-specs/PHASE_08_patient-twin.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Rebuildable from source events",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "staleness timestamp visible",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "conflicts are represented, not silently merged",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 9,
+      "title": "Evidence Graph",
+      "file": "phase-specs/PHASE_09_evidence-graph.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "No important generated claim without evidence state",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Deleted/changed source invalidates derived claims",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Evidence permissions inherit source permissions",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 10,
+      "title": "AI Gateway & Model Control Plane",
+      "file": "phase-specs/PHASE_10_ai-gateway-model-control-plane.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Business services cannot call providers directly",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "All calls have trace IDs and model versions",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Provider outage degrades safely",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 11,
+      "title": "Agent Runtime & Durable Orchestration",
+      "file": "phase-specs/PHASE_11_agent-runtime-durable-orchestration.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Agents cannot exceed manifest permissions",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Retries are idempotent",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "Human approval survives process/server failure",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 12,
+      "title": "Patient Summary & Clinical Copilot v1",
+      "file": "phase-specs/PHASE_12_patient-summary-clinical-copilot-v1.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Grounding evaluation threshold defined",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "unsupported claims are blocked/flagged",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "clinician feedback captured",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 13,
+      "title": "Clinical Documentation & Ambient Drafting",
+      "file": "phase-specs/PHASE_13_clinical-documentation-ambient-drafting.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Never auto-sign",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "audio retention configurable",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "draft vs clinician-authored state visibly distinct",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 14,
+      "title": "CuraLab",
+      "file": "phase-specs/PHASE_14_curalab.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Critical values use deterministic rules",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "AI cannot suppress critical alerts",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "units/reference range provenance retained",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 15,
+      "title": "CuraRx",
+      "file": "phase-specs/PHASE_15_curarx.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Medication safety rule source/version recorded",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "high-risk warnings require acknowledgement",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "AI text cannot bypass deterministic checks",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 16,
+      "title": "Care Coordination & Patient Engagement",
+      "file": "phase-specs/PHASE_16_care-coordination-patient-engagement.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Message templates localized",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "patient preference/consent enforced",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "escalation paths for failed outreach",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 17,
+      "title": "Patient App & Patient AI",
+      "file": "phase-specs/PHASE_17_patient-app-patient-ai.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Patient AI has narrower tools than clinician AI",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "urgent symptom flows route to safe triage instructions",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "no hidden clinician-only data",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 18,
+      "title": "Facility Twin",
+      "file": "phase-specs/PHASE_18_facility-twin.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Freshness/SLA shown per signal",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "source systems remain authoritative",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "facility state supports event-driven updates",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 19,
+      "title": "Operations Intelligence",
+      "file": "phase-specs/PHASE_19_operations-intelligence.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Recommendations show factors and confidence",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "manual override always available",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "business KPI impact measured",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 20,
+      "title": "Analytics & Lakehouse",
+      "file": "phase-specs/PHASE_20_analytics-lakehouse.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "No analytics query can bypass governance",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "lineage tracked end-to-end",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "re-identification risk assessed for exports",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 21,
+      "title": "Population Intelligence",
+      "file": "phase-specs/PHASE_21_population-intelligence.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Minimum cohort/privacy rules enforced",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "jurisdictional secondary-use controls applied",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "population outputs cannot reveal individuals",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 22,
+      "title": "CuraResearch",
+      "file": "phase-specs/PHASE_22_curaresearch.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Research access is purpose-bound",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "dataset versions immutable",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "export approvals and audit trail",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 23,
+      "title": "Imaging & DICOM Foundation",
+      "file": "phase-specs/PHASE_23_imaging-dicom-foundation.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Large-object performance tested",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "imaging permissions enforced",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "diagnostic AI remains separate validated module",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 24,
+      "title": "Devices & Remote Monitoring",
+      "file": "phase-specs/PHASE_24_devices-remote-monitoring.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Device provenance recorded",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "duplicate/out-of-order readings handled",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "alert fatigue budget and escalation defined",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 25,
+      "title": "Revenue, Claims & Insurance",
+      "file": "phase-specs/PHASE_25_revenue-claims-insurance.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Clinical data exposure minimized to billing purpose",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "financial ledger reconciles",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "AI recommendations never mutate ledger without workflow",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 26,
+      "title": "AI Evaluation, MLOps & Governance",
+      "file": "phase-specs/PHASE_26_ai-evaluation-mlops-governance.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "No clinical model reaches production without signed evaluation",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "rollback artifact retained",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "evaluation reproducible from versioned data/code",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 27,
+      "title": "Enterprise & Multi-Region",
+      "file": "phase-specs/PHASE_27_enterprise-multi-region.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "RTO/RPO tested",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "regional failure game day",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "tenant movement/migration procedures documented",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 28,
+      "title": "Marketplace & Extension Platform",
+      "file": "phase-specs/PHASE_28_marketplace-extension-platform.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Extensions cannot escape granted scopes",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "security/clinical review mandatory by risk class",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "version compatibility policy published",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 29,
+      "title": "Regulated Clinical AI Release Train",
+      "file": "phase-specs/PHASE_29_regulated-clinical-ai-release-train.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Regulatory strategy approved per jurisdiction",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "release cannot bypass quality gates",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "real-world performance monitoring active",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    },
+    {
+      "phase": 30,
+      "title": "Advanced Medical AI Modules",
+      "file": "phase-specs/PHASE_30_advanced-medical-ai-modules.md",
+      "status": "NOT_STARTED",
+      "source_exit_criteria": [
+        {
+          "text": "Each module has its own intended use and model card",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "No platform-wide blanket approval",
+          "evidence": [],
+          "status": "PENDING"
+        },
+        {
+          "text": "performance reviewed by subgroup and site",
+          "evidence": [],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": [],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": null,
+      "blockers": []
+    }
+  ]
+}

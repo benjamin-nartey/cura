@@ -1,0 +1,4 @@
+environment: dev
+namespace: curasphere-dev
+secretName: curasphere-dev-token
+objectStoreBucket: platform-dev

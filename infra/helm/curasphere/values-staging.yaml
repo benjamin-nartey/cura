@@ -1,0 +1,4 @@
+environment: staging
+namespace: curasphere-staging
+secretName: curasphere-staging-token
+objectStoreBucket: platform-staging

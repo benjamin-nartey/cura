@@ -1,0 +1,19 @@
+{
+  "id": "DEC-SAMPLE-001",
+  "title": "Phase 00 constitution records stay in documentation tooling",
+  "author": "CuraSphere constitution record",
+  "authoredAt": "2026-10-13T13:26:00Z",
+  "reviewState": "in-review",
+  "reviewers": [
+    { "role": "architecture", "name": null, "signedAt": null },
+    { "role": "security", "name": null, "signedAt": null },
+    { "role": "clinical", "name": null, "signedAt": null }
+  ],
+  "alternatives": ["Store the charter in the application database before Phase 00 is accepted."],
+  "decision": "Keep Phase 00 records as documents checked by tools/constitution. No application feature is authorized by this sample.",
+  "ownership": "product owner",
+  "policies": ["No application code beyond documentation tooling.", "Do not invent a reviewer signature."],
+  "interoperability": "This decision defines no FHIR resource.",
+  "security": "The sample stores no patient data.",
+  "rollback": "Remove this sample and the decision checker."
+}

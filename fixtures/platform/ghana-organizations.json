@@ -1,0 +1,31 @@
+{
+  "label": "SYNTHETIC",
+  "country": "GH",
+  "purpose": "Local development organizations only. This file is not loaded into the chart database and contains no patients.",
+  "organizations": [
+    {
+      "id": "org_adom",
+      "name": "Adom Community Practice",
+      "city": "Accra",
+      "facilities": [
+        {
+          "id": "fac_labadi",
+          "name": "Labadi Rooms",
+          "timezone": "Africa/Accra"
+        }
+      ]
+    },
+    {
+      "id": "org_sika",
+      "name": "Sika Family Practice",
+      "city": "Kumasi",
+      "facilities": [
+        {
+          "id": "fac_asokwa",
+          "name": "Asokwa Rooms",
+          "timezone": "Africa/Accra"
+        }
+      ]
+    }
+  ]
+}

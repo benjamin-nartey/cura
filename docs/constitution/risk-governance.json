@@ -1,0 +1,33 @@
+{
+  "id": "risk-governance-2026.10",
+  "risks": [
+    {
+      "id": "RISK-SAMPLE-HIGH-001",
+      "scenario": "A diagnostic classifier is proposed for release before its intended use is assessed.",
+      "severity": "high",
+      "likelihood": "possible",
+      "mitigations": [
+        "Keep the regulatory classification pending.",
+        "Refuse release approval while the risk stays blocked."
+      ],
+      "residualRisk": "high",
+      "ownerRole": "clinical reviewer",
+      "ownerName": null,
+      "approval": null,
+      "validationEvidence": null,
+      "status": "blocked",
+      "releaseApproval": null
+    }
+  ],
+  "aiRisks": [
+    {
+      "id": "AI-RISK-SAMPLE-001",
+      "model": "not-selected",
+      "dataset": "not-selected",
+      "prompt": "not-selected",
+      "regulatoryClassification": "pending",
+      "status": "blocked",
+      "releaseApproval": null
+    }
+  ]
+}

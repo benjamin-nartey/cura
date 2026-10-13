@@ -1,0 +1,222 @@
+[
+  {
+    "id": "S01",
+    "scenario": "appointment-to-billing",
+    "assertions": [
+      "timeline_source_links_exist",
+      "ledger_amounts_reconcile"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S02",
+    "scenario": "cross-tenant-same-name",
+    "assertions": [
+      "unauthorized_search_denied",
+      "unauthorized_detail_denied"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S03",
+    "scenario": "idempotent-observation",
+    "assertions": [
+      "one_logical_observation",
+      "duplicate_retry_audited"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S04",
+    "scenario": "concurrent-edit",
+    "assertions": [
+      "http_409",
+      "original_version_intact"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S05",
+    "scenario": "source-correction",
+    "assertions": [
+      "evidence_invalidated",
+      "twin_rebuilt"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S06",
+    "scenario": "critical-lab-demo",
+    "assertions": [
+      "demo_critical_alert_persists",
+      "independent_of_ai"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S07",
+    "scenario": "specimen-recollect",
+    "assertions": [
+      "history_has_all_states",
+      "amendment_preserved"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S08",
+    "scenario": "break-glass",
+    "assertions": [
+      "reason_scope_expiry_required",
+      "review_alert_emitted"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S09",
+    "scenario": "consent-withdrawal",
+    "assertions": [
+      "secondary_use_denied",
+      "audit_retained_per_policy"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S10",
+    "scenario": "failed-messaging",
+    "assertions": [
+      "not_marked_delivered",
+      "assigned_escalation"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S11",
+    "scenario": "event-replay",
+    "assertions": [
+      "same_projection_hash",
+      "lag_then_recovery"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S12",
+    "scenario": "agent-denied-tool",
+    "assertions": [
+      "tool_not_executed",
+      "denial_audited"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S13",
+    "scenario": "ai-provider-outage",
+    "assertions": [
+      "non_ai_care_works",
+      "fallback_visible"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S14",
+    "scenario": "mobile-offline",
+    "assertions": [
+      "stale_label",
+      "idempotent_sync"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S15",
+    "scenario": "claim-reconcile",
+    "assertions": [
+      "balanced_ledger",
+      "denial_history"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S16",
+    "scenario": "population-small-cell",
+    "assertions": [
+      "suppressed_ui",
+      "suppressed_export"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S17",
+    "scenario": "dicom-corruption",
+    "assertions": [
+      "quarantined",
+      "upload_incomplete"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S18",
+    "scenario": "device-clock-skew",
+    "assertions": [
+      "device_time_retained",
+      "old_measurement_not_current"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S19",
+    "scenario": "model-change-hold",
+    "assertions": [
+      "release_reapproval_required",
+      "prior_version_retained"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  },
+  {
+    "id": "S20",
+    "scenario": "region-failure",
+    "assertions": [
+      "residency_enforced",
+      "rto_rpo_evidence"
+    ],
+    "implemented": false,
+    "test_file": null,
+    "actual_run": null
+  }
+]

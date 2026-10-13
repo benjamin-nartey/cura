@@ -1,0 +1,18 @@
+import { getDb, recordImagingReport } from "@curasphere/domain";
+import { currentSession, failureCode, formId, redirectTo } from "@/lib/http";
+
+export async function POST(request: Request) {
+  const ctx = await currentSession();
+  if (!ctx) return redirectTo(request, "/");
+  const form = await request.formData();
+  try {
+    recordImagingReport(getDb(), ctx, {
+      studyId: String(form.get("studyId") ?? ""),
+      text: String(form.get("text") ?? ""),
+      idempotencyKey: formId(form.get("idempotencyKey")),
+    });
+    return redirectTo(request, "/imaging", { notice: "imgreport" });
+  } catch (error) {
+    return redirectTo(request, "/imaging", { error: failureCode(error) });
+  }
+}

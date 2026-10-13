@@ -1,0 +1,4 @@
+environment: production
+namespace: curasphere-production
+secretName: curasphere-production-token
+objectStoreBucket: platform-production

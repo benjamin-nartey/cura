@@ -1,0 +1,33 @@
+{
+  "uid": "curasphere-ai-gateway",
+  "title": "CuraSphere AI gateway scaffold",
+  "tags": ["synthetic", "scaffold"],
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Requests",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(curasphere_http_requests_total)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Failed requests",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(curasphere_http_requests_total{status=~\"5..\"})"
+        }
+      ]
+    }
+  ]
+}

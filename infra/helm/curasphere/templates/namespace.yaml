@@ -1,0 +1,4 @@
+{{- /* The namespace is created by helm --create-namespace so this chart does not create a second one. */}}
+{{- if eq .Values.environment "production" }}
+{{- fail "production is not authorized" }}
+{{- end }}

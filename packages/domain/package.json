@@ -1,0 +1,21 @@
+{
+  "name": "@curasphere/domain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@curasphere/contracts": "*"
+  },
+  "scripts": {
+    "test": "node --import tsx --test test/isolation.test.ts test/briefing.test.ts test/writes.test.ts test/terminology.test.ts test/fhir.test.ts test/timeline.test.ts test/patient-state.test.ts test/evidence.test.ts test/gateway.test.ts test/agents.test.ts test/copilot.test.ts test/documentation.test.ts test/lab.test.ts test/rx.test.ts test/coordination.test.ts test/patient.test.ts test/facility.test.ts test/operations.test.ts test/analytics.test.ts test/population.test.ts test/research.test.ts test/imaging.test.ts test/devices.test.ts test/revenue.test.ts test/evaluation.test.ts test/enterprise.test.ts test/marketplace.test.ts test/release.test.ts test/modules.test.ts test/implementation.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.6",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

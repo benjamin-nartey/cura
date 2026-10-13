@@ -1,0 +1,11 @@
+environment: dev
+namespace: curasphere-dev
+secretName: curasphere-dev-token
+image:
+  repository: curasphere-ai-gateway
+  tag: good
+  pullPolicy: IfNotPresent
+healthMode: ok
+dependencyURL: ""
+objectStoreBucket: platform-dev
+replicaCount: 1

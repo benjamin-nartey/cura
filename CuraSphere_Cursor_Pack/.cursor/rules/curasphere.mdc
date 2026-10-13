@@ -1,0 +1,6 @@
+---
+description: CuraSphere source-of-truth, sequential feature and phase delivery, synthetic scenario validation
+alwaysApply: true
+---
+
+Read `AGENTS.md` and `CURSOR_MASTER_PROMPT.md`. Follow source v1.0 document above any elaboration. Only build earliest unfinished feature of earliest incomplete phase. Finish one feature with real backend, UI/UX, API, migrations, synthetic full-life-cycle scenarios, tests, security/tenancy, clinical/AI safety, observability, rollback and evidence before moving to the next. No mock backend in production. Never skip human review. Once an entire phase passes, stop and request explicit permission to begin next phase. Never infer approval from an AI-generated response.

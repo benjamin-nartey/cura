@@ -1,0 +1,147 @@
+{
+  "id": "charter-2026.10",
+  "title": "CuraSphere product charter",
+  "status": "approved",
+  "source": "Phase 00 of the CuraSphere Engineering Specification Pack v1.0, as reproduced in the phase specification. The source docx is not present in this checkout.",
+  "customers": [
+    {
+      "id": "customer.provider-organization",
+      "description": "A healthcare provider organization that operates one or more facilities and needs a governed clinical record."
+    }
+  ],
+  "customerExclusions": [
+    "An individual consumer buying a diagnosis or a treatment recommendation.",
+    "A payer, clearinghouse, or device vendor as the system of record for this charter."
+  ],
+  "jurisdictions": {
+    "production": null,
+    "statement": "No production jurisdiction is selected. Synthetic demonstration tenants are not markets and are not approval to operate."
+  },
+  "personas": [
+    { "id": "persona.clinician", "description": "A clinician at one facility." },
+    { "id": "persona.nurse", "description": "A nurse at one facility." },
+    { "id": "persona.admin", "description": "An administrator of one provider organization." },
+    { "id": "persona.auditor", "description": "An auditor of one provider organization." },
+    { "id": "persona.patient", "description": "The person whose record is being read." }
+  ],
+  "valuePropositions": [
+    "The clinical source record stays authoritative. Derived views cite it and do not replace it.",
+    "A clinician remains in control of consequential clinical actions.",
+    "Tenant, facility, and purpose of use are derived on the server."
+  ],
+  "exclusions": [
+    "Autonomous diagnosis or treatment.",
+    "A claim of certification, device authorization, or clinical validation from this repository or from synthetic data.",
+    "Real patient information in fixtures, or a live payment."
+  ],
+  "nonGoals": [
+    "Replacing the clinician with generated text.",
+    "Letting a derived artifact silently change a source fact.",
+    "Depending on one model vendor for a core workflow."
+  ],
+  "successTargets": [
+    {
+      "id": "target.audit",
+      "measure": "A release is not accepted unless a chart write stores an audit row for the actor the server derived."
+    },
+    {
+      "id": "target.gateway",
+      "measure": "A release is not accepted unless a model call that would generate clinical text is refused while its intended use is still pending."
+    },
+    {
+      "id": "target.tenant",
+      "measure": "A release is not accepted unless a user in one tenant cannot read another tenant's patient row."
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "cap.source-record",
+      "name": "Core healthcare system of record",
+      "personaIds": ["persona.clinician", "persona.nurse"],
+      "intendedUse": "Record and read the facility source chart.",
+      "workflowClass": "clinical-impact",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.decision-support",
+      "name": "Clinical decision support",
+      "personaIds": ["persona.clinician"],
+      "intendedUse": "Show derived lines that cite stored source facts. A person decides any consequential action.",
+      "workflowClass": "clinical-impact",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.patient-engagement",
+      "name": "Patient engagement",
+      "personaIds": ["persona.patient"],
+      "intendedUse": "Show that person their own stored record and accept a message into the record.",
+      "workflowClass": "clinical-impact",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.operations",
+      "name": "Operations intelligence",
+      "personaIds": ["persona.admin"],
+      "intendedUse": "Show counts of stored operational facts for one organization.",
+      "workflowClass": "administrative",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.revenue",
+      "name": "Financial and claims intelligence",
+      "personaIds": ["persona.admin"],
+      "intendedUse": "Record administrative amounts. A stored amount is not a charge.",
+      "workflowClass": "administrative",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.research",
+      "name": "Research and population health",
+      "personaIds": ["persona.auditor"],
+      "intendedUse": "Count de-identified groups. A small group is omitted.",
+      "workflowClass": "administrative",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.regulated-ai",
+      "name": "Regulated medical AI modules",
+      "personaIds": ["persona.clinician"],
+      "intendedUse": "No module in this charter is cleared for diagnosis or treatment. Classification stays pending.",
+      "workflowClass": "clinical-impact",
+      "regulatoryClassification": "pending"
+    },
+    {
+      "id": "cap.platform",
+      "name": "Platform and marketplace",
+      "personaIds": ["persona.admin"],
+      "intendedUse": "Administer listings and release holds. An extension is not installed by this charter.",
+      "workflowClass": "administrative",
+      "regulatoryClassification": "pending"
+    }
+  ],
+  "approval": {
+    "documentVersion": "charter-2026.10",
+    "requiredRole": "product owner",
+    "status": "approved",
+    "approverName": "Benjamin Tetteh Nartey",
+    "approvedAt": "2026-10-13T13:26:00Z"
+  },
+  "approvalHistory": [
+    {
+      "documentVersion": "charter-2026.10",
+      "requiredRole": "product owner",
+      "status": "pending",
+      "approverName": null,
+      "approvedAt": null,
+      "note": "Draft state preserved when the charter was approved."
+    },
+    {
+      "documentVersion": "charter-2026.10",
+      "requiredRole": "product owner",
+      "status": "approved",
+      "approverName": "Benjamin Tetteh Nartey",
+      "approvedAt": "2026-10-13T13:26:00Z",
+      "statement": "Reviewed and accepted the product vision, intended users, intended-use classifications, scope, market boundaries and governing principles."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Production Release Checklist
+- PRD/RFC approved
+- Intended-use/regulatory classification current
+- Threat/privacy/clinical risk reviews complete
+- Required tests pass
+- Migration rehearsed
+- SLOs/dashboard/runbook ready
+- SBOM/provenance generated
+- Feature flag/canary plan configured
+- Rollback tested
+- Support/incident communication ready
+- AI evaluation/clinical validation approved where applicable
+- Release approvers recorded

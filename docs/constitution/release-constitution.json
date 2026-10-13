@@ -1,0 +1,32 @@
+{
+  "id": "release-constitution-2026.10",
+  "featureGates": ["owner", "intended user", "intended use", "risk class", "tests", "rollback", "audit"],
+  "phaseGates": ["every feature accepted", "exit criteria mapped to evidence", "no invented human approval"],
+  "clinicalSignoff": "Required before a clinical-impact manifest can pass. A missing name is a failure.",
+  "breakGlass": "A break-glass review needs a reason, a scope, an expiry, and a named approver. None is recorded here.",
+  "changeControl": "A change records a version, a reason, and an author role.",
+  "surveillance": "A release records what will be watched and which role owns that watch. No completed surveillance study is claimed.",
+  "sampleManifest": {
+    "featureId": "P00-F05",
+    "ownerRole": "product owner",
+    "intendedUser": "product owner",
+    "intendedUse": "Check that a release gate manifest is complete before a documentation release is accepted.",
+    "riskClass": "low",
+    "workflowClass": "administrative",
+    "tests": ["node --test tools/constitution/gates.test.mjs"],
+    "rollback": "Remove the gate checker and this manifest.",
+    "audit": "The checker records the missing field in its test output.",
+    "changeControl": {
+      "version": "release-constitution-2026.10",
+      "reason": "Phase 00 requires a release gate that rejects an incomplete manifest.",
+      "authorRole": "product owner"
+    },
+    "surveillance": {
+      "watch": "Re-run the gate checker when a feature manifest changes.",
+      "ownerRole": "quality",
+      "completedStudy": null
+    },
+    "clinicalSignoff": null,
+    "breakGlass": null
+  }
+}

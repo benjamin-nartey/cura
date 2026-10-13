@@ -1,0 +1,23 @@
+{
+  "version": "2026.10",
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "responseFields": ["status", "service", "clinicalGeneration"]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/generate",
+      "status": 403,
+      "responseFields": ["code", "message"]
+    },
+    {
+      "method": "GET",
+      "path": "/ready",
+      "status": 200,
+      "responseFields": ["status", "service"]
+    }
+  ]
+}

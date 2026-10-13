@@ -1,0 +1,33 @@
+# Phase index — strictly sequential
+
+- [Phase 00 — Company, Product & Quality Constitution](phase-specs/PHASE_00_company-product-quality-constitution.md) — 5 ordered features
+- [Phase 01 — Platform Repository & Developer Experience](phase-specs/PHASE_01_platform-repository-developer-experience.md) — 5 ordered features
+- [Phase 02 — Identity, Tenancy & Zero Trust](phase-specs/PHASE_02_identity-tenancy-zero-trust.md) — 5 ordered features
+- [Phase 03 — Audit, Consent, Privacy & Data Governance](phase-specs/PHASE_03_audit-consent-privacy-data-governance.md) — 5 ordered features
+- [Phase 04 — Core Healthcare Domain](phase-specs/PHASE_04_core-healthcare-domain.md) — 5 ordered features
+- [Phase 05 — Terminology & Master Data](phase-specs/PHASE_05_terminology-master-data.md) — 5 ordered features
+- [Phase 06 — FHIR & Integration Foundation](phase-specs/PHASE_06_fhir-integration-foundation.md) — 5 ordered features
+- [Phase 07 — Clinical Timeline](phase-specs/PHASE_07_clinical-timeline.md) — 5 ordered features
+- [Phase 08 — Patient Twin](phase-specs/PHASE_08_patient-twin.md) — 5 ordered features
+- [Phase 09 — Evidence Graph](phase-specs/PHASE_09_evidence-graph.md) — 5 ordered features
+- [Phase 10 — AI Gateway & Model Control Plane](phase-specs/PHASE_10_ai-gateway-model-control-plane.md) — 5 ordered features
+- [Phase 11 — Agent Runtime & Durable Orchestration](phase-specs/PHASE_11_agent-runtime-durable-orchestration.md) — 5 ordered features
+- [Phase 12 — Patient Summary & Clinical Copilot v1](phase-specs/PHASE_12_patient-summary-clinical-copilot-v1.md) — 5 ordered features
+- [Phase 13 — Clinical Documentation & Ambient Drafting](phase-specs/PHASE_13_clinical-documentation-ambient-drafting.md) — 5 ordered features
+- [Phase 14 — CuraLab](phase-specs/PHASE_14_curalab.md) — 5 ordered features
+- [Phase 15 — CuraRx](phase-specs/PHASE_15_curarx.md) — 5 ordered features
+- [Phase 16 — Care Coordination & Patient Engagement](phase-specs/PHASE_16_care-coordination-patient-engagement.md) — 5 ordered features
+- [Phase 17 — Patient App & Patient AI](phase-specs/PHASE_17_patient-app-patient-ai.md) — 5 ordered features
+- [Phase 18 — Facility Twin](phase-specs/PHASE_18_facility-twin.md) — 5 ordered features
+- [Phase 19 — Operations Intelligence](phase-specs/PHASE_19_operations-intelligence.md) — 5 ordered features
+- [Phase 20 — Analytics & Lakehouse](phase-specs/PHASE_20_analytics-lakehouse.md) — 5 ordered features
+- [Phase 21 — Population Intelligence](phase-specs/PHASE_21_population-intelligence.md) — 5 ordered features
+- [Phase 22 — CuraResearch](phase-specs/PHASE_22_curaresearch.md) — 5 ordered features
+- [Phase 23 — Imaging & DICOM Foundation](phase-specs/PHASE_23_imaging-dicom-foundation.md) — 5 ordered features
+- [Phase 24 — Devices & Remote Monitoring](phase-specs/PHASE_24_devices-remote-monitoring.md) — 5 ordered features
+- [Phase 25 — Revenue, Claims & Insurance](phase-specs/PHASE_25_revenue-claims-insurance.md) — 5 ordered features
+- [Phase 26 — AI Evaluation, MLOps & Governance](phase-specs/PHASE_26_ai-evaluation-mlops-governance.md) — 5 ordered features
+- [Phase 27 — Enterprise & Multi-Region](phase-specs/PHASE_27_enterprise-multi-region.md) — 5 ordered features
+- [Phase 28 — Marketplace & Extension Platform](phase-specs/PHASE_28_marketplace-extension-platform.md) — 5 ordered features
+- [Phase 29 — Regulated Clinical AI Release Train](phase-specs/PHASE_29_regulated-clinical-ai-release-train.md) — 5 ordered features
+- [Phase 30 — Advanced Medical AI Modules](phase-specs/PHASE_30_advanced-medical-ai-modules.md) — 8 ordered features

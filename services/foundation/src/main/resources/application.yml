@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: curasphere-foundation
+  datasource:
+    url: ${CURASPHERE_DATABASE_URL:jdbc:postgresql://127.0.0.1:5432/curasphere}
+    username: ${CURASPHERE_DATABASE_USER:curasphere}
+    password: ${CURASPHERE_DATABASE_PASSWORD:}
+
+curasphere:
+  env: ${CURASPHERE_ENV:development}
