@@ -6,13 +6,15 @@ const SCHEMA = `
 CREATE TABLE organizations (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  jurisdiction TEXT
+  jurisdiction TEXT,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled'))
 );
 CREATE TABLE facilities (
   id TEXT PRIMARY KEY,
   organization_id TEXT NOT NULL REFERENCES organizations(id),
   name TEXT NOT NULL,
-  timezone TEXT NOT NULL
+  timezone TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled'))
 );
 CREATE TABLE users (
   id TEXT PRIMARY KEY,
@@ -26,7 +28,127 @@ CREATE TABLE sessions (
   user_id TEXT NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL,
   expires_at TEXT NOT NULL,
-  revoked_at TEXT
+  revoked_at TEXT,
+  active_organization_id TEXT,
+  active_facility_id TEXT,
+  context_version INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE organization_memberships (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL REFERENCES organizations(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
+  status TEXT NOT NULL CHECK (status IN ('active','suspended','revoked')),
+  version INTEGER NOT NULL,
+  UNIQUE (organization_id, user_id)
+);
+CREATE TABLE facility_memberships (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL REFERENCES organizations(id),
+  facility_id TEXT NOT NULL REFERENCES facilities(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
+  role TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','suspended','revoked')),
+  version INTEGER NOT NULL,
+  UNIQUE (facility_id, user_id)
+);
+CREATE TABLE service_principals (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL REFERENCES organizations(id),
+  name TEXT NOT NULL,
+  scope TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','disabled')),
+  UNIQUE (organization_id, name)
+);
+CREATE TABLE tenancy_controls (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  dependency TEXT NOT NULL
+);
+CREATE TABLE identity_providers (
+  issuer TEXT PRIMARY KEY,
+  audience TEXT NOT NULL
+);
+CREATE TABLE external_identities (
+  id TEXT PRIMARY KEY,
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  email TEXT,
+  status TEXT NOT NULL CHECK (status IN ('active','pending','disabled')),
+  UNIQUE (issuer, subject)
+);
+CREATE TABLE auth_transactions (
+  id TEXT PRIMARY KEY,
+  state TEXT NOT NULL UNIQUE,
+  nonce TEXT NOT NULL,
+  code_verifier TEXT NOT NULL,
+  redirect_uri TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT
+);
+CREATE TABLE auth_sessions (
+  id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL UNIQUE,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  assurance TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  absolute_expires_at TEXT NOT NULL,
+  idle_expires_at TEXT NOT NULL,
+  revoked_at TEXT,
+  refresh_token TEXT,
+  refresh_current_hash TEXT,
+  refresh_previous_hash TEXT
+);
+CREATE TABLE pending_logins (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
+  refresh_token TEXT
+);
+CREATE TABLE auth_events (
+  id TEXT PRIMARY KEY,
+  action TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  subject_hash TEXT,
+  correlation_id TEXT,
+  duration_ms INTEGER,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE totp_credentials (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL UNIQUE REFERENCES users(id),
+  secret TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('pending','active','revoked')),
+  failures INTEGER NOT NULL DEFAULT 0,
+  locked_until TEXT,
+  recovery_hashes TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE webauthn_credentials (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  credential_id TEXT NOT NULL UNIQUE,
+  public_key TEXT NOT NULL,
+  counter INTEGER NOT NULL,
+  transports TEXT,
+  status TEXT NOT NULL CHECK (status IN ('active','revoked'))
+);
+CREATE TABLE webauthn_challenges (
+  id TEXT PRIMARY KEY,
+  user_id TEXT,
+  challenge TEXT NOT NULL,
+  kind TEXT NOT NULL CHECK (kind IN ('registration','authentication')),
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT
+);
+CREATE TABLE auth_counters (
+  name TEXT PRIMARY KEY,
+  value INTEGER NOT NULL
 );
 CREATE TABLE patients (
   id TEXT PRIMARY KEY,
@@ -1195,6 +1317,80 @@ CREATE TABLE ai_module_performance (
   author_id TEXT NOT NULL,
   created_at TEXT NOT NULL
 );
+CREATE TABLE authorization_roles (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT,
+  facility_id TEXT,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  system_role INTEGER NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','retired')),
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (organization_id, name)
+);
+CREATE TABLE authorization_permissions (
+  id TEXT PRIMARY KEY,
+  resource TEXT NOT NULL,
+  action TEXT NOT NULL,
+  description TEXT NOT NULL,
+  sensitivity TEXT NOT NULL CHECK (sensitivity IN ('standard','administrative','clinical','restricted')),
+  constraints_json TEXT NOT NULL,
+  UNIQUE (resource, action)
+);
+CREATE TABLE authorization_role_permissions (
+  role_id TEXT NOT NULL REFERENCES authorization_roles(id),
+  permission_id TEXT NOT NULL REFERENCES authorization_permissions(id),
+  PRIMARY KEY (role_id, permission_id)
+);
+CREATE TABLE authorization_assignments (
+  id TEXT PRIMARY KEY,
+  principal_id TEXT NOT NULL,
+  role_id TEXT NOT NULL REFERENCES authorization_roles(id),
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  assigned_by TEXT NOT NULL,
+  assigned_at TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','revoked')),
+  version INTEGER NOT NULL,
+  UNIQUE (principal_id, role_id, organization_id, facility_id)
+);
+CREATE TABLE authorization_policies (
+  id TEXT PRIMARY KEY,
+  version INTEGER NOT NULL,
+  scope TEXT NOT NULL,
+  conditions_json TEXT NOT NULL,
+  effect TEXT NOT NULL CHECK (effect IN ('deny')),
+  status TEXT NOT NULL CHECK (status IN ('active','disabled')),
+  approved_at TEXT,
+  effective_from TEXT NOT NULL,
+  effective_until TEXT,
+  UNIQUE (id, version)
+);
+CREATE TABLE authorization_decisions (
+  id TEXT PRIMARY KEY,
+  principal_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  scope_organization_id TEXT,
+  decision TEXT NOT NULL CHECK (decision IN ('allow','deny')),
+  reason TEXT NOT NULL,
+  policy_id TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX authorization_decisions_principal ON authorization_decisions (principal_id, created_at);
+CREATE TABLE authorization_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE TABLE authorization_cache (
+  cache_key TEXT PRIMARY KEY,
+  assignment_version INTEGER NOT NULL,
+  permissions_json TEXT NOT NULL
+);
 `;
 
 export type AppDatabase = DatabaseSync;
@@ -1234,6 +1430,7 @@ export function getDb(): AppDatabase {
   ensurePatient(globalCache.__curasphere.db);
   ensureResearchAuditor(globalCache.__curasphere.db);
   ensureBillingAdmin(globalCache.__curasphere.db);
+  ensureAuthorization(globalCache.__curasphere.db);
   return globalCache.__curasphere.db;
 }
 
@@ -1271,6 +1468,7 @@ let ensureLab: (db: AppDatabase) => void = () => {};
 let ensureRx: (db: AppDatabase) => void = () => {};
 let ensureCoordination: (db: AppDatabase) => void = () => {};
 let ensurePatient: (db: AppDatabase) => void = () => {};
+let ensureAuthorization: (db: AppDatabase) => void = () => {};
 
 export function registerSeed(seed: (db: AppDatabase) => void) {
   seedDatabase = seed;
@@ -1308,7 +1506,12 @@ export function registerPatient(ensure: (db: AppDatabase) => void) {
   ensurePatient = ensure;
 }
 
+export function registerAuthorization(ensure: (db: AppDatabase) => void) {
+  ensureAuthorization = ensure;
+}
+
 function migrate(db: AppDatabase) {
+  // Identity tables are version 29. Authorization tables are version 30.
   db.exec("CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY)");
   const row = db.prepare("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").get() as
     | { version: number }
@@ -1317,7 +1520,7 @@ function migrate(db: AppDatabase) {
     db.exec("BEGIN");
     try {
       db.exec(SCHEMA);
-      db.prepare("INSERT INTO schema_migrations (version) VALUES (26)").run();
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
       db.exec("COMMIT");
     } catch (error) {
       db.exec("ROLLBACK");
@@ -1325,7 +1528,31 @@ function migrate(db: AppDatabase) {
     }
     return;
   }
-  if (row.version === 26) return;
+  if (row.version === 30) return;
+  if (row.version === 29 || row.version === 28 || row.version === 27 || row.version === 26) {
+    db.exec("BEGIN");
+    try {
+      if (row.version === 26) {
+        db.exec(UPGRADE_V27);
+        db.prepare("INSERT INTO schema_migrations (version) VALUES (27)").run();
+      }
+      if (row.version <= 27) {
+        db.exec(UPGRADE_V28);
+        db.prepare("INSERT INTO schema_migrations (version) VALUES (28)").run();
+      }
+      if (row.version <= 28) {
+        db.exec(UPGRADE_V29);
+        db.prepare("INSERT INTO schema_migrations (version) VALUES (29)").run();
+      }
+      db.exec(UPGRADE_V30);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
   if (row.version !== 1 && row.version !== 2 && row.version !== 3 && row.version !== 4 && row.version !== 5 && row.version !== 6 && row.version !== 7 && row.version !== 8 && row.version !== 9 && row.version !== 10 && row.version !== 11 && row.version !== 12 && row.version !== 13 && row.version !== 14 && row.version !== 15 && row.version !== 16 && row.version !== 17 && row.version !== 18 && row.version !== 19 && row.version !== 20 && row.version !== 21 && row.version !== 22 && row.version !== 23 && row.version !== 24 && row.version !== 25) {
     throw new Error(`Unsupported schema version ${row.version}`);
   }
@@ -1429,6 +1656,14 @@ function migrate(db: AppDatabase) {
     }
     db.exec(UPGRADE_V26);
     db.prepare("INSERT INTO schema_migrations (version) VALUES (26)").run();
+    db.exec(UPGRADE_V27);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (27)").run();
+    db.exec(UPGRADE_V28);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (28)").run();
+    db.exec(UPGRADE_V29);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (29)").run();
+    db.exec(UPGRADE_V30);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
     db.exec("COMMIT");
   } catch (error) {
     db.exec("ROLLBACK");
@@ -2555,6 +2790,214 @@ CREATE TABLE IF NOT EXISTS ai_module_performance (
   status TEXT NOT NULL CHECK (status IN ('not-calculated')),
   author_id TEXT NOT NULL,
   created_at TEXT NOT NULL
+);
+`;
+
+const UPGRADE_V27 = `
+ALTER TABLE organizations ADD COLUMN status TEXT NOT NULL DEFAULT 'active';
+ALTER TABLE facilities ADD COLUMN status TEXT NOT NULL DEFAULT 'active';
+ALTER TABLE sessions ADD COLUMN active_organization_id TEXT;
+ALTER TABLE sessions ADD COLUMN active_facility_id TEXT;
+ALTER TABLE sessions ADD COLUMN context_version INTEGER NOT NULL DEFAULT 1;
+CREATE TABLE IF NOT EXISTS organization_memberships (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL REFERENCES organizations(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
+  status TEXT NOT NULL CHECK (status IN ('active','suspended','revoked')),
+  version INTEGER NOT NULL,
+  UNIQUE (organization_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS facility_memberships (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL REFERENCES organizations(id),
+  facility_id TEXT NOT NULL REFERENCES facilities(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
+  role TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','suspended','revoked')),
+  version INTEGER NOT NULL,
+  UNIQUE (facility_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS service_principals (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL REFERENCES organizations(id),
+  name TEXT NOT NULL,
+  scope TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','disabled')),
+  UNIQUE (organization_id, name)
+);
+CREATE TABLE IF NOT EXISTS tenancy_controls (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  dependency TEXT NOT NULL
+);
+`;
+
+const UPGRADE_V28 = `
+CREATE TABLE IF NOT EXISTS identity_providers (
+  issuer TEXT PRIMARY KEY,
+  audience TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS external_identities (
+  id TEXT PRIMARY KEY,
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  email TEXT,
+  status TEXT NOT NULL CHECK (status IN ('active','pending','disabled')),
+  UNIQUE (issuer, subject)
+);
+CREATE TABLE IF NOT EXISTS auth_transactions (
+  id TEXT PRIMARY KEY,
+  state TEXT NOT NULL UNIQUE,
+  nonce TEXT NOT NULL,
+  code_verifier TEXT NOT NULL,
+  redirect_uri TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT
+);
+CREATE TABLE IF NOT EXISTS auth_sessions (
+  id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL UNIQUE,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  assurance TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  absolute_expires_at TEXT NOT NULL,
+  idle_expires_at TEXT NOT NULL,
+  revoked_at TEXT,
+  refresh_token TEXT,
+  refresh_current_hash TEXT,
+  refresh_previous_hash TEXT
+);
+CREATE TABLE IF NOT EXISTS pending_logins (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT
+);
+CREATE TABLE IF NOT EXISTS auth_events (
+  id TEXT PRIMARY KEY,
+  action TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  subject_hash TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS totp_credentials (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL UNIQUE REFERENCES users(id),
+  secret TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('pending','active','revoked')),
+  failures INTEGER NOT NULL DEFAULT 0,
+  locked_until TEXT,
+  recovery_hashes TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS webauthn_credentials (
+  id TEXT PRIMARY KEY,
+  credential_id TEXT NOT NULL UNIQUE,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  public_key TEXT NOT NULL,
+  counter INTEGER NOT NULL,
+  transports TEXT,
+  status TEXT NOT NULL CHECK (status IN ('active','revoked'))
+);
+CREATE TABLE IF NOT EXISTS webauthn_challenges (
+  id TEXT PRIMARY KEY,
+  user_id TEXT,
+  challenge TEXT NOT NULL,
+  kind TEXT NOT NULL CHECK (kind IN ('registration','authentication')),
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT
+);
+CREATE TABLE IF NOT EXISTS auth_counters (
+  name TEXT PRIMARY KEY,
+  value INTEGER NOT NULL
+);
+`;
+
+const UPGRADE_V29 = `
+ALTER TABLE pending_logins ADD COLUMN refresh_token TEXT;
+ALTER TABLE auth_events ADD COLUMN correlation_id TEXT;
+ALTER TABLE auth_events ADD COLUMN duration_ms INTEGER;
+`;
+
+const UPGRADE_V30 = `
+CREATE TABLE IF NOT EXISTS authorization_roles (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT,
+  facility_id TEXT,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  system_role INTEGER NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','retired')),
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (organization_id, name)
+);
+CREATE TABLE IF NOT EXISTS authorization_permissions (
+  id TEXT PRIMARY KEY,
+  resource TEXT NOT NULL,
+  action TEXT NOT NULL,
+  description TEXT NOT NULL,
+  sensitivity TEXT NOT NULL CHECK (sensitivity IN ('standard','administrative','clinical','restricted')),
+  constraints_json TEXT NOT NULL,
+  UNIQUE (resource, action)
+);
+CREATE TABLE IF NOT EXISTS authorization_role_permissions (
+  role_id TEXT NOT NULL REFERENCES authorization_roles(id),
+  permission_id TEXT NOT NULL REFERENCES authorization_permissions(id),
+  PRIMARY KEY (role_id, permission_id)
+);
+CREATE TABLE IF NOT EXISTS authorization_assignments (
+  id TEXT PRIMARY KEY,
+  principal_id TEXT NOT NULL,
+  role_id TEXT NOT NULL REFERENCES authorization_roles(id),
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  assigned_by TEXT NOT NULL,
+  assigned_at TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('active','revoked')),
+  version INTEGER NOT NULL,
+  UNIQUE (principal_id, role_id, organization_id, facility_id)
+);
+CREATE TABLE IF NOT EXISTS authorization_policies (
+  id TEXT PRIMARY KEY,
+  version INTEGER NOT NULL,
+  scope TEXT NOT NULL,
+  conditions_json TEXT NOT NULL,
+  effect TEXT NOT NULL CHECK (effect IN ('deny')),
+  status TEXT NOT NULL CHECK (status IN ('active','disabled')),
+  approved_at TEXT,
+  effective_from TEXT NOT NULL,
+  effective_until TEXT,
+  UNIQUE (id, version)
+);
+CREATE TABLE IF NOT EXISTS authorization_decisions (
+  id TEXT PRIMARY KEY,
+  principal_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  scope_organization_id TEXT,
+  decision TEXT NOT NULL CHECK (decision IN ('allow','deny')),
+  reason TEXT NOT NULL,
+  policy_id TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS authorization_decisions_principal ON authorization_decisions (principal_id, created_at);
+CREATE TABLE IF NOT EXISTS authorization_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS authorization_cache (
+  cache_key TEXT PRIMARY KEY,
+  assignment_version INTEGER NOT NULL,
+  permissions_json TEXT NOT NULL
 );
 `;
 

@@ -18,7 +18,10 @@ export async function currentPortal() {
 }
 
 export function redirectTo(request: Request, path: string, query?: Record<string, string>) {
-  const url = new URL(path, request.url);
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const proto = request.headers.get("x-forwarded-proto") ?? "http";
+  const base = host ? `${proto}://${host}/` : request.url;
+  const url = new URL(path, base);
   if (query) {
     for (const [key, value] of Object.entries(query)) url.searchParams.set(key, value);
   }

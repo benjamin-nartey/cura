@@ -13,6 +13,9 @@ staticClients:
   - id: curasphere-local
     redirectURIs:
       - http://127.0.0.1:3000/callback
+      - http://127.0.0.1:3000/api/auth/callback
+      - http://localhost:3000/callback
+      - http://localhost:3000/api/auth/callback
     name: CuraSphere local
     secret: local-test-only
 
@@ -24,3 +27,19 @@ staticPasswords:
     hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
     username: engineer
     userID: usr_local_engineer
+  - email: amira.solano@harborlight.invalid
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    username: amira
+    userID: usr_amira
+  - email: akosua.owusu@demo-gh.invalid
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    username: akosua
+    userID: usr_gh_nurse
+  - email: marta.keller@demo-eu.invalid
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    username: marta
+    userID: usr_eu_admin
+  - email: unknown.person@example.invalid
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    username: unknown
+    userID: sub_unknown

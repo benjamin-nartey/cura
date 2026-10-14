@@ -28,6 +28,9 @@ export default async function AccountPage() {
             <dd>{purposeLabel(ctx.purposeOfUse)}</dd>
           </div>
         </dl>
+        <p>
+          <a href="/auth/enroll">Manage authenticators</a>
+        </p>
         <form action="/api/session/end" method="post">
           <button className="btn-dark" type="submit">
             Sign out

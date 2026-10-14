@@ -85,7 +85,7 @@ class FoundationApplicationTest {
         val body = http.getForEntity("/health", FoundationHealth::class.java)
         assertEquals(HttpStatus.OK, body.statusCode)
         assertEquals(true, body.body?.ok)
-        assertEquals(14, body.body?.schemaVersion)
+        assertEquals(15, body.body?.schemaVersion)
         assertEquals("postgresql", body.body?.store)
         val browser = HttpEntity<Void>(HttpHeaders().apply { accept = listOf(MediaType.TEXT_HTML) })
         val root = http.exchange("/", HttpMethod.GET, browser, FoundationHealth::class.java)
@@ -1222,6 +1222,47 @@ class FoundationApplicationTest {
         assertEquals(true, payload?.contains("high"))
         assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM rx_warnings WHERE id = ? AND status = 'acknowledged' AND severity = 'high' AND acknowledged_by = 'usr_jordan'", Int::class.java, warningId))
         assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM rx_orders WHERE id = ? AND status = 'proposed'", Int::class.java, orderId))
+    }
+
+    @Test
+    fun tenancyIsolatesDemoOrganizations() {
+        val opened = http.postForEntity("/sessions", OpenSessionBody("usr_gh_admin"), OpenedSession::class.java)
+        assertEquals(HttpStatus.OK, opened.statusCode)
+        val sessionId = opened.body?.sessionId ?: error("missing session")
+        val headers = HttpHeaders()
+        headers.set("X-Organization-Id", "org_demo_eu")
+        val denied = http.exchange("/sessions/$sessionId/tenancy", HttpMethod.GET, HttpEntity<Void>(headers), String::class.java)
+        assertEquals(HttpStatus.FORBIDDEN, denied.statusCode)
+        assertEquals(false, denied.body?.contains("Northbridge"))
+        assertEquals(false, denied.body?.contains("org_demo_eu"))
+        val view = http.getForEntity("/sessions/$sessionId/tenancy", String::class.java)
+        assertEquals(HttpStatus.OK, view.statusCode)
+        assertEquals(true, view.body?.contains("DEMO_GH"))
+        assertEquals(true, view.body?.contains("Accra Central Medical Centre"))
+        assertEquals(false, view.body?.contains("DEMO_EU"))
+        assertEquals(false, view.body?.contains("Northbridge"))
+        val guessed = http.getForEntity("/sessions/$sessionId/tenancy/organizations/org_demo_eu", String::class.java)
+        assertEquals(HttpStatus.NOT_FOUND, guessed.statusCode)
+        assertEquals(false, guessed.body?.contains("Riverside"))
+        assertEquals(false, guessed.body?.contains("org_demo_eu"))
+        val nurse = http.postForEntity("/sessions", OpenSessionBody("usr_gh_nurse"), OpenedSession::class.java)
+        val nurseId = nurse.body?.sessionId ?: error("missing nurse session")
+        val current = http.getForObject("/sessions/$nurseId/tenancy", TenancyView::class.java)
+        val moved = http.postForEntity(
+            "/sessions/$nurseId/tenancy/facility",
+            SwitchFacilityBody("fac_gh_east_legon", current.version),
+            TenancyView::class.java,
+        )
+        assertEquals(HttpStatus.OK, moved.statusCode)
+        assertEquals("fac_gh_east_legon", moved.body?.facilityId)
+        val stale = http.postForEntity(
+            "/sessions/$nurseId/tenancy/facility",
+            SwitchFacilityBody("fac_eu_riverside", current.version),
+            String::class.java,
+        )
+        assertEquals(HttpStatus.CONFLICT, stale.statusCode)
+        assertEquals(false, stale.body?.contains("Riverside"))
+        assertEquals(false, stale.body?.contains("fac_eu_riverside"))
     }
 
     @Test

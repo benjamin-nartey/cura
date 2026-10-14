@@ -3,7 +3,8 @@ import { registerObservationRecorded } from "./chart";
 import { ensureDocumentationPolicy } from "./documentation";
 import { ensureCoordinationPolicy } from "./coordination";
 import { ensurePatientPolicy } from "./portal";
-import { registerAgents, registerCoordination, registerDocumentation, registerGateway, registerLab, registerPatient, registerRx, registerSeed, registerTerminology } from "./db";
+import { registerAgents, registerAuthorization, registerCoordination, registerDocumentation, registerGateway, registerLab, registerPatient, registerRx, registerSeed, registerTerminology } from "./db";
+import { seedAuthorization } from "./authorization";
 import { ensureLabPolicy } from "./lab";
 import { ensureRxPolicy } from "./rx";
 import { ensureGatewayPolicy } from "./gateway";
@@ -20,6 +21,7 @@ registerLab(ensureLabPolicy);
 registerRx(ensureRxPolicy);
 registerCoordination(ensureCoordinationPolicy);
 registerPatient(ensurePatientPolicy);
+registerAuthorization(seedAuthorization);
 registerObservationRecorded(queueObservationNotifications);
 
 export { formatQuantity } from "./catalog";
@@ -28,7 +30,60 @@ export { buildBriefing, filterTimeline, groupTimelineByDay, isTimelineGroup, pro
 export { createDatabase, getDb } from "./db";
 export { AppError, ConflictError, ForbiddenError, NotFoundError, ValidationError } from "./errors";
 export { noteDenial } from "./audit";
-export { canReadChart, canRegisterPatient, canReviewAudit, closeSession, listDirectory, openSession, readSession } from "./session";
+export { canReadChart, canRegisterPatient, canReviewAudit, closeSession, devDirectoryEnabled, listDirectory, openSession, readSession } from "./session";
+export {
+  POLICY_ID,
+  assignRole,
+  authorizationCount,
+  authorize,
+  decisionStatus,
+  effectivePermissions,
+  latestDecision,
+  revokeRole,
+  seedAuthorization,
+  setAuthorizationDependency,
+} from "./authorization";
+export {
+  DEMO_EU,
+  DEMO_GH,
+  disableOrganization,
+  listTenancy,
+  mirrorTenancySession,
+  readServicePrincipal,
+  readTenantOrganization,
+  seedDemoTenants,
+  setTenancyDependency,
+  switchFacility,
+} from "./tenancy";
+export {
+  LOCAL_AUDIENCE,
+  LOCAL_ISSUER,
+  LOCAL_REDIRECT,
+  authCount,
+  beginAuthTransaction,
+  bindAuthSession,
+  completePendingLogin,
+  confirmTotp,
+  consumeAuthTransaction,
+  currentRefreshToken,
+  decideExternalLogin,
+  enrollTotp,
+  openLocalIdentitySession,
+  pendingLoginOpen,
+  readAuthTransaction,
+  readBoundSession,
+  readTotpStatus,
+  recordAuthEvent,
+  revokeAuthSession,
+  revokeTotp,
+  revokeUserSessions,
+  rotateRefreshToken,
+  seedIdentityLinks,
+  subjectHash,
+  verifyTotp,
+} from "./identity";
+export { REDIRECT_URI, assertIdentityClaims, dexPasswordLogin, exchangeAuthorizationCode, oidcConfiguration, readIssuerDocument, refreshOidc, resetOidcConfiguration, startOidc, verifyPresentedIdToken } from "./oidc";
+export { beginPasskeyAuthentication, beginPasskeyRegistration, finishPasskeyAuthentication, finishPasskeyRegistration, listPasskeys, revokePasskey } from "./webauthn";
 export { readDashboard, type DashboardMetric } from "./dashboard";
 export { completeEncounter, createEncounter, createPatient, getChart, healthcheck, listAudit, listPatients, listWorklist, mirrorAllergy, mirrorCondition, mirrorEncounter, mirrorFinishedEncounter, mirrorObservation, mirrorPatient, readPatientTimeline, recordObservation } from "./chart";
 export { assertValidR4, FHIR_VERSION } from "./fhir-map";

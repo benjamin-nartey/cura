@@ -52,35 +52,35 @@
       "phase": 1,
       "title": "Platform Repository & Developer Experience",
       "file": "phase-specs/PHASE_01_platform-repository-developer-experience.md",
-      "status": "BLOCKED",
+      "status": "ACCEPTED",
       "source_exit_criteria": [
         {
           "text": "One-command local environment",
           "evidence": [
-            "2026-10-13 bash infra/local/up.sh exit 0 and printed local stack smoke passed."
+            "2026-10-13 bash infra/local/up.sh exit 0 and printed local stack smoke passed. The same day, stopping Kafka made bash infra/local/smoke.sh exit 1 with stack smoke failed: kafka. After Kafka was healthy again, smoke printed local stack smoke passed."
           ],
           "status": "MET"
         },
         {
           "text": "Reproducible builds",
           "evidence": [
-            "2026-10-13 two docker builds of curasphere-ai-gateway:good with --provenance=false produced sha256:ded04cd7b09b1966863225bd8c34c8a1385789a5ee729fcb6e12fadde4803573 both times. This checkout is not a git repository, so the identity is that digest and the source hash 4ba7c9899cb4708746e380c210a3918f006aac804eb467643ae0f86deecaff82. GitHub Actions was not executed."
+            "2026-10-13 two docker builds with --provenance=false of the Debian 13 gateway image produced sha256:b55f580c59e88345fd4bc878e8682f2d6b8db8bafcd89c5cf4a27ffb47bfe747 both times. GitHub Actions was not executed. The remote repository has no commits."
           ],
           "status": "MET"
         },
         {
           "text": "Protected branches and required reviews",
           "evidence": [
-            "Not verified. This folder is not a git repository, and no host branch-protection setting was read."
+            "2026-10-13 GitHub ruleset 25029633 curasphere-default-branch on benjamin-nartey/cura was created and read back as enforcement active. It targets ~DEFAULT_BRANCH, blocks deletion and force push, requires 1 approving review, and requires the verify status check. That check does not apply to the branch-creation push. The repository is empty, so classic branch protection still returns branch not found. No pull request was merged."
           ],
-          "status": "PENDING"
+          "status": "MET"
         },
         {
           "text": "No critical dependency vulnerabilities",
           "evidence": [
-            "2026-10-13 npm audit --audit-level=critical exit 0 with 0 critical, 1 high, and 1 moderate. Trivy 0.58.1 reported 2 critical findings in the Debian packages of curasphere-ai-gateway:good. The criterion is not met."
+            "2026-10-13 npm audit reported 0 vulnerabilities after next@16.4.0 and postcss@8.5.23. Trivy 0.58.1 on curasphere-ai-gateway:good sha256:b55f580c59e88345fd4bc878e8682f2d6b8db8bafcd89c5cf4a27ffb47bfe747 reported 0 critical. Debian high count was 44 and Python high count was 3, all in starlette 0.41.3."
           ],
-          "status": "PENDING"
+          "status": "MET"
         }
       ],
       "completed_features": ["P01-F01", "P01-F02", "P01-F03", "P01-F04", "P01-F05"],
@@ -90,53 +90,56 @@
         "ai/gateway/.venv/Scripts/python.exe tools/platform/observe-trace.py"
       ],
       "test_evidence": [
-        "P01-F01 through P01-F05 are accepted. Two source exit criteria remain unmet, so the phase is not accepted."
+        "2026-10-13 remediation: npm test exit 0, 77 passed. constitution:phase00 exit 0, 19 passed. Platform node tests exit 0, 5 passed. Gateway unittest exit 0. npm run typecheck exit 0. npm run build --workspace @curasphere/web exit 0. npm audit exit 0 with 0 vulnerabilities. Trivy critical count on the rebuilt image was 0."
       ],
       "rollback_evidence": [
-        "2026-10-13 infra/delivery/rollback.sh dev restored health after a failed rollout. See docs/platform/P01-F04-evidence.md."
+        "2026-10-13 after loading image sha256:b55f580c59e88345fd4bc878e8682f2d6b8db8bafcd89c5cf4a27ffb47bfe747, healthMode=fail timed out with invalid rollout did not become ready. rollback.sh dev then returned health status ok and clinicalGeneration refused."
       ],
+      "security_and_privacy_approval": null,
+      "clinical_approval": null,
+      "architecture_approval": null,
+      "human_authorization_to_start_next": null,
+      "accepted_at": "2026-10-13",
+      "blockers": []
+    },
+    {
+      "phase": 2,
+      "title": "Identity, Tenancy & Zero Trust",
+      "file": "phase-specs/PHASE_02_identity-tenancy-zero-trust.md",
+      "status": "IN_PROGRESS",
+      "source_exit_criteria": [
+        {
+          "text": "Cross-tenant access tests prove isolation",
+          "evidence": ["docs/identity/P02-F01-evidence.md"],
+          "status": "PENDING"
+        },
+        {
+          "text": "Privilege escalation tests pass",
+          "evidence": ["docs/identity/P02-F03-evidence.md"],
+          "status": "PENDING"
+        },
+        {
+          "text": "All access decisions are auditable",
+          "evidence": ["docs/identity/P02-F03-evidence.md"],
+          "status": "PENDING"
+        }
+      ],
+      "completed_features": ["P02-F01", "P02-F02", "P02-F03"],
+      "executed_test_commands": [
+        "npm test --workspace @curasphere/domain",
+        "npm run typecheck",
+        "./gradlew test --tests health.curasphere.foundation.FoundationApplicationTest.tenancyIsolatesDemoOrganizations --tests health.curasphere.foundation.FoundationApplicationTest.healthReadsThePostgresSchema"
+      ],
+      "test_evidence": ["docs/identity/P02-F01-evidence.md", "docs/identity/P02-F02-evidence.md", "docs/identity/P02-F03-evidence.md"],
+      "rollback_evidence": ["docs/identity/tenancy.md"],
       "security_and_privacy_approval": null,
       "clinical_approval": null,
       "architecture_approval": null,
       "human_authorization_to_start_next": null,
       "accepted_at": null,
       "blockers": [
-        "Protected branches and required reviews were not verified. This folder is not a git repository.",
-        "No critical dependency vulnerabilities is not met. Trivy 0.58.1 reported 2 critical findings in the Debian packages of curasphere-ai-gateway:good."
+        "P02-F04 and P02-F05 are not accepted. No architecture, security, or clinical reviewer has signed Phase 02. P02-F03 is an engineering acceptance only, and its clinical role matrix is not approved clinical policy."
       ]
-    },
-    {
-      "phase": 2,
-      "title": "Identity, Tenancy & Zero Trust",
-      "file": "phase-specs/PHASE_02_identity-tenancy-zero-trust.md",
-      "status": "NOT_STARTED",
-      "source_exit_criteria": [
-        {
-          "text": "Cross-tenant access tests prove isolation",
-          "evidence": [],
-          "status": "PENDING"
-        },
-        {
-          "text": "Privilege escalation tests pass",
-          "evidence": [],
-          "status": "PENDING"
-        },
-        {
-          "text": "All access decisions are auditable",
-          "evidence": [],
-          "status": "PENDING"
-        }
-      ],
-      "completed_features": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "rollback_evidence": [],
-      "security_and_privacy_approval": null,
-      "clinical_approval": null,
-      "architecture_approval": null,
-      "human_authorization_to_start_next": null,
-      "accepted_at": null,
-      "blockers": []
     },
     {
       "phase": 3,

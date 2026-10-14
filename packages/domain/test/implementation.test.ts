@@ -160,7 +160,7 @@ const phases: { name: string; check: () => void }[] = [
       present("packages/domain/package.json");
       present("packages/contracts/package.json");
       const { db } = signIn(FIXTURES.amira);
-      assert.equal(healthcheck(db).schemaVersion, 26);
+      assert.equal(healthcheck(db).schemaVersion, 30);
     },
   },
   {
@@ -174,8 +174,11 @@ const phases: { name: string; check: () => void }[] = [
       const evan = session(db, FIXTURES.evan);
       assert.equal(getChart(db, evan, FIXTURES.elena), null);
       const previous = process.env.CURASPHERE_ENV;
-      process.env.CURASPHERE_ENV = "production";
+      process.env.CURASPHERE_DEV_DIRECTORY = "local-test";
+      process.env.CURASPHERE_ENV = "staging";
       try {
+        assert.throws(() => openSession(db, FIXTURES.amira), (error: unknown) => error instanceof ForbiddenError);
+        process.env.CURASPHERE_ENV = "production";
         assert.throws(() => openSession(db, FIXTURES.amira), (error: unknown) => error instanceof ForbiddenError);
       } finally {
         if (previous === undefined) delete process.env.CURASPHERE_ENV;
@@ -782,7 +785,7 @@ const phases: { name: string; check: () => void }[] = [
       );
       const drill = recordRegionDrill(db, ctx, { idempotencyKey: "phase27-drill1" });
       assert.equal(drill.failover, "not-run");
-      assert.equal(drill.schemaVersion, 26);
+      assert.equal(drill.schemaVersion, 30);
       assert.ok(drill.elapsedMs >= 0 && drill.elapsedMs < 5000);
       assert.equal(readEnterprise(db, ctx).rtoNote, ENTERPRISE_RTO_NOTE);
       assert.throws(() => moveTenant(db, ctx, { targetRegion: "eu-central-1", idempotencyKey: "phase27-move01" }), (error: unknown) => error instanceof ValidationError);

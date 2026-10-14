@@ -1,5 +1,5 @@
 import type { SessionContext } from "@curasphere/contracts";
-import { canReadChart, canReviewAudit } from "@curasphere/domain";
+import { canReadChart, canReviewAudit, effectivePermissions, getDb } from "@curasphere/domain";
 import { AccountMenu } from "@/components/account-menu";
 import { Icon, type IconName } from "@/components/icon";
 import { listFoundationEncounters } from "@/lib/foundation";
@@ -26,10 +26,14 @@ type LinkId =
   | "modules"
   | "revenue"
   | "enterprise"
-  | "marketplace";
+  | "marketplace"
+  | "tenancy"
+  | "access";
 
 const LINKS: ReadonlyArray<{ href: string; id: LinkId; label: string; group: string; icon: IconName }> = [
   { href: "/dashboard", id: "dashboard", label: "Dashboard", group: "Main", icon: "grid" },
+  { href: "/tenancy", id: "tenancy", label: "Organization", group: "Main", icon: "shieldCheck" },
+  { href: "/access", id: "access", label: "Access", group: "Main", icon: "shieldCheck" },
   { href: "/facility", id: "facility", label: "Beds and wards", group: "Main", icon: "bed" },
   { href: "/worklist", id: "worklist", label: "Worklist", group: "Main", icon: "checklist" },
   { href: "/patients", id: "patients", label: "Patients", group: "Main", icon: "users" },
@@ -54,6 +58,8 @@ const LINKS: ReadonlyArray<{ href: string; id: LinkId; label: string; group: str
 
 const TITLES: Record<LinkId | "account", string> = {
   dashboard: "Dashboard",
+  tenancy: "Organization",
+  access: "Access",
   facility: "Beds and wards",
   worklist: "Worklist",
   patients: "Patients",
@@ -90,17 +96,29 @@ export async function Shell({
   title?: string;
   children: React.ReactNode;
 }) {
+  const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
+  const allowed = new Set(access.permissions);
+  const governed = access.roles.length > 0;
+  const chart = governed ? allowed.has("clinical.read") : canReadChart(ctx);
   const links = LINKS.filter((link) => {
-    if (link.id === "audit") return canReviewAudit(ctx);
-    if (link.id === "analytics" || link.id === "population" || link.id === "research" || link.id === "evaluation" || link.id === "release-train" || link.id === "modules") return ctx.role === "auditor";
-    if (link.id === "revenue" || link.id === "enterprise") return ctx.role === "admin";
-    if (link.id === "marketplace") return ctx.role === "admin" || ctx.role === "auditor";
-    if (link.id === "gateway") return true;
-    return canReadChart(ctx);
+    if (link.id === "access" || link.id === "dashboard") return true;
+    if (!governed) {
+      if (link.id === "audit") return canReviewAudit(ctx);
+      if (link.id === "analytics" || link.id === "population" || link.id === "research" || link.id === "evaluation" || link.id === "release-train" || link.id === "modules") return ctx.role === "auditor";
+      if (link.id === "revenue" || link.id === "enterprise") return ctx.role === "admin";
+      if (link.id === "marketplace") return ctx.role === "admin" || ctx.role === "auditor";
+      if (link.id === "gateway" || link.id === "tenancy") return true;
+      return canReadChart(ctx);
+    }
+    if (link.id === "audit" || link.id === "analytics" || link.id === "population" || link.id === "research" || link.id === "evaluation" || link.id === "release-train" || link.id === "modules") return allowed.has("security.audit.read");
+    if (link.id === "marketplace") return allowed.has("billing.read") || allowed.has("security.audit.read");
+    if (link.id === "revenue" || link.id === "enterprise") return allowed.has("billing.read");
+    if (link.id === "tenancy" || link.id === "gateway") return allowed.has("organization.read") || allowed.has("facility.read");
+    return allowed.has("clinical.read");
   });
   const groups = [...new Set(links.map((link) => link.group))];
   let alerts = 0;
-  if (canReadChart(ctx)) {
+  if (chart) {
     const open = await listFoundationEncounters(ctx.sessionId);
     alerts = open?.length ?? 0;
   }
@@ -112,7 +130,7 @@ export async function Shell({
           <span className="mark" aria-hidden="true" />
           CuraSphere
         </a>
-        {canReadChart(ctx) ? (
+        {chart ? (
           <form className="side-search" action="/patients" method="get">
             <label className="sr" htmlFor="side-q">
               Search patients
@@ -144,7 +162,7 @@ export async function Shell({
         <header className="topbar">
           <h1>{title ?? TITLES[current]}</h1>
           <div className="top-actions">
-            {canReadChart(ctx) ? (
+            {chart ? (
               <a className="bell" href="/worklist" aria-label={alerts === 0 ? "No open encounters" : `${alerts} open encounters`}>
                 <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
                   <path fill="none" stroke="currentColor" strokeWidth="1.8" d="M6 9a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9Z" />

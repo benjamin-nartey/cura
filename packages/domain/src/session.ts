@@ -22,8 +22,14 @@ function purposeFor(role: Role): PurposeOfUse {
   return "TREATMENT";
 }
 
+export function devDirectoryEnabled() {
+  const env = process.env.CURASPHERE_ENV;
+  if (env === "production" || env === "staging") return false;
+  return process.env.CURASPHERE_DEV_DIRECTORY === "local-test";
+}
+
 export function assertDevDirectory() {
-  if (process.env.CURASPHERE_ENV === "production") {
+  if (!devDirectoryEnabled()) {
     throw new ForbiddenError("disabled", "Local directory sign-in is disabled.");
   }
 }

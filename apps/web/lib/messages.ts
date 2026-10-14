@@ -10,10 +10,20 @@ const ERROR_COPY: Record<string, string> = {
   signin: "The directory could not open a session.",
   disabled: "Local directory sign-in is disabled.",
   foundation: "The foundation service is not running.",
+  tenant: "That organization is not available.",
+  closed: "This organization is not active.",
+  unavailable: "The directory is temporarily unavailable.",
+  idp: "The identity provider is not available. Try again when it returns.",
+  pending: "This identity is not linked to an active organization.",
+  expired: "That session has ended. Sign in again.",
+  cancelled: "The sign-in was cancelled before a session was opened.",
+  mfa: "That authenticator code was not accepted.",
 };
 
 const NOTICE_COPY: Record<string, string> = {
   recorded: "Result added to the source record.",
+  switched: "The facility context is updated.",
+  listed: "That organization is on this session.",
   problem: "Problem added from the facility catalog. This does not diagnose.",
   allergy: "Allergy stored as entered. Nothing was graded beyond the criticality selected.",
   opened: "Encounter opened.",
@@ -134,6 +144,8 @@ const NOTICE_COPY: Record<string, string> = {
   booked: "The facility booked the visit.",
   requestdeclined: "The request was declined. No visit was booked.",
   replied: "The reply is stored on the facility record.",
+  enrolled: "The authenticator is enrolled.",
+  revoked: "That authenticator was revoked.",
 };
 
 export function readFeedback(query: { error?: string; notice?: string }) {

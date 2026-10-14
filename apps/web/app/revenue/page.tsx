@@ -1,13 +1,22 @@
-import { getDb, noteDenial, readRevenue } from "@curasphere/domain";
+import { authorize, getDb, noteDenial, readRevenue } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
 import { readFeedback } from "@/lib/messages";
 import { requireSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function RevenuePage({ searchParams }: { searchParams: Promise<{ error?: string; notice?: string }> }) {
   const ctx = await requireSession();
   const query = await searchParams;
   const feedback = readFeedback(query);
+  const decision = authorize(
+    getDb(),
+    { principalId: ctx.userId, accountActive: true },
+    "billing.read",
+    { type: "Billing", organizationId: ctx.organizationId, facilityId: ctx.facilityId, sensitivity: "administrative" },
+    { purpose: ctx.purposeOfUse, assurance: "directory", sessionActive: true, activeFacilityId: ctx.facilityId },
+  );
+  if (!decision.allow) redirect("/access/denied");
   if (ctx.role !== "admin") {
     noteDenial(getDb(), ctx, "revenue.read", "RevenueInvoice", ctx.organizationId);
     return (

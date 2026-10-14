@@ -62,7 +62,7 @@ test("the local pin stays in place, and a failover is not run", () => {
   assert.equal(recordKeyStatus(db, ctx, { idempotencyKey: "ent-key-0002" }).status, "not-configured");
   const drill = recordRegionDrill(db, ctx, { idempotencyKey: "ent-drill-001" });
   assert.equal(drill.failover, "not-run");
-      assert.equal(drill.schemaVersion, 26);
+      assert.equal(drill.schemaVersion, 30);
   assert.ok(drill.elapsedMs >= 0 && drill.elapsedMs < 5000);
   assert.throws(
     () => recordApiGrant(db, ctx, { label: "Local health", audience: "https://api.example", idempotencyKey: "ent-api-0001" }),

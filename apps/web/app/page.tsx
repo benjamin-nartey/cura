@@ -37,6 +37,13 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
         </p>
       </section>
       <section className="panel card">
+        <h2>Identity provider</h2>
+        <p className="muted">Workforce sign-in uses the local identity provider. The organization still comes from the directory.</p>
+        <p>
+          <a className="btn-dark" href="/api/auth/start">
+            Sign in
+          </a>
+        </p>
         <h2>Directory</h2>
         <p className="muted">Development identities from the foundation service. No passwords.</p>
         <Feedback error={error} notice={null} />

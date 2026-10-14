@@ -8,6 +8,7 @@ import { seedFacilityRecords } from "./facility";
 import { seedPatientRecords } from "./portal";
 import { seedRxRules } from "./rx";
 import { seedGatewayRecords } from "./gateway";
+import { seedAuthorization } from "./authorization";
 import { seedTerminology, TERMINOLOGY } from "./terminology";
 
 export const FIXTURES = {
@@ -210,4 +211,5 @@ export function seed(db: AppDatabase) {
     seedPatientRecords(db);
     seedFacilityRecords(db);
   });
+  seedAuthorization(db);
 }

@@ -454,67 +454,208 @@
       "feature_id": "P02-F01",
       "phase": 2,
       "name": "Tenant/facility hierarchy",
-      "status": "NOT_STARTED",
-      "owners": [],
-      "implemented_files": [],
-      "migration_files": [],
-      "api_contracts": [],
-      "ui_routes": [],
-      "scenario_ids": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "security_evidence": [],
-      "safety_evidence": [],
-      "observability_evidence": [],
-      "rollback_evidence": [],
-      "docs": [],
+      "status": "ACCEPTED",
+      "owners": ["engineering"],
+      "implemented_files": [
+        "packages/domain/src/db.ts",
+        "packages/domain/src/tenancy.ts",
+        "packages/domain/src/index.ts",
+        "packages/domain/test/tenancy.test.ts",
+        "apps/web/app/tenancy/page.tsx",
+        "apps/web/app/api/tenancy/route.ts",
+        "apps/web/app/api/tenancy/facility/route.ts",
+        "apps/web/app/api/tenancy/organization/route.ts",
+        "apps/web/lib/http.ts",
+        "apps/web/components/shell.tsx",
+        "services/foundation/src/main/kotlin/health/curasphere/foundation/TenancyService.kt",
+        "services/foundation/src/main/kotlin/health/curasphere/foundation/FoundationController.kt"
+      ],
+      "migration_files": [
+        "packages/domain/src/db.ts",
+        "services/foundation/src/main/resources/db/migration/V16__tenancy.sql"
+      ],
+      "api_contracts": [
+        "GET /api/tenancy",
+        "POST /api/tenancy/facility",
+        "POST /api/tenancy/organization",
+        "GET /sessions/{id}/tenancy",
+        "GET /sessions/{id}/tenancy/organizations/{organizationId}",
+        "POST /sessions/{id}/tenancy/facility"
+      ],
+      "ui_routes": ["/tenancy"],
+      "scenario_ids": ["P02-S01", "P02-S02", "P02-S03", "P02-S04", "P02-S05", "P02-S06", "P02-S07", "P02-S08", "P02-S09"],
+      "executed_test_commands": [
+        "npm test --workspace @curasphere/domain",
+        "node --import tsx --test packages/domain/test/tenancy.test.ts",
+        "npm run typecheck",
+        "./gradlew test --tests health.curasphere.foundation.FoundationApplicationTest.tenancyIsolatesDemoOrganizations --tests health.curasphere.foundation.FoundationApplicationTest.healthReadsThePostgresSchema"
+      ],
+      "test_evidence": [
+        "2026-10-13 npm test --workspace @curasphere/domain exit 0. 86 passed, including P02-S01 through P02-S09.",
+        "2026-10-13 node --import tsx --test packages/domain/test/tenancy.test.ts exit 0. 9 passed.",
+        "2026-10-13 npm run typecheck exit 0.",
+        "2026-10-13 foundation FoundationApplicationTest first run: 23 tests, 1 failed because a stale facility switch returned 409. The assertion was corrected to 409. The filtered rerun of tenancyIsolatesDemoOrganizations and healthReadsThePostgresSchema exited 0. The other 22 tests had passed against V16 on the first run."
+      ],
+      "security_evidence": [
+        "A DEMO_GH session reading org_demo_eu or svc_eu_sync throws NotFoundError. The message does not contain Northbridge, Riverside, or org_demo_eu. Audit resource_id for that organization id stayed 0.",
+        "GET /api/tenancy with X-Organization-Id org_demo_eu returned 403 {\"error\":\"tenant\"}. The unheadered call returned only Harborlight Health.",
+        "The browser check of org_demo_eu landed on /tenancy?error=notfound and showed the alert 'That record is not on this facility.' Harborlight Health remained the only organization on the page."
+      ],
+      "safety_evidence": [
+        "No patient, diagnosis, or encounter rows were added. The dashboard still showed 10 patients and 1 open encounter after the organization page was used."
+      ],
+      "observability_evidence": [
+        "Denied and successful tenancy actions write audit_events through writeAudit or the foundation audit insert. A dependency outage is the tenancy_controls row and fails closed."
+      ],
+      "rollback_evidence": [
+        "Chart migrate() applies schema 27 inside a transaction and inserts version 27 only after the statements succeed. PostgreSQL rollback is a restore from the backup taken before V16. docs/identity/tenancy.md. The live chart file was not deleted."
+      ],
+      "docs": [
+        "docs/adr/ADR-0056-server-side-tenant-context.md",
+        "docs/identity/tenancy.md",
+        "docs/identity/P02-F01-evidence.md"
+      ],
       "approvals": [],
-      "open_blockers": [],
-      "accepted_at": null
+      "open_blockers": [
+        "The foundation process on port 8081 was restarted onto Flyway V16 during the P02-F02 reconciliation. See docs/identity/P02-F01-runtime-reconciliation.md."
+      ],
+      "accepted_at": "2026-10-13"
     },
     {
       "feature_id": "P02-F02",
       "phase": 2,
       "name": "Identity provider integration",
-      "status": "NOT_STARTED",
+      "status": "ACCEPTED",
       "owners": [],
-      "implemented_files": [],
-      "migration_files": [],
-      "api_contracts": [],
-      "ui_routes": [],
-      "scenario_ids": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "security_evidence": [],
-      "safety_evidence": [],
-      "observability_evidence": [],
-      "rollback_evidence": [],
-      "docs": [],
+      "implemented_files": [
+        "packages/domain/src/identity.ts",
+        "packages/domain/src/oidc.ts",
+        "packages/domain/src/webauthn.ts",
+        "packages/domain/src/db.ts",
+        "apps/web/lib/workforce-auth.ts",
+        "apps/web/app/api/auth/start/route.ts",
+        "apps/web/app/api/auth/callback/route.ts",
+        "apps/web/app/api/auth/mfa/route.ts",
+        "apps/web/app/api/auth/health/route.ts",
+        "apps/web/app/auth/mfa/page.tsx",
+        "apps/web/app/auth/enroll/page.tsx",
+        "apps/web/app/auth/passkey/page.tsx",
+        "apps/web/components/passkey-panel.tsx",
+        "infra/local/dex.yaml"
+      ],
+      "migration_files": ["packages/domain/src/db.ts"],
+      "api_contracts": [
+        "GET /api/auth/start",
+        "GET /api/auth/callback",
+        "GET /api/auth/health",
+        "POST /api/auth/mfa",
+        "POST /api/auth/totp/enroll",
+        "POST /api/auth/totp/confirm",
+        "POST /api/auth/totp/revoke",
+        "POST /api/auth/passkey/register/options",
+        "POST /api/auth/passkey/register/verify",
+        "POST /api/auth/passkey/authenticate/options",
+        "POST /api/auth/passkey/authenticate/verify",
+        "POST /api/auth/passkey/revoke"
+      ],
+      "ui_routes": ["/", "/auth/mfa", "/auth/enroll", "/auth/passkey", "/account"],
+      "scenario_ids": ["P02-S10", "P02-S11", "P02-S12", "P02-S13", "P02-S14", "P02-S15", "P02-S16", "P02-S17", "P02-S18", "P02-S19", "P02-S20", "P02-S21", "P02-S22", "P02-S23", "P02-S24", "P02-S25", "P02-S26", "P02-S27", "P02-S28", "P02-S29", "P02-S30", "P02-S31", "P02-S32", "P02-S33", "P02-S34", "P02-S35", "P02-S36"],
+      "executed_test_commands": [
+        "2026-10-13 npm run typecheck --workspace @curasphere/domain exit 0",
+        "2026-10-13 npm run typecheck --workspace @curasphere/web exit 0",
+        "2026-10-13 node --import tsx --test --test-concurrency=1 packages/domain/test/oidc.test.ts exit 0. 17 passed, 0 failed.",
+        "2026-10-13 npm test --workspace @curasphere/domain exit 0. 103 passed, 0 failed.",
+        "2026-10-13 npm audit --workspace @curasphere/domain exit 0. found 0 vulnerabilities.",
+        "2026-10-13 npm audit --workspace @curasphere/web exit 0. found 0 vulnerabilities."
+      ],
+      "test_evidence": [
+        "Dex password login for Amira reached the dashboard at Harborlight Health only.",
+        "A second login after passkey enrollment stopped at /auth/mfa. The virtual authenticator then opened /dashboard.",
+        "TOTP enrollment accepted the current code and showed the enrolled notice.",
+        "Logout returned to the sign-in page. A stopped Dex rejected discovery and an in-flight code, then a new login succeeded and the previous token failed signature checks."
+      ],
+      "security_evidence": [
+        "Authorization code with PKCE S256. Issuer, audience, RS256, expiry, not-before, and JWKS are checked. alg none and attacker key URLs are rejected.",
+        "Refresh rotation and reuse revocation were observed against Dex. Concurrent refresh had one success and one rejection.",
+        "Browser passkeys use localhost because Chrome rejected 127.0.0.1 as a relying-party id.",
+        "npm audit reported 0 vulnerabilities for the domain and web workspaces. Starlette findings on the separate AI gateway were not changed."
+      ],
+      "safety_evidence": [
+        "No diagnosis, order, or billing behavior was added. The dashboard still showed the existing Harborlight chart after login."
+      ],
+      "observability_evidence": [
+        "auth_events store a subject hash, correlation id, and duration. auth_counters count successes, failures, and revocations. GET /api/auth/health reports Dex discovery. Development request logs ignore /api/auth/callback."
+      ],
+      "rollback_evidence": [
+        "Schema 29 runs inside the migrate transaction. A failed upgrade leaves the previous version. Rollback of a migrated chart file is restore from the pre-migration copy. data/curasphere.sqlite was not deleted."
+      ],
+      "docs": [
+        "docs/adr/ADR-0057-oidc-session-and-authenticators.md",
+        "docs/identity/authentication.md",
+        "docs/identity/P02-F02-evidence.md",
+        "docs/identity/P02-F01-runtime-reconciliation.md"
+      ],
       "approvals": [],
-      "open_blockers": [],
-      "accepted_at": null
+      "open_blockers": [
+        "No architecture, security, or clinical reviewer has signed P02-F02. The development directory still opens a session without Dex when CURASPHERE_ENV is not production. Identity tables are in the chart database, not foundation Flyway."
+      ],
+      "accepted_at": "2026-10-13"
     },
     {
       "feature_id": "P02-F03",
       "phase": 2,
       "name": "RBAC and ABAC policy engine",
-      "status": "NOT_STARTED",
+      "status": "ACCEPTED",
       "owners": [],
-      "implemented_files": [],
-      "migration_files": [],
-      "api_contracts": [],
-      "ui_routes": [],
-      "scenario_ids": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "security_evidence": [],
-      "safety_evidence": [],
-      "observability_evidence": [],
-      "rollback_evidence": [],
-      "docs": [],
+      "implemented_files": [
+        "packages/domain/src/authorization.ts",
+        "packages/domain/src/db.ts",
+        "packages/domain/src/session.ts",
+        "packages/domain/src/tenancy.ts",
+        "apps/web/components/shell.tsx",
+        "apps/web/app/access/page.tsx",
+        "apps/web/app/access/denied/page.tsx",
+        "apps/web/app/access/diagnose/page.tsx",
+        "apps/web/app/api/access/route.ts",
+        "apps/web/app/patients/page.tsx",
+        "apps/web/app/revenue/page.tsx"
+      ],
+      "migration_files": ["packages/domain/src/db.ts"],
+      "api_contracts": ["GET /api/access", "POST /api/access", "POST /api/tenancy/facility"],
+      "ui_routes": ["/access", "/access/denied", "/access/diagnose", "/patients", "/revenue", "/tenancy"],
+      "scenario_ids": ["P02-S37", "P02-S38", "P02-S39", "P02-S40", "P02-S41", "P02-S42", "P02-S43", "P02-S44", "P02-S45", "P02-S46", "P02-S47", "P02-S48", "P02-S49", "P02-S50", "P02-S51", "P02-S52", "P02-S53", "P02-S54", "P02-S55", "P02-S56", "P02-S57", "P02-S58", "P02-S59", "P02-S60", "P02-S61", "P02-S62"],
+      "executed_test_commands": [
+        "2026-10-14 npm run typecheck --workspace @curasphere/domain exit 0",
+        "2026-10-14 npm run typecheck --workspace @curasphere/web exit 0",
+        "2026-10-14 npm test --workspace @curasphere/domain exit 0. 128 passed, 0 failed.",
+        "2026-10-14 npm audit --workspace @curasphere/domain exit 0. found 0 vulnerabilities.",
+        "2026-10-14 npm audit --workspace @curasphere/web exit 0. found 0 vulnerabilities."
+      ],
+      "test_evidence": ["docs/identity/P02-F03-evidence.md"],
+      "security_evidence": [
+        "Client role names and organization ids are not authorization authority. Cross-tenant object denial is HTTP 404 and the guessed organization id is not stored.",
+        "Staging and production refuse the development directory even when CURASPHERE_DEV_DIRECTORY=local-test.",
+        "A revoked organization-administrator assignment removed revenue access in the same session. The assignment was restored."
+      ],
+      "safety_evidence": [
+        "clinical.sign, prescribing, dispensing, laboratory authorization, billing adjustment, and emergency elevation stay denied. Proposed clinical permissions are not an approved clinical policy."
+      ],
+      "observability_evidence": [
+        "authorization_decisions records principal, action, resource type, decision, reason, policy id, and policy version. authorization_controls counts allow, deny, latency, cross-tenant denials, and escalation denials."
+      ],
+      "rollback_evidence": [
+        "Schema 30 runs inside the migrate transaction. A failed upgrade leaves the previous version. data/curasphere.sqlite was not deleted."
+      ],
+      "docs": [
+        "docs/adr/ADR-0058-rbac-abac-authorization.md",
+        "docs/identity/authorization.md",
+        "docs/identity/P02-F03-evidence.md"
+      ],
       "approvals": [],
-      "open_blockers": [],
-      "accepted_at": null
+      "open_blockers": [
+        "No architecture, security, or clinical reviewer has signed. The clinical role matrix is a proposed engineering matrix, not approved clinical policy. P02-F03 is an engineering acceptance only."
+      ],
+      "accepted_at": "2026-10-14"
     },
     {
       "feature_id": "P02-F04",

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -36,7 +37,10 @@ class FoundationWeb : WebMvcConfigurer {
 }
 
 @RestController
-class FoundationController(private val foundation: FoundationService) {
+class FoundationController(
+    private val foundation: FoundationService,
+    private val tenancy: TenancyService,
+) {
     @GetMapping("/", "/health")
     fun health() = foundation.health()
 
@@ -45,6 +49,19 @@ class FoundationController(private val foundation: FoundationService) {
 
     @PostMapping("/sessions")
     fun open(@RequestBody body: OpenSessionBody) = foundation.openSession(body.userId ?: "")
+
+    @GetMapping("/sessions/{id}/tenancy")
+    fun tenancy(
+        @PathVariable id: String,
+        @RequestHeader(name = "X-Organization-Id", required = false) claimedOrganizationId: String?,
+    ) = tenancy.read(id, claimedOrganizationId)
+
+    @GetMapping("/sessions/{id}/tenancy/organizations/{organizationId}")
+    fun tenancyOrganization(@PathVariable id: String, @PathVariable organizationId: String) =
+        tenancy.readOrganization(id, organizationId)
+
+    @PostMapping("/sessions/{id}/tenancy/facility")
+    fun tenancyFacility(@PathVariable id: String, @RequestBody body: SwitchFacilityBody) = tenancy.switchFacility(id, body)
 
     @GetMapping("/sessions/{id}/encounters")
     fun encounters(@PathVariable id: String) = foundation.listOpenEncounters(id)

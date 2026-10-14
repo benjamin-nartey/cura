@@ -7,10 +7,13 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@curasphere/contracts": "*"
+    "@curasphere/contracts": "*",
+    "@simplewebauthn/server": "^13.3.3",
+    "openid-client": "^6.8.8",
+    "otpauth": "^9.5.2"
   },
   "scripts": {
-    "test": "node --import tsx --test test/isolation.test.ts test/briefing.test.ts test/writes.test.ts test/terminology.test.ts test/fhir.test.ts test/timeline.test.ts test/patient-state.test.ts test/evidence.test.ts test/gateway.test.ts test/agents.test.ts test/copilot.test.ts test/documentation.test.ts test/lab.test.ts test/rx.test.ts test/coordination.test.ts test/patient.test.ts test/facility.test.ts test/operations.test.ts test/analytics.test.ts test/population.test.ts test/research.test.ts test/imaging.test.ts test/devices.test.ts test/revenue.test.ts test/evaluation.test.ts test/enterprise.test.ts test/marketplace.test.ts test/release.test.ts test/modules.test.ts test/implementation.test.ts",
+    "test": "node --import tsx --import ./test/dev-env.ts --test test/isolation.test.ts test/briefing.test.ts test/writes.test.ts test/terminology.test.ts test/fhir.test.ts test/timeline.test.ts test/patient-state.test.ts test/evidence.test.ts test/gateway.test.ts test/agents.test.ts test/copilot.test.ts test/documentation.test.ts test/lab.test.ts test/rx.test.ts test/coordination.test.ts test/patient.test.ts test/facility.test.ts test/operations.test.ts test/analytics.test.ts test/population.test.ts test/research.test.ts test/imaging.test.ts test/devices.test.ts test/revenue.test.ts test/evaluation.test.ts test/enterprise.test.ts test/marketplace.test.ts test/release.test.ts test/modules.test.ts test/implementation.test.ts test/tenancy.test.ts test/authorization.test.ts test/oidc.test.ts --test-concurrency=1",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

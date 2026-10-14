@@ -12,7 +12,8 @@
     "@curasphere/contracts": "*",
     "@curasphere/design-system": "*",
     "@curasphere/domain": "*",
-    "next": "^15.5.4",
+    "@simplewebauthn/browser": "^13.3.0",
+    "next": "16.4.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

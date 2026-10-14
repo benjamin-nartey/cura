@@ -1,15 +1,24 @@
-import { canReadChart, canRegisterPatient, getDb, noteDenial } from "@curasphere/domain";
+import { authorize, canReadChart, canRegisterPatient, getDb, noteDenial } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
 import { listFoundationPatients } from "@/lib/foundation";
 import { sexLabel } from "@/lib/format";
 import { readFeedback } from "@/lib/messages";
 import { requireSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function PatientsPage({ searchParams }: { searchParams: Promise<{ q?: string; error?: string; notice?: string }> }) {
   const ctx = await requireSession();
   const query = await searchParams;
   const feedback = readFeedback(query);
+  const decision = authorize(
+    getDb(),
+    { principalId: ctx.userId, accountActive: true },
+    "clinical.read",
+    { type: "Patient", organizationId: ctx.organizationId, facilityId: ctx.facilityId, sensitivity: "standard" },
+    { purpose: ctx.purposeOfUse, assurance: "directory", sessionActive: true, activeFacilityId: ctx.facilityId },
+  );
+  if (!decision.allow) redirect("/access/denied");
   if (!canReadChart(ctx)) {
     noteDenial(getDb(), ctx, "patient.list", "Patient", null);
     return (
