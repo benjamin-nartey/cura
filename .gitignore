@@ -2,12 +2,16 @@ node_modules/
 .next/
 .next-p04f05/
 .next-p04f05-build/
+!apps/web/app/api/population/build/
+!apps/web/app/api/population/build/**
 test-results/
 playwright-report/
 artifacts/governance-v2/
 dist/
 .gradle/
 build/
+!apps/web/app/api/population/build/
+!apps/web/app/api/population/build/**
 *.tsbuildinfo
 .env
 .env.local
