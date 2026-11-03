@@ -1,4 +1,4 @@
-import { closeSession, getDb, revokeAuthSession } from "@curasphere/domain";
+import { closeSession, getDb, revokeAuthSession, revokeEmergencyForSession } from "@curasphere/domain";
 import { cookies } from "next/headers";
 import { endFoundationSession } from "@/lib/foundation";
 import { redirectTo } from "@/lib/http";
@@ -9,6 +9,7 @@ export async function POST(request: Request) {
   const previous = jar.get("cura_foundation")?.value;
   if (sid?.startsWith("ses_")) {
     revokeAuthSession(getDb(), sid);
+    revokeEmergencyForSession(getDb(), sid);
     await endFoundationSession(sid);
   } else if (sid) closeSession(getDb(), sid);
   if (previous && previous !== sid) await endFoundationSession(previous);

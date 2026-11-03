@@ -1,5 +1,15 @@
 import type { SessionContext } from "@curasphere/contracts";
 import { authorize, seedAuthorization } from "./authorization";
+import { seedConsent } from "./consent";
+import { seedDsar } from "./dsar";
+import { seedTelemetry } from "./telemetry";
+import { seedRetention } from "./retention";
+import { seedEmergency } from "./emergency";
+import { seedMasterRecords } from "./master-records";
+import { seedClinicalSource } from "./clinical-source";
+import { seedWorkCoordination } from "./work";
+import { seedBillingPrimitives } from "./billing";
+import { seedScheduling } from "./scheduling";
 import { writeAudit } from "./audit";
 import type { AppDatabase } from "./db";
 import { get, run, transaction } from "./db";
@@ -92,7 +102,7 @@ function backfill(db: AppDatabase) {
   }
 }
 
-function insertUser(db: AppDatabase, id: string, organizationId: string, facilityId: string | null, name: string, role: "admin" | "clinician" | "nurse") {
+function insertUser(db: AppDatabase, id: string, organizationId: string, facilityId: string | null, name: string, role: "admin" | "clinician" | "nurse" | "auditor") {
   run(
     db,
     `INSERT INTO users (id, organization_id, facility_id, display_name, role)
@@ -162,6 +172,10 @@ export function seedDemoTenants(db: AppDatabase) {
     insertUser(db, DEMO_GH.users.nurse, DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "Akosua Owusu", "nurse");
     insertUser(db, DEMO_GH.users.reception, DEMO_GH.organizationId, DEMO_GH.facilities.eastLegon.id, "Yaa Asare", "nurse");
     insertUser(db, DEMO_GH.users.laboratory, DEMO_GH.organizationId, DEMO_GH.facilities.madina.id, "Kojo Mensah", "clinician");
+    insertUser(db, "usr_gh_facadmin", DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "Kofi Boateng", "admin");
+    insertUser(db, "usr_gh_transfer", DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "Adwoa Sarpong", "nurse");
+    insertUser(db, "usr_dual_nurse", DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "Abena Darko", "nurse");
+    insertUser(db, "usr_gh_reviewer", DEMO_GH.organizationId, null, "Esi Boateng", "auditor");
     insertUser(db, DEMO_EU.users.admin, DEMO_EU.organizationId, DEMO_EU.facilities.northbridge.id, "Elena Rossi", "admin");
     insertUser(db, DEMO_EU.users.doctor, DEMO_EU.organizationId, DEMO_EU.facilities.northbridge.id, "Mateo Rossi", "clinician");
     insertUser(db, DEMO_EU.users.nurse, DEMO_EU.organizationId, DEMO_EU.facilities.riverside.id, "Elena Costa", "nurse");
@@ -171,6 +185,24 @@ export function seedDemoTenants(db: AppDatabase) {
     grant(db, DEMO_GH.organizationId, DEMO_GH.facilities.eastLegon.id, DEMO_GH.users.nurse, "nurse");
     grant(db, DEMO_GH.organizationId, DEMO_GH.facilities.eastLegon.id, DEMO_GH.users.reception, "receptionist");
     grant(db, DEMO_GH.organizationId, DEMO_GH.facilities.madina.id, DEMO_GH.users.laboratory, "laboratory");
+    grant(db, DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "usr_gh_facadmin", "facility-administrator");
+    grant(db, DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "usr_gh_transfer", "nurse");
+    grant(db, DEMO_GH.organizationId, DEMO_GH.facilities.accra.id, "usr_dual_nurse", "nurse");
+    const harbor = get<{ id: string }>(db, `SELECT id FROM organizations WHERE id = 'org_harborlight'`);
+    if (harbor) {
+      run(
+        db,
+        `INSERT INTO organization_memberships (id, organization_id, user_id, status, version)
+         VALUES ('om_org_harborlight_usr_dual_nurse', 'org_harborlight', 'usr_dual_nurse', 'active', 1)
+         ON CONFLICT(organization_id, user_id) DO NOTHING`,
+      );
+      run(
+        db,
+        `INSERT INTO facility_memberships (id, organization_id, facility_id, user_id, role, status, version)
+         VALUES ('fm_fac_east_usr_dual_nurse', 'org_harborlight', 'fac_east', 'usr_dual_nurse', 'nurse', 'active', 1)
+         ON CONFLICT(facility_id, user_id) DO NOTHING`,
+      );
+    }
     grant(db, DEMO_EU.organizationId, DEMO_EU.facilities.northbridge.id, DEMO_EU.users.admin, "organization-administrator");
     grant(db, DEMO_EU.organizationId, DEMO_EU.facilities.northbridge.id, DEMO_EU.users.doctor, "doctor");
     grant(db, DEMO_EU.organizationId, DEMO_EU.facilities.riverside.id, DEMO_EU.users.nurse, "nurse");
@@ -189,7 +221,31 @@ export function seedDemoTenants(db: AppDatabase) {
       DEMO_EU.organizationId,
     );
     backfill(db);
+    insertUser(db, "usr_gh_invite", DEMO_GH.organizationId, null, "Efua Mensah", "nurse");
+    run(
+      db,
+      `INSERT INTO organization_memberships (id, organization_id, user_id, status, version)
+       VALUES ('om_org_demo_gh_usr_gh_invite', ?, 'usr_gh_invite', 'revoked', 1)
+       ON CONFLICT(organization_id, user_id) DO UPDATE SET status = 'revoked'`,
+      DEMO_GH.organizationId,
+    );
+    run(
+      db,
+      `INSERT INTO external_identities (id, issuer, subject, user_id, email, status)
+       VALUES ('ext_usr_gh_invite', 'http://127.0.0.1:15556/dex', 'subject-efua-invite', 'usr_gh_invite', 'efua.mensah@demo-gh.invalid', 'active')
+       ON CONFLICT(issuer, subject) DO NOTHING`,
+    );
   });
+  seedConsent(db);
+  seedRetention(db);
+  seedDsar(db);
+  seedTelemetry(db);
+  seedEmergency(db);
+  seedMasterRecords(db);
+  seedScheduling(db);
+  seedClinicalSource(db);
+  seedWorkCoordination(db);
+  seedBillingPrimitives(db);
   seedAuthorization(db);
 }
 

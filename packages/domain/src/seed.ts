@@ -94,6 +94,17 @@ export function seed(db: AppDatabase) {
     patient("pat_helen", "org_harborlight", "fac_riverside", "RIV-1003", "Helen", "Park", "1972-11-20", "female", "usr_amira", "2023-01-01T00:00:00.000Z");
     patient("pat_noor", "org_harborlight", "fac_east", "EAS-1001", "Noor", "Ellis", "1990-01-09", "female", "usr_lea", "2026-01-09T00:00:00.000Z");
     patient("pat_samir", "org_northwind", "fac_lakeside", "LAK-1001", "Samir", "Adeyemi", "1988-04-04", "male", "usr_evan", "2026-02-01T00:00:00.000Z");
+    patient("pat_3de26ae8-e7c7-412b-942f-73c759b88145", "org_harborlight", "fac_riverside", "RIV-1004", "Nia", "Okeke", "1994-04-04", "female", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_amina", "org_harborlight", "fac_riverside", "RIV-2006", "Amina", "Diallo", "1999-05-27", "female", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_camille", "org_harborlight", "fac_riverside", "RIV-2002", "Camille", "Breton", "1985-09-03", "female", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_farah", "org_harborlight", "fac_east", "EAS-2001", "Farah", "Iqbal", "1974-08-19", "female", "usr_lea", "2026-01-15T00:00:00.000Z");
+    patient("pat_jonah", "org_harborlight", "fac_riverside", "RIV-2001", "Jonah", "Adler", "1962-04-18", "male", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_luis", "org_harborlight", "fac_east", "EAS-2002", "Luis", "Ortega", "1980-02-11", "male", "usr_lea", "2026-01-15T00:00:00.000Z");
+    patient("pat_owen", "org_harborlight", "fac_riverside", "RIV-2003", "Owen", "Brooks", "1968-01-22", "male", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_sofia", "org_harborlight", "fac_riverside", "RIV-2004", "Sofia", "Mendes", "1993-07-14", "female", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_walter", "org_harborlight", "fac_riverside", "RIV-2005", "Walter", "Chen", "1947-12-02", "male", "usr_amira", "2026-01-15T00:00:00.000Z");
+    patient("pat_ben", "org_northwind", "fac_lakeside", "LAK-2002", "Ben", "Ibarra", "1990-10-08", "male", "usr_evan", "2026-01-15T00:00:00.000Z");
+    patient("pat_grace", "org_northwind", "fac_lakeside", "LAK-2001", "Grace", "Holm", "1956-06-30", "female", "usr_evan", "2026-01-15T00:00:00.000Z");
 
     const condition = (id: string, orgId: string, facilityId: string, patientId: string, code: string, display: string, at: string, author: string) =>
       run(

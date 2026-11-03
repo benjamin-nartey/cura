@@ -1,0 +1,51 @@
+{
+  "policy": "CURASPHERE-DEV-GOVERNANCE-v1",
+  "evaluatedAt": "2026-10-14T13:37:15.248Z",
+  "note": "Automated results are not human decisions. Reviewer names stay empty until a person decides.",
+  "reviews": [
+    {
+      "review_id": "P02-R01",
+      "decision": "PENDING",
+      "reviewer_name": null,
+      "decided_at": null
+    },
+    {
+      "review_id": "P02-R02",
+      "decision": "PENDING",
+      "reviewer_name": null,
+      "decided_at": null
+    },
+    {
+      "review_id": "P02-R03",
+      "decision": "PENDING",
+      "reviewer_name": null,
+      "decided_at": null
+    },
+    {
+      "review_id": "P02-R04",
+      "decision": "PENDING",
+      "reviewer_name": null,
+      "decided_at": null
+    },
+    {
+      "review_id": "P02-R05",
+      "decision": "PENDING",
+      "reviewer_name": null,
+      "decided_at": null
+    },
+    {
+      "review_id": "P02-R06",
+      "decision": "PENDING",
+      "reviewer_name": null,
+      "decided_at": null
+    }
+  ],
+  "exception": {
+    "id": "DEV-GOV-2026-001",
+    "status": "PROPOSED",
+    "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+    "required": [
+      "No signed authorization file is present."
+    ]
+  }
+}

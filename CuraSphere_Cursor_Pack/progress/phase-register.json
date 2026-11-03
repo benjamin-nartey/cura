@@ -31,7 +31,13 @@
           "status": "MET"
         }
       ],
-      "completed_features": ["P00-F01", "P00-F02", "P00-F03", "P00-F04", "P00-F05"],
+      "completed_features": [
+        "P00-F01",
+        "P00-F02",
+        "P00-F03",
+        "P00-F04",
+        "P00-F05"
+      ],
       "executed_test_commands": [
         "npm run constitution:phase00"
       ],
@@ -83,7 +89,13 @@
           "status": "MET"
         }
       ],
-      "completed_features": ["P01-F01", "P01-F02", "P01-F03", "P01-F04", "P01-F05"],
+      "completed_features": [
+        "P01-F01",
+        "P01-F02",
+        "P01-F03",
+        "P01-F04",
+        "P01-F05"
+      ],
       "executed_test_commands": [
         "bash infra/local/up.sh",
         "bash infra/delivery/simulate.sh",
@@ -110,35 +122,58 @@
       "source_exit_criteria": [
         {
           "text": "Cross-tenant access tests prove isolation",
-          "evidence": ["docs/identity/P02-F01-evidence.md"],
+          "evidence": [
+            "docs/identity/P02-F01-evidence.md"
+          ],
           "status": "PENDING"
         },
         {
           "text": "Privilege escalation tests pass",
-          "evidence": ["docs/identity/P02-F03-evidence.md"],
+          "evidence": [
+            "docs/identity/P02-F03-evidence.md"
+          ],
           "status": "PENDING"
         },
         {
           "text": "All access decisions are auditable",
-          "evidence": ["docs/identity/P02-F03-evidence.md"],
+          "evidence": [
+            "docs/identity/P02-F03-evidence.md"
+          ],
           "status": "PENDING"
         }
       ],
-      "completed_features": ["P02-F01", "P02-F02", "P02-F03"],
+      "completed_features": [
+        "P02-F01",
+        "P02-F02",
+        "P02-F03",
+        "P02-F04",
+        "P02-F05"
+      ],
       "executed_test_commands": [
         "npm test --workspace @curasphere/domain",
         "npm run typecheck",
         "./gradlew test --tests health.curasphere.foundation.FoundationApplicationTest.tenancyIsolatesDemoOrganizations --tests health.curasphere.foundation.FoundationApplicationTest.healthReadsThePostgresSchema"
       ],
-      "test_evidence": ["docs/identity/P02-F01-evidence.md", "docs/identity/P02-F02-evidence.md", "docs/identity/P02-F03-evidence.md"],
-      "rollback_evidence": ["docs/identity/tenancy.md"],
+      "test_evidence": [
+        "docs/identity/P02-F01-evidence.md",
+        "docs/identity/P02-F02-evidence.md",
+        "docs/identity/P02-F03-evidence.md",
+        "docs/identity/P02-F04-evidence.md",
+        "docs/identity/P02-F05-evidence.md",
+        "docs/identity/PHASE_02_COMPLETION.md",
+        "docs/identity/PHASE_02_TRACEABILITY.md",
+        "docs/identity/PHASE_02_APPROVALS.json"
+      ],
+      "rollback_evidence": [
+        "docs/identity/tenancy.md"
+      ],
       "security_and_privacy_approval": null,
       "clinical_approval": null,
       "architecture_approval": null,
       "human_authorization_to_start_next": null,
       "accepted_at": null,
       "blockers": [
-        "P02-F04 and P02-F05 are not accepted. No architecture, security, or clinical reviewer has signed Phase 02. P02-F03 is an engineering acceptance only, and its clinical role matrix is not approved clinical policy."
+        "Phase 02 is not accepted. Reviews P02-R01 through P02-R06 are PENDING in docs/identity/PHASE_02_APPROVALS.json. No architecture, security, clinical, or product-owner decision is recorded. The role matrix and emergency intended use are unapproved. Production clinical break-glass stays disabled. Phase 01 Debian and Starlette findings were not cleared. DEV-GOV-2026-001 is proposed and not active. Phase 03 is not authorized."
       ]
     },
     {
@@ -172,7 +207,9 @@
       "architecture_approval": null,
       "human_authorization_to_start_next": null,
       "accepted_at": null,
-      "blockers": []
+      "blockers": [
+        "Phase 03 development is NOT_AUTHORIZED. DEV-GOV-2026-001 is proposed and has no architecture, security, clinical, or product-owner signature. P03-F01 has not been started."
+      ]
     },
     {
       "phase": 4,
@@ -205,7 +242,8 @@
       "architecture_approval": null,
       "human_authorization_to_start_next": null,
       "accepted_at": null,
-      "blockers": []
+      "blockers": [],
+      "experimental_evidence": "docs/healthcare/P04-F05-evidence.md"
     },
     {
       "phase": 5,

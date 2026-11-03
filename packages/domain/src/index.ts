@@ -3,7 +3,16 @@ import { registerObservationRecorded } from "./chart";
 import { ensureDocumentationPolicy } from "./documentation";
 import { ensureCoordinationPolicy } from "./coordination";
 import { ensurePatientPolicy } from "./portal";
-import { registerAgents, registerAuthorization, registerCoordination, registerDocumentation, registerGateway, registerLab, registerPatient, registerRx, registerSeed, registerTerminology } from "./db";
+import { registerAgents, registerAuthorization, registerBilling, registerConsent, registerCoordination, registerDocumentation, registerDsar, registerGateway, registerLab, registerMaster, registerPatient, registerRetention, registerRx, registerSchedule, registerSeed, registerSource, registerTelemetry, registerTerminology, registerWork } from "./db";
+import { installConsentGate, seedConsent } from "./consent";
+import { seedDsar } from "./dsar";
+import { seedMasterRecords } from "./master-records";
+import { seedClinicalSource } from "./clinical-source";
+import { seedBillingPrimitives } from "./billing";
+import { seedWorkCoordination } from "./work";
+import { seedScheduling } from "./scheduling";
+import { seedTelemetry } from "./telemetry";
+import { seedRetention } from "./retention";
 import { seedAuthorization } from "./authorization";
 import { ensureLabPolicy } from "./lab";
 import { ensureRxPolicy } from "./rx";
@@ -13,6 +22,16 @@ import { queueObservationNotifications } from "./subscriptions";
 import { ensureTerminology } from "./terminology";
 
 registerSeed(seed);
+registerConsent(seedConsent);
+registerRetention(seedRetention);
+registerDsar(seedDsar);
+registerTelemetry(seedTelemetry);
+registerMaster(seedMasterRecords);
+registerSchedule(seedScheduling);
+registerSource(seedClinicalSource);
+registerWork(seedWorkCoordination);
+registerBilling(seedBillingPrimitives);
+installConsentGate();
 registerTerminology(ensureTerminology);
 registerGateway(ensureGatewayPolicy);
 registerAgents(ensureAgentPolicy);
@@ -30,6 +49,17 @@ export { buildBriefing, filterTimeline, groupTimelineByDay, isTimelineGroup, pro
 export { createDatabase, getDb } from "./db";
 export { AppError, ConflictError, ForbiddenError, NotFoundError, ValidationError } from "./errors";
 export { noteDenial } from "./audit";
+export { appendAccessLedger, LEDGER_ROLLBACK, listAccessLedger, metadataHash, verifyAccessLedger } from "./access-ledger";
+export { activateConsent, consentHistory, consentOverview, CONSENT_ROLLBACK, createConsent, dispatchConsentJob, evaluateConsent, listConsentDispatches, listConsentSubjects, listConsents, PRIVACY_OFFICER, queueConsentDispatch, readConsent, seedConsent, setConsentDependency, SUBJECT_AKUA, supersedeConsent, verifyAuthority, withdrawConsent } from "./consent";
+export { activateLegalHold, cancelRetentionJob, createDryRun, createLegalHold, createRetentionRecord, evaluateRetention, executeDryRun, LEGAL_HOLD_ADMIN, listLegalHolds, listRetentionActivity, listRetentionJobs, listRetentionPolicies, readDryRun, readLegalHold, readRetentionJob, readRetentionRecord, RECORDS_MANAGER, reconcileRetentionRestore, releaseLegalHold, resumeRetentionJob, RETENTION_ROLLBACK, retentionOverview, seedRetention, setArchiveDependency, setRetentionClock, setRetentionDependency, updateRetentionPolicy } from "./retention";
+export { applyCorrection, approvePrivacyRequest, BULK_SUBJECT, cancelPrivacyRequest, cleanupExpiredExports, createPrivacyRequest, denyPrivacyRequest, downloadExport, DSAR_ROLLBACK, ensureBulkDataset, executeErasure, GUARDIAN_AUTHORITY, listPrivacyActivity, listPrivacyAlerts, listPrivacyRequests, MINOR_SUBJECT, planErasure, privacyOverview, queueExport, readExport, readPrivacyRequest, revokeDsarSession, revokeExport, revokePrivacyAuthority, runExport, seedDsar, setDsarClock, setDsarDependency, setDsarLimit, verifyPrivacyRequest } from "./dsar";
+export { acknowledgeAlert, emitSafeTelemetry, escalateAlert, investigateAlert, listPrivacySecurityAlerts, listTelemetryRules, proposePolicyDisable, proposeRuleChange, raiseSignal, readPrivacySecurityAlert, readTelemetryPolicy, resolveAlert, retryAlertDelivery, runCanary, sanitizeTelemetry, seedTelemetry, setCollectorHealth, setTelemetryDependency, syncPrivacySignals, TELEMETRY_POLICY, TELEMETRY_ROLLBACK, telemetryOverview } from "./telemetry";
+export { affiliatePractitioner, commitRegistration, createPractitioner, decideDuplicate, findDuplicateMatches, linkPractitioner, linkVerifiedSubject, listDuplicateCandidates, listMasterPatients, listPractitioners, MASTER_ROLLBACK, mergePatients, openRegistrationDraft, readDuplicateCandidate, readMasterPatient, readPractitioner, readRegistrationDraft, refusePatientDisposal, registerPatientFacility, seedMasterRecords, unlinkPractitioner, updatePatientDemographics, updatePractitioner } from "./master-records";
+export { arriveAppointment, cancelAppointment, closeVisitEncounter, confirmAppointment, facilityClock, listAppointments, listSlots, localToUtc, nextOpenSlot, noShowAppointment, queueAppointmentReminder, readAppointment, readVisitEncounter, requestAppointment as requestScheduledAppointment, rescheduleAppointment, SCHEDULE_ROLLBACK, schedulingSnapshot, seedScheduling, setSchedulingDependency, startVisitEncounter } from "./scheduling";
+export { amendAllergy, amendCondition, amendMedicationDraft, cancelMedicationDraft, correctObservation, listAllergies, listConditions, listMedicationOrders, listObservations, listPatientEncounters, listSourceCatalog, readAllergy, readCondition, readMedicationOrder, readObservation, recordAllergy, recordCondition, recordMedicationDraft, recordObservation as recordSourceObservation, replaceObservation, seedClinicalSource, setSourceDependency, signMedicationOrder, sourceHistory, sourceSnapshot, SOURCE_ROLLBACK, transmitMedicationOrder } from "./clinical-source";
+export { addAttachment, assignTask, cancelOrder, cancelReferral, decideWorkReferral, listAttachments, listOrders, listPending, listPlans, listReferrals, listTasksFor, listWorkCatalog, readOrder, readPlan, readReferral, recordPlan, routeOrder, seedWorkCoordination, setWorkDependency, submitOrder, submitReferral, transmitWorkOrder, updatePlan, WORK_ROLLBACK, workHistory, workSnapshot } from "./work";
+export { adjustCharge, BILLING_ROLLBACK, billingSnapshot, chargeHistory, chargeStatus, createCharge, encounterBillingSummary, finalizeCharge, listBillingCatalog, listCharges, readCharge, reviewCharge, seedBillingPrimitives, setBillingDependency, transmitCharge, voidCharge } from "./billing";
+export { readUnifiedChart, readUnifiedSourceHistory } from "./patient-chart";
 export { canReadChart, canRegisterPatient, canReviewAudit, closeSession, devDirectoryEnabled, listDirectory, openSession, readSession } from "./session";
 export {
   POLICY_ID,
@@ -43,6 +73,51 @@ export {
   seedAuthorization,
   setAuthorizationDependency,
 } from "./authorization";
+export {
+  acceptInvitation,
+  addWorkforceFacility,
+  assignWorkforceRole,
+  cancelInvitation,
+  inviteWorkforce,
+  listInvitations,
+  listWorkforce,
+  offboardWorkforce,
+  reactivateWorkforce,
+  readWorkforceMember,
+  resendInvitation,
+  revokeWorkforceRole,
+  setWorkforceControl,
+  suspendWorkforce,
+  transferWorkforce,
+  workforceActor,
+  workforceFacilities,
+  workforceHistory,
+} from "./workforce";
+export {
+  EMERGENCY_POLICY_ID,
+  SYNTHETIC_RESOURCE_ID,
+  activateEmergency,
+  assignEmergencyReview,
+  cancelEmergency,
+  currentEmergencyGrant,
+  disposeEmergencyReview,
+  emergencyEligibility,
+  emergencyHistory,
+  emergencyView,
+  escalateEmergencyReview,
+  listEmergencyReviews,
+  readEmergencyReview,
+  readSyntheticEmergency,
+  requestEmergency,
+  retryEmergencyAlert,
+  revokeEmergencyForSession,
+  revokeEmergencyGrant,
+  seedEmergency,
+  setEmergencyControl,
+  verifyEmergencyPasskey,
+  verifyEmergencyTotp,
+} from "./emergency";
+export type { EmergencyActor } from "./emergency";
 export {
   DEMO_EU,
   DEMO_GH,
@@ -81,6 +156,7 @@ export {
   seedIdentityLinks,
   subjectHash,
   verifyTotp,
+  verifyUserTotp,
 } from "./identity";
 export { REDIRECT_URI, assertIdentityClaims, dexPasswordLogin, exchangeAuthorizationCode, oidcConfiguration, readIssuerDocument, refreshOidc, resetOidcConfiguration, startOidc, verifyPresentedIdToken } from "./oidc";
 export { beginPasskeyAuthentication, beginPasskeyRegistration, finishPasskeyAuthentication, finishPasskeyRegistration, listPasskeys, revokePasskey } from "./webauthn";
@@ -381,3 +457,16 @@ export {
 } from "./documentation";
 export { FIXTURES, seed } from "./seed";
 export type { AppDatabase } from "./db";
+
+export { assertLocalHealthcareSandbox } from "./experimental-healthcare";
+
+export { registerCodeSystemRelease, listCodeSystemReleases, readCodeSystemRelease, lookupControlledConcept, type ReleaseInput } from "./code-system-registry";
+export { listControlledValueSets, registerControlledValueSet, readControlledValueSet, validateControlledMembership, inspectUnitConversion, type ValueSetInput, type MembershipInput } from "./terminology-validation";
+export { UNIT_PACK_VERSION, UNIT_ROUNDING, SUPPORTED_UNIT_CODES, type ConversionInput } from "./unit-conversion";
+export { proposeTerminologyMapping, reviewTerminologyMapping, readTerminologyMapping, listTerminologyMappings, translateTerminologyMapping, type MappingInput, type MappingReviewInput, type TranslationInput } from "./terminology-mappings";
+export { registerFacilityCatalogVersion, listFacilityCatalog, resolveFacilityCatalog, readFacilityCatalogVersion, CATALOG_UNIT_CODES, CATALOG_UNIT_PACK_VERSION, type CatalogInput } from "./facility-catalogs";
+export { getClinicalCodeChoices, getWorkCatalogCodeChoices, type ClinicalCodeChoice } from "./clinical-code-pickers";
+export { codingConformanceReport, inspectCodingMappings, type CodingSelection, type CodingKind } from "./clinical-coding";
+export * from "./fhir-source";
+export * from "./fhir-source-map";
+export * from "./smart";

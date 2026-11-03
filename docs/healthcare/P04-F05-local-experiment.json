@@ -1,0 +1,88 @@
+{
+  "generatedAt": "2026-11-03T08:09:18.941Z",
+  "formalGovernance": {
+    "phase02": "IN_PROGRESS",
+    "phase03": "NOT_AUTHORIZED",
+    "phase03Register": "NOT_STARTED",
+    "exception": "PROPOSED",
+    "developmentModeActive": false,
+    "productionClinicalBreakGlass": "DISABLED",
+    "activation": {
+      "developmentException": "PROPOSED",
+      "developmentModeActive": false,
+      "phase03Development": "NOT_AUTHORIZED",
+      "blocked": [
+        "No signed authorization file is present."
+      ]
+    },
+    "amendmentHash": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+    "amendmentHashMatches": true
+  },
+  "experimentalDevelopment": {
+    "status": "EXPERIMENTAL_DEVELOPMENT_ACTIVE",
+    "governanceAuthorization": false,
+    "permittedFeature": "none"
+  },
+  "missingHumanApprovals": [
+    {
+      "reviewId": "P02-R01",
+      "decision": "PENDING",
+      "reviewerName": null,
+      "result": "PENDING"
+    },
+    {
+      "reviewId": "P02-R02",
+      "decision": "PENDING",
+      "reviewerName": null,
+      "result": "PENDING"
+    },
+    {
+      "reviewId": "P02-R03",
+      "decision": "PENDING",
+      "reviewerName": null,
+      "result": "PENDING"
+    },
+    {
+      "reviewId": "P02-R04",
+      "decision": "PENDING",
+      "reviewerName": null,
+      "result": "PENDING"
+    },
+    {
+      "reviewId": "P02-R05",
+      "decision": "PENDING",
+      "reviewerName": null,
+      "result": "PENDING"
+    },
+    {
+      "reviewId": "P02-R06",
+      "decision": "PENDING",
+      "reviewerName": null,
+      "result": "PENDING"
+    }
+  ],
+  "outstandingTechnicalFailures": [
+    {
+      "id": "R-IMG-DEBIAN",
+      "status": "open",
+      "result": "OPEN"
+    },
+    {
+      "id": "R-CI",
+      "status": "open",
+      "result": "OPEN"
+    },
+    {
+      "id": "R-GOVERNANCE",
+      "status": "open",
+      "result": "OPEN"
+    },
+    {
+      "id": "R-CLINICAL-DEFAULTS",
+      "status": "open",
+      "result": "OPEN"
+    }
+  ],
+  "environmentRestrictions": [],
+  "sandboxAllowed": true
+}

@@ -10,6 +10,37 @@ receivers:
 
 processors:
   batch:
+  transform:
+    error_mode: propagate
+    trace_statements:
+      - context: span
+        statements:
+          - replace_pattern(name, "(?i)syn-canary-[A-Za-z0-9-]+", "****")
+          - replace_pattern(name, "(?i)bearer\\s+\\S+", "****")
+      - context: spanevent
+        statements:
+          - replace_pattern(name, "(?i)syn-canary-[A-Za-z0-9-]+", "****")
+    log_statements:
+      - context: log
+        statements:
+          - replace_pattern(body, "(?i)bearer\\s+\\S+", "****")
+          - replace_pattern(body, "(?i)syn-canary-[A-Za-z0-9-]+", "****")
+          - replace_pattern(body, "\\b\\d{3}-\\d{3}-\\d{4}\\b", "****")
+          - replace_pattern(body, "(?i)cura_session=\\S+", "****")
+  redaction:
+    allow_all_keys: false
+    allowed_keys:
+      - http.method
+      - http.route
+      - http.status_code
+      - correlation.id
+      - service.name
+    blocked_values:
+      - "(?i)bearer\\s+\\S+"
+      - "(?i)syn-canary-[a-z0-9-]+"
+      - "\\b\\d{3}-\\d{3}-\\d{4}\\b"
+      - "(?i)cura_session=\\S+"
+    summary: info
 
 exporters:
   debug:
@@ -20,5 +51,13 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [transform, redaction, batch]
+      exporters: [debug]
+    logs:
+      receivers: [otlp]
+      processors: [transform, redaction, batch]
+      exporters: [debug]
+    metrics:
+      receivers: [otlp]
+      processors: [redaction, batch]
       exporters: [debug]

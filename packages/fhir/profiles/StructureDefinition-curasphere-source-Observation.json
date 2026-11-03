@@ -1,0 +1,86 @@
+{
+  "resourceType": "StructureDefinition",
+  "version": "1.0.0",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-03",
+  "publisher": "CuraSphere engineering",
+  "fhirVersion": "4.0.1",
+  "abstract": false,
+  "derivation": "constraint",
+  "id": "curasphere-source-Observation",
+  "url": "https://curasphere.local/fhir/StructureDefinition/source-Observation",
+  "name": "CuraSphereSourceObservation",
+  "title": "CuraSphere synthetic source Observation",
+  "description": "Local R4 source mapping profile. Not US Core, clinical approval, licensed terminology conformance, or external delivery support.",
+  "kind": "resource",
+  "type": "Observation",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Observation",
+  "differential": {
+    "element": [
+      {
+        "id": "Observation",
+        "path": "Observation"
+      },
+      {
+        "id": "Observation.id",
+        "path": "Observation.id",
+        "min": 1
+      },
+      {
+        "id": "Observation.extension",
+        "path": "Observation.extension",
+        "min": 1,
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "Observation.extension:sourceContext",
+        "path": "Observation.extension",
+        "sliceName": "sourceContext",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://curasphere.local/fhir/StructureDefinition/source-context|1.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "Observation.code",
+        "path": "Observation.code",
+        "min": 1
+      },
+      {
+        "id": "Observation.subject",
+        "path": "Observation.subject",
+        "min": 1
+      },
+      {
+        "id": "Observation.encounter",
+        "path": "Observation.encounter",
+        "min": 1
+      },
+      {
+        "id": "Observation.effective[x]",
+        "path": "Observation.effective[x]",
+        "min": 1
+      },
+      {
+        "id": "Observation.issued",
+        "path": "Observation.issued",
+        "min": 1
+      }
+    ]
+  }
+}

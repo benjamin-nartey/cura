@@ -1,0 +1,14 @@
+{
+  "recordType": "proposed-decision",
+  "decisionId": "DEV-GOV-2026-001-PRODUCT-OWNER",
+  "role": "product owner",
+  "exceptionId": "DEV-GOV-2026-001",
+  "amendment": "docs/constitution/amendments/DEV-GOV-2026-001.md",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+  "decision": null,
+  "reviewerName": null,
+  "signedAt": null,
+  "statement": null,
+  "prerequisite": "Distinct architecture, security, and clinical signatures on this same amendment hash. The charter approval of charter-2026.10 is not this authorization.",
+  "requestedStatement": "I authorize this development exception for synthetic-only engineering. I do not accept Phase 02 governance and I do not authorize production clinical use."
+}

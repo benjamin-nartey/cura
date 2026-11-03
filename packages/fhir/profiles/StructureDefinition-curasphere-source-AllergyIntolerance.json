@@ -1,0 +1,86 @@
+{
+  "resourceType": "StructureDefinition",
+  "version": "1.0.0",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-03",
+  "publisher": "CuraSphere engineering",
+  "fhirVersion": "4.0.1",
+  "abstract": false,
+  "derivation": "constraint",
+  "id": "curasphere-source-AllergyIntolerance",
+  "url": "https://curasphere.local/fhir/StructureDefinition/source-AllergyIntolerance",
+  "name": "CuraSphereSourceAllergyIntolerance",
+  "title": "CuraSphere synthetic source AllergyIntolerance",
+  "description": "Local R4 source mapping profile. Not US Core, clinical approval, licensed terminology conformance, or external delivery support.",
+  "kind": "resource",
+  "type": "AllergyIntolerance",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/AllergyIntolerance",
+  "differential": {
+    "element": [
+      {
+        "id": "AllergyIntolerance",
+        "path": "AllergyIntolerance"
+      },
+      {
+        "id": "AllergyIntolerance.id",
+        "path": "AllergyIntolerance.id",
+        "min": 1
+      },
+      {
+        "id": "AllergyIntolerance.extension",
+        "path": "AllergyIntolerance.extension",
+        "min": 1,
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "AllergyIntolerance.extension:sourceContext",
+        "path": "AllergyIntolerance.extension",
+        "sliceName": "sourceContext",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://curasphere.local/fhir/StructureDefinition/source-context|1.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AllergyIntolerance.code",
+        "path": "AllergyIntolerance.code",
+        "min": 1
+      },
+      {
+        "id": "AllergyIntolerance.patient",
+        "path": "AllergyIntolerance.patient",
+        "min": 1
+      },
+      {
+        "id": "AllergyIntolerance.encounter",
+        "path": "AllergyIntolerance.encounter",
+        "min": 1
+      },
+      {
+        "id": "AllergyIntolerance.verificationStatus",
+        "path": "AllergyIntolerance.verificationStatus",
+        "min": 1
+      },
+      {
+        "id": "AllergyIntolerance.recordedDate",
+        "path": "AllergyIntolerance.recordedDate",
+        "min": 1
+      }
+    ]
+  }
+}

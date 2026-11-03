@@ -1,8 +1,9 @@
-import { authorize, canReadChart, canRegisterPatient, getDb, noteDenial } from "@curasphere/domain";
+import { canRegisterPatient, effectivePermissions, getDb, listMasterPatients } from "@curasphere/domain";
+import type { Sex } from "@curasphere/contracts";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
-import { listFoundationPatients } from "@/lib/foundation";
 import { sexLabel } from "@/lib/format";
+import { masterActor } from "@/lib/master";
 import { readFeedback } from "@/lib/messages";
 import { requireSession } from "@/lib/session";
 import { redirect } from "next/navigation";
@@ -11,69 +12,58 @@ export default async function PatientsPage({ searchParams }: { searchParams: Pro
   const ctx = await requireSession();
   const query = await searchParams;
   const feedback = readFeedback(query);
-  const decision = authorize(
-    getDb(),
-    { principalId: ctx.userId, accountActive: true },
-    "clinical.read",
-    { type: "Patient", organizationId: ctx.organizationId, facilityId: ctx.facilityId, sensitivity: "standard" },
-    { purpose: ctx.purposeOfUse, assurance: "directory", sessionActive: true, activeFacilityId: ctx.facilityId },
-  );
-  if (!decision.allow) redirect("/access/denied");
-  if (!canReadChart(ctx)) {
-    noteDenial(getDb(), ctx, "patient.list", "Patient", null);
-    return (
-      <Shell ctx={ctx} current="patients">
-        <p className="eyebrow">Patients</p>
-        <h1 className="page-title">The chart is closed for this role.</h1>
-        <p className="lede">Audit review does not open patient records.</p>
-      </Shell>
-    );
+  const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
+  if (!access.permissions.includes("patient.read")) redirect("/access/denied");
+  const q = (query.q ?? "").slice(0, 80);
+  let patients: ReturnType<typeof listMasterPatients> = [];
+  let failed = false;
+  try {
+    patients = listMasterPatients(getDb(), masterActor(ctx), q);
+  } catch {
+    failed = true;
   }
-  const q = query.q ?? "";
-  const listed = await listFoundationPatients(ctx.sessionId, q);
-  const patients = listed ?? [];
   return (
     <Shell ctx={ctx} current="patients">
       <p className="eyebrow">{ctx.facilityName}</p>
       <h1 className="page-title">Patients</h1>
-      <p className="lede">This list is limited to the facility on your directory entry and is read from the foundation service.</p>
+      <p className="lede">Find and manage patient records registered at your current facility.</p>
       <form className="search" action="/patients" method="get">
         <label className="field">
-          Find on this facility record
+          Search the patient directory
           <input id="q" name="q" type="search" defaultValue={q} placeholder="Name or MRN" />
         </label>
         <button className="btn-dark" type="submit">
           Search
         </button>
       </form>
+      <p>
+        <a href="/patients/duplicates">Duplicate review queue</a>
+      </p>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      {listed === null ? (
-        <p>The foundation service is not running.</p>
+      {failed ? (
+        <p>The patient directory is unavailable.</p>
       ) : patients.length === 0 ? (
-        <p>No patient on this facility matches.</p>
+        <p>{q ? "No patient on this facility matches." : "No patient is registered at this facility."}</p>
       ) : (
-        <div className="list">
-          {patients.map((patient) => (
-            <a className="row" key={patient.id} href={`/patients/${patient.id}`}>
-              <span className="mono">{patient.mrn}</span>
-              <span className="person">
-                {patient.givenName} {patient.familyName}
-              </span>
-              <span className="muted">
-                {patient.ageYears} years · {sexLabel(patient.sex)}
-              </span>
-            </a>
-          ))}
+        <div className="data-table-region" role="region" aria-label="Patient directory" tabIndex={0}>
+          <table>
+            <caption className="sr">Patients registered at your current facility</caption>
+            <thead><tr><th scope="col">Patient</th><th scope="col">Medical record</th><th scope="col">Date of birth</th><th scope="col">Sex</th><th scope="col">Registration</th><th scope="col">Action</th></tr></thead>
+            <tbody>{patients.map(patient => <tr key={patient.id}>
+              <th scope="row"><span className="table-person">{patient.given_name} {patient.family_name}{patient.open_candidates > 0 ? <small>Duplicate review required</small> : null}</span></th>
+              <td className="table-id">{patient.mrn}</td><td>{patient.birth_date}</td><td>{sexLabel(patient.sex as Sex)}</td>
+              <td><span className="record-status">{patient.registration_status}</span></td>
+              <td><a href={`/patients/${patient.id}/chart`}>Open chart<span className="sr"> for {patient.given_name} {patient.family_name}, {patient.mrn}</span></a></td>
+            </tr>)}</tbody>
+          </table>
         </div>
       )}
-      {canRegisterPatient(ctx) ? (
+      {patients.length === 50 ? <p className="muted">Showing the first 50 matches.</p> : null}
+      {canRegisterPatient(ctx) && access.permissions.includes("patient.register") ? (
         <section className="card" style={{ marginTop: 36, maxWidth: 520 }}>
-          <h2 style={{ fontSize: 20, marginTop: 0 }}>
-            Register a patient
-          </h2>
-          <p className="muted">The server assigns the MRN and the facility. Both stay on this record.</p>
+          <h2 style={{ marginTop: 0 }}>Register a patient</h2>
+          <p className="muted">The server assigns the MRN and the facility. A possible duplicate is shown before the record is saved.</p>
           <form className="form-grid" action="/api/patients" method="post">
-            <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
             <label className="field">
               Given name
               <input name="givenName" type="text" required maxLength={80} />
@@ -83,20 +73,28 @@ export default async function PatientsPage({ searchParams }: { searchParams: Pro
               <input name="familyName" type="text" required maxLength={80} />
             </label>
             <label className="field">
+              Preferred name
+              <input name="preferredName" type="text" maxLength={80} />
+            </label>
+            <label className="field">
               Date of birth
               <input name="birthDate" type="date" required />
             </label>
             <label className="field">
               Sex
-              <select name="sex" defaultValue="female">
+              <select name="sex" defaultValue="unknown">
                 <option value="female">Female</option>
                 <option value="male">Male</option>
                 <option value="other">Other</option>
                 <option value="unknown">Unknown</option>
               </select>
             </label>
+            <label className="field">
+              Contact
+              <input name="contact" type="text" maxLength={80} />
+            </label>
             <button className="btn-dark" type="submit">
-              Register
+              Check and continue
             </button>
           </form>
         </section>

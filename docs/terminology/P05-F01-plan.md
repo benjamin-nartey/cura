@@ -1,0 +1,15 @@
+# P05-F01 — Controlled code-system storage
+
+User story: an organization administrator registers immutable code-system release metadata with edition, effective dates, source provenance and explicit content-rights status; permitted staff inspect the exact system/code/version tuple without silently using an unknown or unlicensed release.
+
+Risk: class C conservative local engineering classification because terminology feeds clinical recording. Active dependency: P04-F05 experimental engineering complete and current regression checks. Existing global code_systems/concepts and all clinical references remain intact. No clinical field is rewritten.
+
+Design: additive schema 44 extends the existing code_systems table with organization-scoped immutable release receipts, concept pins and idempotency receipts. Canonical system URI plus version still identifies the underlying code system. Organization, release id, edition and effective interval identify its controlled local registration. Existing legacy vocabularies remain unverified and are not automatically promoted into the registry.
+
+Rights: official systems may be registered as reference-only metadata. No import or runtime use of their term content is enabled by this feature. Only concepts in an organization-owned urn:curasphere:synthetic namespace are admitted, with a deterministic manifest digest. Standard licensing source links are documentation references, not proof of entitlement or certification.
+
+API: GET/POST /api/terminology/releases and GET /api/terminology/lookup, cookie workforce sessions, JSON version 1, 401/403/404/409/422/503 failures, no-store. Form POST uses the same domain service and returns recoverable validation feedback. Writes require terminology.manage; reads require terminology.read, active account/membership, local sandbox. Browser writes reject foreign Origin. Idempotency binds the complete normalized payload. Unknown or expired codes fail closed. UI: searchable release list, immutable release detail/provenance and role-scoped registration form, loading/empty/error/duplicate states, responsive tables. Mobile inspection through the existing authenticated web handoff is applicable; native terminology editing is out of scope for this metadata feature.
+
+Atomic writes: release registration, concept pins, idempotency receipt, outbox event and append-only audit entry commit together. No asynchronous external delivery is enabled. Metrics expose only organization-scoped counts. Transaction/constraint failures must leave no partial receipt or schema marker. Rollback is application-first: disable registry access and retain immutable data and existing clinical records; tested isolated SQL teardown is for disposable fixtures only.
+
+Tests: two tenants, separate read/manage permissions, duplicate and changed replay, unknown/expired codes, invalid dates/URIs/digests, official-content rejection, immutable metadata, audit integrity, disk reopen, schema upgrade/failure recovery, existing domain and browser regressions, new browser create/read/denial/validation and accessibility checks. No acceptance is inferred from a plan or generated prose.

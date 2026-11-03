@@ -28,14 +28,25 @@ test("a riverside clinician cannot read another organization or another facility
   assert.equal(getChart(db, ctx, "pat_missing"), null);
   assert.equal(lastOutcome(db, "patient.read", "pat_missing").outcome, "not_found");
   const names = listPatients(db, ctx).map((patient) => patient.id);
-  assert.deepEqual(names.sort(), [FIXTURES.elena, FIXTURES.helen, FIXTURES.mateo].sort());
+  assert.deepEqual(names.sort(), [
+    "pat_3de26ae8-e7c7-412b-942f-73c759b88145",
+    "pat_amina",
+    "pat_camille",
+    FIXTURES.elena,
+    FIXTURES.helen,
+    "pat_jonah",
+    FIXTURES.mateo,
+    "pat_owen",
+    "pat_sofia",
+    "pat_walter",
+  ].sort());
 });
 
 test("east annex and northwind see only their own facility", () => {
   const east = signIn(FIXTURES.lea);
-  assert.deepEqual(listPatients(east.db, east.ctx).map((patient) => patient.id), [FIXTURES.noor]);
+  assert.deepEqual(listPatients(east.db, east.ctx).map((patient) => patient.id).sort(), ["pat_farah", "pat_luis", FIXTURES.noor].sort());
   const north = signIn(FIXTURES.evan);
-  assert.deepEqual(listPatients(north.db, north.ctx).map((patient) => patient.id), [FIXTURES.samir]);
+  assert.deepEqual(listPatients(north.db, north.ctx).map((patient) => patient.id).sort(), ["pat_ben", "pat_grace", FIXTURES.samir].sort());
 });
 
 test("an auditor cannot open the chart", () => {

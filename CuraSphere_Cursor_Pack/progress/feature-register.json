@@ -7,7 +7,9 @@
       "phase": 0,
       "name": "Product charter and markets",
       "status": "ACCEPTED",
-      "owners": ["product owner"],
+      "owners": [
+        "product owner"
+      ],
       "implemented_files": [
         "docs/constitution/product-charter.json",
         "docs/constitution/product-charter.md",
@@ -54,7 +56,9 @@
       "phase": 0,
       "name": "Intended-use registry",
       "status": "ACCEPTED",
-      "owners": ["product owner"],
+      "owners": [
+        "product owner"
+      ],
       "implemented_files": [
         "docs/constitution/intended-use-registry.json",
         "tools/constitution/intended-use.mjs",
@@ -64,7 +68,9 @@
       "api_contracts": [],
       "ui_routes": [],
       "scenario_ids": [],
-      "executed_test_commands": ["npm run constitution:phase00"],
+      "executed_test_commands": [
+        "npm run constitution:phase00"
+      ],
       "test_evidence": [
         "2026-10-13 npm run constitution:phase00 exit 0; 19 passed, 0 failed. The registry checks passed: 158 entries, missing fields rejected, unregulated rejected."
       ],
@@ -72,9 +78,15 @@
       "safety_evidence": [
         "classificationDefault is pending. No entry is unregulated. ownerName is null. riskClassBasis says the class is not a validated clinical risk score."
       ],
-      "observability_evidence": ["Re-run npm run constitution:phase00. No runtime service was added."],
-      "rollback_evidence": ["No migration. Remove docs/constitution/intended-use-registry.json and tools/constitution/intended-use.mjs."],
-      "docs": ["docs/constitution/P00-F02-evidence.md"],
+      "observability_evidence": [
+        "Re-run npm run constitution:phase00. No runtime service was added."
+      ],
+      "rollback_evidence": [
+        "No migration. Remove docs/constitution/intended-use-registry.json and tools/constitution/intended-use.mjs."
+      ],
+      "docs": [
+        "docs/constitution/P00-F02-evidence.md"
+      ],
       "approvals": [],
       "open_blockers": [],
       "accepted_at": "2026-10-13"
@@ -84,7 +96,9 @@
       "phase": 0,
       "name": "Architecture decisions and review",
       "status": "ACCEPTED",
-      "owners": ["product owner"],
+      "owners": [
+        "product owner"
+      ],
       "implemented_files": [
         "docs/constitution/decisions/decision-sample.json",
         "docs/constitution/templates/rfc.md",
@@ -97,15 +111,27 @@
       "api_contracts": [],
       "ui_routes": [],
       "scenario_ids": [],
-      "executed_test_commands": ["npm run constitution:phase00"],
+      "executed_test_commands": [
+        "npm run constitution:phase00"
+      ],
       "test_evidence": [
         "2026-10-13 npm run constitution:phase00 exit 0; 19 passed, 0 failed. DEC-SAMPLE-001 traces to author CuraSphere constitution record and review state in-review."
       ],
-      "security_evidence": ["Architecture, security, and clinical reviewer names and signature dates are null."],
-      "safety_evidence": ["The checker rejects review state accepted when a reviewer has not signed."],
-      "observability_evidence": ["Re-run npm run constitution:phase00. No runtime service was added."],
-      "rollback_evidence": ["No migration. Remove docs/constitution/decisions and tools/constitution/validate-decision.mjs."],
-      "docs": ["docs/constitution/P00-F03-evidence.md"],
+      "security_evidence": [
+        "Architecture, security, and clinical reviewer names and signature dates are null."
+      ],
+      "safety_evidence": [
+        "The checker rejects review state accepted when a reviewer has not signed."
+      ],
+      "observability_evidence": [
+        "Re-run npm run constitution:phase00. No runtime service was added."
+      ],
+      "rollback_evidence": [
+        "No migration. Remove docs/constitution/decisions and tools/constitution/validate-decision.mjs."
+      ],
+      "docs": [
+        "docs/constitution/P00-F03-evidence.md"
+      ],
       "approvals": [],
       "open_blockers": [],
       "accepted_at": "2026-10-13"
@@ -115,7 +141,9 @@
       "phase": 0,
       "name": "Clinical and AI risk governance",
       "status": "ACCEPTED",
-      "owners": ["product owner"],
+      "owners": [
+        "product owner"
+      ],
       "implemented_files": [
         "docs/constitution/risk-governance.json",
         "docs/constitution/templates/risk.md",
@@ -127,7 +155,9 @@
       "api_contracts": [],
       "ui_routes": [],
       "scenario_ids": [],
-      "executed_test_commands": ["npm run constitution:phase00"],
+      "executed_test_commands": [
+        "npm run constitution:phase00"
+      ],
       "test_evidence": [
         "2026-10-13 npm run constitution:phase00 exit 0; 19 passed, 0 failed. RISK-SAMPLE-HIGH-001 is blocked and a release approval on it is rejected."
       ],
@@ -135,9 +165,15 @@
       "safety_evidence": [
         "The sample has no approval, no validation evidence, and no release approval. The AI sample classification is pending."
       ],
-      "observability_evidence": ["Re-run npm run constitution:phase00. No runtime service was added."],
-      "rollback_evidence": ["No migration. Remove docs/constitution/risk-governance.json and tools/constitution/validate-risk.mjs."],
-      "docs": ["docs/constitution/P00-F04-evidence.md"],
+      "observability_evidence": [
+        "Re-run npm run constitution:phase00. No runtime service was added."
+      ],
+      "rollback_evidence": [
+        "No migration. Remove docs/constitution/risk-governance.json and tools/constitution/validate-risk.mjs."
+      ],
+      "docs": [
+        "docs/constitution/P00-F04-evidence.md"
+      ],
       "approvals": [],
       "open_blockers": [],
       "accepted_at": "2026-10-13"
@@ -147,7 +183,9 @@
       "phase": 0,
       "name": "Release and DoD constitution",
       "status": "ACCEPTED",
-      "owners": ["product owner"],
+      "owners": [
+        "product owner"
+      ],
       "implemented_files": [
         "docs/constitution/release-constitution.json",
         "docs/constitution/templates/gate-manifest.md",
@@ -158,7 +196,9 @@
       "api_contracts": [],
       "ui_routes": [],
       "scenario_ids": [],
-      "executed_test_commands": ["npm run constitution:phase00"],
+      "executed_test_commands": [
+        "npm run constitution:phase00"
+      ],
       "test_evidence": [
         "2026-10-13 npm run constitution:phase00 exit 0; 19 passed, 0 failed. An incomplete manifest, a clinical-impact manifest without a named sign-off, and a break-glass review without an approver are rejected."
       ],
@@ -166,9 +206,15 @@
       "safety_evidence": [
         "The sample manifest is administrative. clinicalSignoff is null. surveillance.completedStudy is null."
       ],
-      "observability_evidence": ["Re-run npm run constitution:phase00. No runtime service was added."],
-      "rollback_evidence": ["No migration. Remove docs/constitution/release-constitution.json and tools/constitution/validate-gates.mjs."],
-      "docs": ["docs/constitution/P00-F05-evidence.md"],
+      "observability_evidence": [
+        "Re-run npm run constitution:phase00. No runtime service was added."
+      ],
+      "rollback_evidence": [
+        "No migration. Remove docs/constitution/release-constitution.json and tools/constitution/validate-gates.mjs."
+      ],
+      "docs": [
+        "docs/constitution/P00-F05-evidence.md"
+      ],
       "approvals": [],
       "open_blockers": [],
       "accepted_at": "2026-10-13"
@@ -178,7 +224,9 @@
       "phase": 1,
       "name": "Monorepo skeleton",
       "status": "ACCEPTED",
-      "owners": ["engineering"],
+      "owners": [
+        "engineering"
+      ],
       "implemented_files": [
         "packages/fhir/src/index.ts",
         "ai/gateway/app.py",
@@ -189,7 +237,10 @@
         "tools/platform/workspace-rules.test.mjs"
       ],
       "migration_files": [],
-      "api_contracts": ["GET /health", "POST /v1/generate"],
+      "api_contracts": [
+        "GET /health",
+        "POST /v1/generate"
+      ],
       "ui_routes": [],
       "scenario_ids": [],
       "executed_test_commands": [
@@ -229,7 +280,9 @@
       "phase": 1,
       "name": "Local infrastructure",
       "status": "ACCEPTED",
-      "owners": ["engineering"],
+      "owners": [
+        "engineering"
+      ],
       "implemented_files": [
         "infra/local/compose.yaml",
         "infra/local/dex.yaml",
@@ -283,7 +336,9 @@
       "phase": 1,
       "name": "Contracts and code quality",
       "status": "ACCEPTED",
-      "owners": ["engineering"],
+      "owners": [
+        "engineering"
+      ],
       "implemented_files": [
         "packages/contracts/platform-contract.json",
         "packages/contracts/src/platform.ts",
@@ -293,7 +348,9 @@
         ".github/workflows/ci.yml"
       ],
       "migration_files": [],
-      "api_contracts": ["packages/contracts/platform-contract.json"],
+      "api_contracts": [
+        "packages/contracts/platform-contract.json"
+      ],
       "ui_routes": [],
       "scenario_ids": [],
       "executed_test_commands": [
@@ -335,7 +392,9 @@
       "phase": 1,
       "name": "Delivery and infra skeleton",
       "status": "ACCEPTED",
-      "owners": ["engineering"],
+      "owners": [
+        "engineering"
+      ],
       "implemented_files": [
         "infra/helm/curasphere/Chart.yaml",
         "infra/helm/curasphere/values.yaml",
@@ -353,9 +412,21 @@
         ".github/workflows/ci.yml"
       ],
       "migration_files": [],
-      "api_contracts": ["GET /health", "POST /v1/generate"],
+      "api_contracts": [
+        "GET /health",
+        "POST /v1/generate"
+      ],
       "ui_routes": [],
-      "scenario_ids": ["SIM-01", "SIM-02", "SIM-03", "SIM-04", "SIM-05", "SIM-06", "SIM-07", "SIM-08"],
+      "scenario_ids": [
+        "SIM-01",
+        "SIM-02",
+        "SIM-03",
+        "SIM-04",
+        "SIM-05",
+        "SIM-06",
+        "SIM-07",
+        "SIM-08"
+      ],
       "executed_test_commands": [
         "ai/gateway/.venv/Scripts/python.exe -m unittest test_app.py",
         "node --test tools/platform/signing.test.mjs tools/platform/delivery-static.test.mjs",
@@ -397,7 +468,9 @@
       "phase": 1,
       "name": "Observability scaffolding",
       "status": "ACCEPTED",
-      "owners": ["engineering"],
+      "owners": [
+        "engineering"
+      ],
       "implemented_files": [
         "ai/gateway/observe.py",
         "ai/gateway/app.py",
@@ -411,9 +484,16 @@
         "packages/contracts/src/platform.ts"
       ],
       "migration_files": [],
-      "api_contracts": ["GET /health", "GET /ready", "GET /metrics", "POST /v1/generate"],
+      "api_contracts": [
+        "GET /health",
+        "GET /ready",
+        "GET /metrics",
+        "POST /v1/generate"
+      ],
       "ui_routes": [],
-      "scenario_ids": ["req-synthetic-01"],
+      "scenario_ids": [
+        "req-synthetic-01"
+      ],
       "executed_test_commands": [
         "ai/gateway/.venv/Scripts/python.exe -m pip install -r ai/gateway/requirements.txt",
         "ai/gateway/.venv/Scripts/python.exe -m unittest test_app.py",
@@ -455,7 +535,9 @@
       "phase": 2,
       "name": "Tenant/facility hierarchy",
       "status": "ACCEPTED",
-      "owners": ["engineering"],
+      "owners": [
+        "engineering"
+      ],
       "implemented_files": [
         "packages/domain/src/db.ts",
         "packages/domain/src/tenancy.ts",
@@ -482,8 +564,20 @@
         "GET /sessions/{id}/tenancy/organizations/{organizationId}",
         "POST /sessions/{id}/tenancy/facility"
       ],
-      "ui_routes": ["/tenancy"],
-      "scenario_ids": ["P02-S01", "P02-S02", "P02-S03", "P02-S04", "P02-S05", "P02-S06", "P02-S07", "P02-S08", "P02-S09"],
+      "ui_routes": [
+        "/tenancy"
+      ],
+      "scenario_ids": [
+        "P02-S01",
+        "P02-S02",
+        "P02-S03",
+        "P02-S04",
+        "P02-S05",
+        "P02-S06",
+        "P02-S07",
+        "P02-S08",
+        "P02-S09"
+      ],
       "executed_test_commands": [
         "npm test --workspace @curasphere/domain",
         "node --import tsx --test packages/domain/test/tenancy.test.ts",
@@ -543,7 +637,9 @@
         "apps/web/components/passkey-panel.tsx",
         "infra/local/dex.yaml"
       ],
-      "migration_files": ["packages/domain/src/db.ts"],
+      "migration_files": [
+        "packages/domain/src/db.ts"
+      ],
       "api_contracts": [
         "GET /api/auth/start",
         "GET /api/auth/callback",
@@ -558,8 +654,42 @@
         "POST /api/auth/passkey/authenticate/verify",
         "POST /api/auth/passkey/revoke"
       ],
-      "ui_routes": ["/", "/auth/mfa", "/auth/enroll", "/auth/passkey", "/account"],
-      "scenario_ids": ["P02-S10", "P02-S11", "P02-S12", "P02-S13", "P02-S14", "P02-S15", "P02-S16", "P02-S17", "P02-S18", "P02-S19", "P02-S20", "P02-S21", "P02-S22", "P02-S23", "P02-S24", "P02-S25", "P02-S26", "P02-S27", "P02-S28", "P02-S29", "P02-S30", "P02-S31", "P02-S32", "P02-S33", "P02-S34", "P02-S35", "P02-S36"],
+      "ui_routes": [
+        "/",
+        "/auth/mfa",
+        "/auth/enroll",
+        "/auth/passkey",
+        "/account"
+      ],
+      "scenario_ids": [
+        "P02-S10",
+        "P02-S11",
+        "P02-S12",
+        "P02-S13",
+        "P02-S14",
+        "P02-S15",
+        "P02-S16",
+        "P02-S17",
+        "P02-S18",
+        "P02-S19",
+        "P02-S20",
+        "P02-S21",
+        "P02-S22",
+        "P02-S23",
+        "P02-S24",
+        "P02-S25",
+        "P02-S26",
+        "P02-S27",
+        "P02-S28",
+        "P02-S29",
+        "P02-S30",
+        "P02-S31",
+        "P02-S32",
+        "P02-S33",
+        "P02-S34",
+        "P02-S35",
+        "P02-S36"
+      ],
       "executed_test_commands": [
         "2026-10-13 npm run typecheck --workspace @curasphere/domain exit 0",
         "2026-10-13 npm run typecheck --workspace @curasphere/web exit 0",
@@ -620,10 +750,50 @@
         "apps/web/app/patients/page.tsx",
         "apps/web/app/revenue/page.tsx"
       ],
-      "migration_files": ["packages/domain/src/db.ts"],
-      "api_contracts": ["GET /api/access", "POST /api/access", "POST /api/tenancy/facility"],
-      "ui_routes": ["/access", "/access/denied", "/access/diagnose", "/patients", "/revenue", "/tenancy"],
-      "scenario_ids": ["P02-S37", "P02-S38", "P02-S39", "P02-S40", "P02-S41", "P02-S42", "P02-S43", "P02-S44", "P02-S45", "P02-S46", "P02-S47", "P02-S48", "P02-S49", "P02-S50", "P02-S51", "P02-S52", "P02-S53", "P02-S54", "P02-S55", "P02-S56", "P02-S57", "P02-S58", "P02-S59", "P02-S60", "P02-S61", "P02-S62"],
+      "migration_files": [
+        "packages/domain/src/db.ts"
+      ],
+      "api_contracts": [
+        "GET /api/access",
+        "POST /api/access",
+        "POST /api/tenancy/facility"
+      ],
+      "ui_routes": [
+        "/access",
+        "/access/denied",
+        "/access/diagnose",
+        "/patients",
+        "/revenue",
+        "/tenancy"
+      ],
+      "scenario_ids": [
+        "P02-S37",
+        "P02-S38",
+        "P02-S39",
+        "P02-S40",
+        "P02-S41",
+        "P02-S42",
+        "P02-S43",
+        "P02-S44",
+        "P02-S45",
+        "P02-S46",
+        "P02-S47",
+        "P02-S48",
+        "P02-S49",
+        "P02-S50",
+        "P02-S51",
+        "P02-S52",
+        "P02-S53",
+        "P02-S54",
+        "P02-S55",
+        "P02-S56",
+        "P02-S57",
+        "P02-S58",
+        "P02-S59",
+        "P02-S60",
+        "P02-S61",
+        "P02-S62"
+      ],
       "executed_test_commands": [
         "2026-10-14 npm run typecheck --workspace @curasphere/domain exit 0",
         "2026-10-14 npm run typecheck --workspace @curasphere/web exit 0",
@@ -631,7 +801,9 @@
         "2026-10-14 npm audit --workspace @curasphere/domain exit 0. found 0 vulnerabilities.",
         "2026-10-14 npm audit --workspace @curasphere/web exit 0. found 0 vulnerabilities."
       ],
-      "test_evidence": ["docs/identity/P02-F03-evidence.md"],
+      "test_evidence": [
+        "docs/identity/P02-F03-evidence.md"
+      ],
       "security_evidence": [
         "Client role names and organization ids are not authorization authority. Cross-tenant object denial is HTTP 404 and the guessed organization id is not stored.",
         "Staging and production refuse the development directory even when CURASPHERE_DEV_DIRECTORY=local-test.",
@@ -661,45 +833,253 @@
       "feature_id": "P02-F04",
       "phase": 2,
       "name": "Workforce lifecycle UI",
-      "status": "NOT_STARTED",
+      "status": "ACCEPTED",
       "owners": [],
-      "implemented_files": [],
-      "migration_files": [],
-      "api_contracts": [],
-      "ui_routes": [],
-      "scenario_ids": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "security_evidence": [],
-      "safety_evidence": [],
-      "observability_evidence": [],
-      "rollback_evidence": [],
-      "docs": [],
+      "implemented_files": [
+        "packages/domain/src/workforce.ts",
+        "packages/domain/src/authorization.ts",
+        "packages/domain/src/db.ts",
+        "packages/domain/src/tenancy.ts",
+        "packages/domain/test/workforce.test.ts",
+        "apps/web/lib/workforce.ts",
+        "apps/web/components/shell.tsx",
+        "apps/web/app/workforce/page.tsx",
+        "apps/web/app/workforce/invite/page.tsx",
+        "apps/web/app/workforce/invitations/page.tsx",
+        "apps/web/app/workforce/accept/page.tsx",
+        "apps/web/app/workforce/activity/page.tsx",
+        "apps/web/app/workforce/[id]/page.tsx",
+        "apps/web/app/workforce/[id]/access/page.tsx",
+        "apps/web/app/workforce/[id]/transfer/page.tsx",
+        "apps/web/app/workforce/[id]/status/page.tsx",
+        "apps/web/app/workforce/[id]/offboard/page.tsx",
+        "apps/web/app/api/workforce/route.ts",
+        "apps/web/app/api/workforce/[id]/route.ts",
+        "apps/web/app/api/workforce/invitations/route.ts",
+        "apps/web/app/api/workforce/invitations/[id]/route.ts",
+        "apps/web/app/api/workforce/invitations/accept/route.ts"
+      ],
+      "migration_files": [
+        "packages/domain/src/db.ts"
+      ],
+      "api_contracts": [
+        "GET /api/workforce",
+        "POST /api/workforce/invitations",
+        "GET /api/workforce/invitations",
+        "POST /api/workforce/invitations/{id}",
+        "POST /api/workforce/invitations/accept",
+        "GET /api/workforce/{id}",
+        "POST /api/workforce/{id}"
+      ],
+      "ui_routes": [
+        "/workforce",
+        "/workforce/invite",
+        "/workforce/invitations",
+        "/workforce/accept",
+        "/workforce/activity",
+        "/workforce/{id}",
+        "/workforce/{id}/access",
+        "/workforce/{id}/transfer",
+        "/workforce/{id}/status",
+        "/workforce/{id}/offboard"
+      ],
+      "scenario_ids": [
+        "P02-S63",
+        "P02-S64",
+        "P02-S65",
+        "P02-S66",
+        "P02-S67",
+        "P02-S68",
+        "P02-S69",
+        "P02-S70",
+        "P02-S71",
+        "P02-S72",
+        "P02-S73",
+        "P02-S74",
+        "P02-S75",
+        "P02-S76",
+        "P02-S77",
+        "P02-S78",
+        "P02-S79",
+        "P02-S80",
+        "P02-S81",
+        "P02-S82",
+        "P02-S83",
+        "P02-S84",
+        "P02-S85",
+        "P02-S86",
+        "P02-S87",
+        "P02-S88",
+        "P02-S89",
+        "P02-S90",
+        "P02-S91",
+        "P02-S92",
+        "P02-S93",
+        "P02-S94",
+        "P02-S95",
+        "P02-S96",
+        "P02-S97",
+        "P02-S98"
+      ],
+      "executed_test_commands": [
+        "2026-10-14 npm run typecheck --workspace @curasphere/domain exit 0",
+        "2026-10-14 npm run typecheck --workspace @curasphere/web exit 0",
+        "2026-10-14 npm test --workspace @curasphere/domain exit 0. 161 passed, 0 failed.",
+        "2026-10-14 node --test test/authorization.test.ts test/workforce.test.ts exit 0. 58 passed, 0 failed.",
+        "2026-10-14 npm audit --workspace @curasphere/domain exit 0. found 0 vulnerabilities.",
+        "2026-10-14 npm audit --workspace @curasphere/web exit 0. found 0 vulnerabilities.",
+        "2026-10-14 npm run build --workspace @curasphere/web exit 0."
+      ],
+      "test_evidence": [
+        "docs/identity/P02-F04-evidence.md"
+      ],
+      "security_evidence": [
+        "Organization-administrator no longer has billing.read or security.audit.read. Facility administrators see only their facilities. A forged facility id is a generic not-found page.",
+        "Invitation tokens are stored as hashes. Acceptance binds the authenticated user id and requires an external identity row. Email text does not merge identities.",
+        "A suspended facility membership denied /patients in the same account, and the clinical navigation links were removed. The membership was then reactivated."
+      ],
+      "safety_evidence": [
+        "clinical.sign and emergency elevation stay denied. Proposed clinical permissions are not an approved clinical policy. The last organization administrator cannot be removed."
+      ],
+      "observability_evidence": [
+        "workforce_events records actor, action, previous and next state, reason, correlation id, and policy version. The local outbox records captured, failed, or retried and does not store the token."
+      ],
+      "rollback_evidence": [
+        "Schema 31 runs inside the migrate transaction. A failed upgrade leaves version 30. data/curasphere.sqlite was not deleted. Recovery of the last administrator is a recorded local procedure, not an in-app bypass."
+      ],
+      "docs": [
+        "docs/adr/ADR-0059-workforce-lifecycle.md",
+        "docs/identity/workforce-management.md",
+        "docs/identity/P02-F04-privilege-correction.md",
+        "docs/identity/P02-F04-evidence.md"
+      ],
       "approvals": [],
-      "open_blockers": [],
-      "accepted_at": null
+      "open_blockers": [
+        "No architecture, security, or clinical reviewer has signed. The clinical role matrix remains proposed. The invitation outbox is a local sandbox and is not external email delivery. P02-F04 is an engineering acceptance only."
+      ],
+      "accepted_at": "2026-10-14"
     },
     {
       "feature_id": "P02-F05",
       "phase": 2,
       "name": "Emergency break-glass",
-      "status": "NOT_STARTED",
-      "owners": [],
-      "implemented_files": [],
-      "migration_files": [],
-      "api_contracts": [],
-      "ui_routes": [],
-      "scenario_ids": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "security_evidence": [],
-      "safety_evidence": [],
-      "observability_evidence": [],
-      "rollback_evidence": [],
-      "docs": [],
+      "status": "ACCEPTED",
+      "owners": [
+        "engineering"
+      ],
+      "implemented_files": [
+        "packages/domain/src/emergency.ts",
+        "packages/domain/src/authorization.ts",
+        "packages/domain/test/emergency.test.ts",
+        "apps/web/app/emergency/page.tsx",
+        "apps/web/app/api/emergency-access/requests/route.ts"
+      ],
+      "migration_files": [
+        "packages/domain/src/db.ts"
+      ],
+      "api_contracts": [
+        "GET /api/emergency-access/eligibility",
+        "POST /api/emergency-access/requests",
+        "POST /api/emergency-access/requests/{id}/verify",
+        "POST /api/emergency-access/requests/{id}/passkey",
+        "POST /api/emergency-access/requests/{id}/activate",
+        "GET /api/emergency-access/current",
+        "POST /api/emergency-access/grants/{id}/revoke",
+        "GET /api/emergency-access/history",
+        "GET /api/emergency-access/reviews",
+        "GET /api/emergency-access/reviews/{id}",
+        "POST /api/emergency-access/reviews/{id}/assign",
+        "POST /api/emergency-access/reviews/{id}/disposition",
+        "POST /api/emergency-access/reviews/{id}/escalate"
+      ],
+      "ui_routes": [
+        "/emergency",
+        "/emergency/justify",
+        "/emergency/verify/[id]",
+        "/emergency/active",
+        "/emergency/ended",
+        "/emergency/history",
+        "/emergency/reviews",
+        "/emergency/reviews/[id]"
+      ],
+      "scenario_ids": [
+        "P02-S99",
+        "P02-S100",
+        "P02-S101",
+        "P02-S102",
+        "P02-S103",
+        "P02-S104",
+        "P02-S105",
+        "P02-S106",
+        "P02-S107",
+        "P02-S108",
+        "P02-S109",
+        "P02-S110",
+        "P02-S111",
+        "P02-S112",
+        "P02-S113",
+        "P02-S114",
+        "P02-S115",
+        "P02-S116",
+        "P02-S117",
+        "P02-S118",
+        "P02-S119",
+        "P02-S120",
+        "P02-S121",
+        "P02-S122",
+        "P02-S123",
+        "P02-S124",
+        "P02-S125",
+        "P02-S126",
+        "P02-S127",
+        "P02-S128",
+        "P02-S129",
+        "P02-S130",
+        "P02-S131",
+        "P02-S132",
+        "P02-S133",
+        "P02-S134",
+        "P02-S135",
+        "P02-S136",
+        "P02-S137",
+        "P02-S138",
+        "P02-S139",
+        "P02-S140",
+        "P02-S141",
+        "P02-S142"
+      ],
+      "executed_test_commands": [
+        "npm test --workspace @curasphere/domain",
+        "npm run typecheck --workspace @curasphere/domain",
+        "npm run typecheck --workspace @curasphere/web",
+        "npm run build --workspace @curasphere/web"
+      ],
+      "test_evidence": [
+        "docs/identity/P02-F05-evidence.md"
+      ],
+      "security_evidence": [
+        "Client emergency flags still deny with emergency-disabled. Grants are session bound, exact resource and action, and cannot override confidential, prescribing, signing, export, or production mode."
+      ],
+      "safety_evidence": [
+        "The only readable target is syn_kojo_agyeman. Its stored text says it is not a diagnosis, a treatment recommendation, or a clinical chart."
+      ],
+      "observability_evidence": [
+        "emergency_events records request, step-up, grant, resource access, revocation, review, and escalation. Alerts are local-sandbox captured, failed, or retried."
+      ],
+      "rollback_evidence": [
+        "Chart schema 32 is additive. Foundation Flyway stays at version 16. Do not delete data/curasphere.sqlite to roll back."
+      ],
+      "docs": [
+        "docs/adr/ADR-0060-emergency-access.md",
+        "docs/identity/emergency-access.md",
+        "docs/identity/P02-F05-evidence.md",
+        "docs/identity/PHASE_02_COMPLETION.md"
+      ],
       "approvals": [],
-      "open_blockers": [],
-      "accepted_at": null
+      "open_blockers": [
+        "No architecture, security, or clinical reviewer has signed. Emergency intended use is not an approved clinical policy. The alert outbox is a local sandbox. Production clinical break-glass stays disabled. P02-F05 is an engineering acceptance only."
+      ],
+      "accepted_at": "2026-10-14"
     },
     {
       "feature_id": "P03-F01",
@@ -905,21 +1285,75 @@
       "name": "Billing primitives and chart UX",
       "status": "NOT_STARTED",
       "owners": [],
-      "implemented_files": [],
-      "migration_files": [],
-      "api_contracts": [],
-      "ui_routes": [],
-      "scenario_ids": [],
-      "executed_test_commands": [],
-      "test_evidence": [],
-      "security_evidence": [],
-      "safety_evidence": [],
-      "observability_evidence": [],
-      "rollback_evidence": [],
-      "docs": [],
+      "implemented_files": [
+        "packages/domain/src/billing.ts",
+        "packages/domain/src/patient-chart.ts",
+        "packages/domain/src/experimental-healthcare.ts",
+        "packages/domain/src/work.ts",
+        "apps/web/app/api/billing/charges/route.ts",
+        "apps/web/app/patients/[id]/chart/page.tsx",
+        "apps/web/components/shell.tsx",
+        "tools/e2e/p04-f05.spec.ts"
+      ],
+      "migration_files": [
+        "packages/domain/src/db.ts"
+      ],
+      "api_contracts": [
+        "docs/healthcare/P04-F05-contract-v1.md"
+      ],
+      "ui_routes": [
+        "/patients/{id}/chart",
+        "/billing",
+        "/billing/charges/new",
+        "/billing/charges/{id}",
+        "/billing/charges/{id}/history"
+      ],
+      "scenario_ids": [
+        "P04-F05-E2E-01",
+        "P04-F05-E2E-02",
+        "P04-F05-S50",
+        "P04-F05-S51",
+        "P04-F05-S52",
+        "P04-F05-S53",
+        "P04-F05-S54"
+      ],
+      "executed_test_commands": [
+        "npm test",
+        "npm run test:e2e:p04f05",
+        "npm run typecheck",
+        "npm run build",
+        "npm run governance:test",
+        "npm audit --json"
+      ],
+      "test_evidence": [
+        "docs/healthcare/P04-F05-evidence.md",
+        "docs/healthcare/P04-F05-domain-test.log",
+        "docs/healthcare/P04-F05-e2e-results.json"
+      ],
+      "security_evidence": [
+        "docs/healthcare/P04-F05-audit.json",
+        "docs/healthcare/P04-F05-billing-test.log"
+      ],
+      "safety_evidence": [
+        "docs/healthcare/P04-F05-contract-v1.md"
+      ],
+      "observability_evidence": [
+        "packages/domain/src/billing.ts"
+      ],
+      "rollback_evidence": [
+        "packages/domain/test/billing.test.ts"
+      ],
+      "docs": [
+        "docs/adr/ADR-0070-billing-primitives-and-chart-ux.md",
+        "docs/healthcare/P04-F05-runbook.md"
+      ],
       "approvals": [],
-      "open_blockers": [],
-      "accepted_at": null
+      "open_blockers": [
+        "Formal Phase 04 remains NOT_STARTED; Phase 02 human reviews remain pending. Experimental evidence does not grant clinical, regulatory, financial or production authorization."
+      ],
+      "accepted_at": null,
+      "experimental_engineering_status": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "experimental_evidence": "docs/healthcare/P04-F05-evidence.md"
     },
     {
       "feature_id": "P05-F01",

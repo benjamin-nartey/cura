@@ -258,3 +258,6 @@ export type EvidenceView = {
   patientId: string;
   claims: EvidenceClaim[];
 };
+// Reserved for isolated local SMART clients; the workspace must never serve this namespace.
+export const SMART_CLIENT_HOST = "smart-client.localhost";
+export function isSmartClientHost(hostname:string){const name=hostname.toLowerCase();return name===SMART_CLIENT_HOST||name.endsWith(`.${SMART_CLIENT_HOST}`);}

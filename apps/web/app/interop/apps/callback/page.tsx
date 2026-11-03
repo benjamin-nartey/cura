@@ -1,0 +1,3 @@
+import { SmartCallback } from "@/components/smart-app";
+import { smartAudience } from "@curasphere/domain";
+export default async function CallbackPage({searchParams}:{searchParams:Promise<{code?:string;state?:string;error?:string}>}){const query=await searchParams;return <main id="content" tabIndex={-1} className="workspace" style={{maxWidth:960,margin:"40px auto",padding:20}}><h1 className="page-title">Local clinical app</h1><p>Read-only synthetic simulation. This client validates its browser state and proves possession of its PKCE verifier.</p><SmartCallback audience={smartAudience()} code={typeof query.code==="string"?query.code:""} state={typeof query.state==="string"?query.state:""} denied={typeof query.error==="string"?query.error:""}/></main>;}

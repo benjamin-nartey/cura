@@ -1,0 +1,2 @@
+"use client";
+export default function OrderError({reset}:{reset:()=>void}){return <main className="main workspace"><h1 className="page-title">Request coding unavailable</h1><p role="alert">The request definitions or record context could not be loaded. Retry before selecting a code.</p><button className="btn-dark" onClick={reset}>Retry request</button> <a href="/work">Return to worklist</a></main>;}

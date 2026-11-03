@@ -1,0 +1,13 @@
+# CI/CD verification and runner operation
+
+Status: local runner implemented; changed hosted workflow remains NOT_VERIFIED until actually executed for the relevant revision. No remote write or deployment was performed by this migration.
+
+For isolated local execution, set `CURASPHERE_ENV=local`, `CURASPHERE_DEV_DIRECTORY=local-test`, `CURASPHERE_DATA_CLASS=synthetic`, and `CURASPHERE_LOCAL_PHASE_OVERRIDE=true`, with no protected database/credentials, real-PHI, publish, external-healthcare or clinical-emergency flags. Run `npm run governance:verify` for fresh assessment or `npm run engineering:run` for bounded automatic implementation/repair and progression. Neither needs a new per-feature human signature inside the authorized scope.
+
+The command catalog runs v2 safety tests, original governance/constitution regression, ESLint, workspace typechecks, domain and focused billing tests, platform contracts/deployment-denial tests, production build, npm dependency scan, and actual browser/accessibility journeys. The browser runner seeds its own synthetic SQLite file under its evidence directory and starts the built app on 127.0.0.1:3106. It requires the existing local foundation service (8081) and Dex (15556); a missing dependency is not reported as success.
+
+The original CI job remains intact. The added v2 job uses an isolated PostgreSQL service, Dex, Java 21/foundation, synthetic personas, Chromium, and the deterministic verifier. It uploads assessment/log artifacts even on failure. It has read-only repository permissions and no production credentials or deploy step. The local experimental override stays refused by the original deployment path; the synthetic v2 CI job does not call deployment scripts except denial tests.
+
+Evidence is stored under `artifacts/governance-v2/<unique-run>/`. Raw scanner and test outputs retain actual exit status. The latest index is navigational only. Preserve failed attempts. A stale lock requires investigation of its recorded PID before removal; it is never silently stolen. The runner emits feature/command start, exit and acceptance/block status for operational observability. Do not print credentials or use real patient data in worker prompts or logs.
+
+The Codex adapter uses the installed CLI's `exec --sandbox workspace-write --ephemeral --json` mode and an explicit single-feature prompt. It never uses a bypass-sandbox flag. Local CLI availability does not prove authentication or successful model execution. Worker integration is tested using real isolated deterministic subprocesses; a live model run is recorded only if actually invoked. See [official non-interactive mode documentation](https://learn.chatgpt.com/docs/non-interactive-mode).

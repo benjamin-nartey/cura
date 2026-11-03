@@ -1,0 +1,20 @@
+
+> curasphere@0.1.0 typecheck
+> npm run typecheck --workspace @curasphere/contracts && npm run typecheck --workspace @curasphere/domain && npm run typecheck --workspace @curasphere/fhir && npm run typecheck --workspace @curasphere/web
+
+
+> @curasphere/contracts@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @curasphere/domain@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @curasphere/fhir@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @curasphere/web@0.1.0 typecheck
+> tsc --noEmit
+

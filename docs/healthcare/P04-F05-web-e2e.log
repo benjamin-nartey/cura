@@ -1,0 +1,408 @@
+▲ Next.js 16.4.4 (Turbopack)
+- Local:         http://localhost:3105
+- Network:       http://172.20.10.13:3105
+✓ Ready in 6.3s
+✓ Running next.config.mjs took 73ms
+
+  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+  	- include was updated to add '.next-p04f05/types/**/*.ts'
+  	- include was updated to add '.next-p04f05/dev/types/**/*.ts'
+
+
+○ Compiling / ...
+(node:23132) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 3.9s (next.js: 1297ms, application-code: 2.6s)
+ POST /api/session 303 in 1283ms (next.js: 302ms, application-code: 981ms)
+ GET /dashboard 200 in 1222ms (next.js: 72ms, application-code: 1151ms)
+○ Compiling /appointments/new ...
+ GET /appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=2026-11-10 200 in 1406ms (next.js: 87ms, application-code: 1319ms)
+ POST /api/appointments 303 in 1833ms (next.js: 607ms, application-code: 1227ms)
+○ Compiling /appointments/[id] ...
+(node:21104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /appointments/apt_79097eb5bbf5400a?notice=scheduled 200 in 5.9s (next.js: 4.9s, application-code: 1000ms)
+(node:22212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/appointments/apt_79097eb5bbf5400a 303 in 3.6s (next.js: 3.5s, application-code: 136ms)
+ GET /appointments/apt_79097eb5bbf5400a?notice=confirmed 200 in 1360ms (next.js: 17ms, application-code: 1343ms)
+ POST /api/appointments/apt_79097eb5bbf5400a 303 in 168ms (next.js: 17ms, application-code: 150ms)
+(node:5504) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /appointments/apt_79097eb5bbf5400a?notice=arrived 200 in 1197ms (next.js: 5ms, application-code: 1192ms)
+ GET / 200 in 386ms (next.js: 8ms, application-code: 378ms)
+(node:20556) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/session 303 in 83ms (next.js: 9ms, application-code: 74ms)
+ GET /dashboard 200 in 1213ms (next.js: 6ms, application-code: 1207ms)
+ GET /appointments/apt_79097eb5bbf5400a?notice=scheduled 200 in 1100ms (next.js: 23ms, application-code: 1078ms)
+ POST /api/appointments/apt_79097eb5bbf5400a 303 in 357ms (next.js: 28ms, application-code: 329ms)
+○ Compiling /encounters/[id] ...
+(node:28136) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28572) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11444) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /encounters/enc_304aab593be74fd7?notice=started 200 in 6.6s (next.js: 4.7s, application-code: 1938ms)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_304aab593be74fd7 200 in 2.5s (next.js: 231ms, application-code: 2.3s)
+○ Compiling /api/clinical/observations ...
+ POST /api/clinical/observations 303 in 2.1s (next.js: 962ms, application-code: 1096ms)
+○ Compiling /clinical/observations/[id] ...
+(node:7876) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical/observations/obs_d48ee29e846243ea?notice=vital-saved 200 in 5.7s (next.js: 4.9s, application-code: 873ms)
+○ Compiling /patients/[id]/chart ...
+(node:15560) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\data\\p04f05-e2e.sqlite-journal").
+ GET /patients/pat_gh_kofi_a/chart?encounter=enc_304aab593be74fd7 200 in 9.0s (next.js: 6.6s, application-code: 2.3s)
+○ Compiling /encounters/[id]/close ...
+(node:7224) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /encounters/enc_304aab593be74fd7/close 200 in 4.8s (next.js: 4.3s, application-code: 470ms)
+(node:20464) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/encounters/enc_304aab593be74fd7/close 303 in 2.7s (next.js: 2.6s, application-code: 122ms)
+ GET /encounters/enc_304aab593be74fd7?notice=closed 200 in 1494ms (next.js: 17ms, application-code: 1478ms)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_304aab593be74fd7 200 in 452ms (next.js: 3ms, application-code: 449ms)
+(node:15772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical?patient=pat_gh_kofi_a&encounter=enc_304aab593be74fd7&error=source-closed 200 in 2.8s (next.js: 90ms, application-code: 2.7s)
+ GET /billing 200 in 945ms (next.js: 130ms, application-code: 815ms)
+ GET /access/denied 200 in 1271ms (next.js: 169ms, application-code: 1102ms)
+✓ Finished filesystem cache database compaction in 11.0s
+ GET / 200 in 483ms (next.js: 2ms, application-code: 481ms)
+ POST /api/session 303 in 834ms (next.js: 2ms, application-code: 832ms)
+ GET /dashboard 200 in 1835ms (next.js: 2ms, application-code: 1832ms)
+(node:26124) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /patients/pat_gh_kofi_b/chart 200 in 13.6s (next.js: 23ms, application-code: 13.6s)
+ GET /patients/pat_eu_kofi/chart 200 in 2.3s (next.js: 24ms, application-code: 2.3s)
+(node:23496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Compiled in 2.5s
+✓ Compiled in 508ms
+ GET / 200 in 4.1s (next.js: 883ms, application-code: 3.2s)
+ POST /api/session 303 in 1286ms (next.js: 669ms, application-code: 616ms)
+ GET /dashboard 200 in 2.1s (next.js: 62ms, application-code: 2.0s)
+ GET /appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=2026-11-10 200 in 2.6s (next.js: 28ms, application-code: 2.6s)
+ POST /api/appointments 303 in 651ms (next.js: 237ms, application-code: 414ms)
+ GET /appointments/apt_7a8414cf88ca48dd?notice=scheduled 200 in 2.2s (next.js: 45ms, application-code: 2.2s)
+ POST /api/appointments/apt_7a8414cf88ca48dd 303 in 367ms (next.js: 91ms, application-code: 276ms)
+ GET /appointments/apt_7a8414cf88ca48dd?notice=confirmed 200 in 2.3s (next.js: 5ms, application-code: 2.3s)
+ POST /api/appointments/apt_7a8414cf88ca48dd 303 in 225ms (next.js: 5ms, application-code: 219ms)
+(node:20544) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /appointments/apt_7a8414cf88ca48dd?notice=arrived 200 in 2.6s (next.js: 5ms, application-code: 2.6s)
+ GET / 200 in 1312ms (next.js: 28ms, application-code: 1284ms)
+ POST /api/session 303 in 171ms (next.js: 9ms, application-code: 162ms)
+ GET /dashboard 200 in 1592ms (next.js: 23ms, application-code: 1569ms)
+ GET /appointments/apt_7a8414cf88ca48dd?notice=scheduled 200 in 2.9s (next.js: 54ms, application-code: 2.8s)
+ POST /api/appointments/apt_7a8414cf88ca48dd 303 in 334ms (next.js: 5ms, application-code: 329ms)
+ GET /encounters/enc_f0b2bdd0cedc468e?notice=started 200 in 4.2s (next.js: 741ms, application-code: 3.5s)
+(node:24640) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_f0b2bdd0cedc468e 200 in 2.2s (next.js: 14ms, application-code: 2.2s)
+ POST /api/clinical/observations 303 in 925ms (next.js: 255ms, application-code: 670ms)
+ GET /clinical/observations/obs_2c3a0997015f44df?notice=vital-saved 200 in 1814ms (next.js: 37ms, application-code: 1777ms)
+ GET /patients/pat_gh_kofi_a/chart?encounter=enc_f0b2bdd0cedc468e 200 in 3.0s (next.js: 29ms, application-code: 3.0s)
+ GET /encounters/enc_f0b2bdd0cedc468e/close 200 in 1413ms (next.js: 33ms, application-code: 1381ms)
+ POST /api/encounters/enc_f0b2bdd0cedc468e/close 303 in 2.2s (next.js: 188ms, application-code: 2.1s)
+(node:23784) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /encounters/enc_f0b2bdd0cedc468e?notice=closed 200 in 10.7s (next.js: 23ms, application-code: 10.7s)
+(node:17908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12444) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1976) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15336) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11392) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_f0b2bdd0cedc468e 200 in 9.3s (next.js: 3ms, application-code: 9.3s)
+○ Compiling /clinical ...
+ GET /clinical?patient=pat_gh_kofi_a&encounter=enc_f0b2bdd0cedc468e&error=source-closed 200 in 3.9s (next.js: 12ms, application-code: 3.9s)
+ GET /billing 200 in 1292ms (next.js: 56ms, application-code: 1236ms)
+ GET /access/denied 200 in 2.2s (next.js: 391ms, application-code: 1834ms)
+ GET / 200 in 804ms (next.js: 6ms, application-code: 797ms)
+ POST /api/session 303 in 706ms (next.js: 7ms, application-code: 699ms)
+ GET /dashboard 200 in 6.5s (next.js: 133ms, application-code: 6.3s)
+○ Compiling /billing/charges/new ...
+ GET /billing/charges/new?patient=pat_gh_kofi_a&encounter=enc_f0b2bdd0cedc468e 200 in 5.3s (next.js: 2.5s, application-code: 2.7s)
+○ Compiling /api/billing/charges ...
+ POST /api/billing/charges 303 in 1864ms (next.js: 394ms, application-code: 1469ms)
+○ Compiling /billing/charges/[id] ...
+(node:4544) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /billing/charges/chg_1ff6de43ff304834?notice=charge-saved 200 in 18.4s (next.js: 15.7s, application-code: 2.7s)
+○ Compiling /api/billing/charges/[id]/review ...
+(node:1608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/billing/charges/chg_1ff6de43ff304834/review 303 in 11.2s (next.js: 9.6s, application-code: 1592ms)
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\data\\p04f05-e2e.sqlite-journal").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\@next").
+ GET /billing/charges/chg_1ff6de43ff304834?notice=charge-reviewed 200 in 9.8s (next.js: 39ms, application-code: 9.7s)
+○ Compiling /api/billing/charges/[id]/finalize ...
+(node:18424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/billing/charges/chg_1ff6de43ff304834/finalize 303 in 11.5s (next.js: 10.0s, application-code: 1496ms)
+ GET /billing/charges/chg_1ff6de43ff304834?notice=charge-finalized 200 in 2.5s (next.js: 53ms, application-code: 2.4s)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <InnerScrollHandler scrollRef={{scrollRef:null, ...}} renderTree={{...}}>
+      <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+        <LoadingBoundary name="chg_1ff6de..." loading={null}>
+          <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/billing/c..." tree={[...]} params={{id:"chg_1f..."}} renderTree={{...}} ...>
+                  <SegmentViewNode type="page" pagePath="billing/ch...">
+                    <SegmentTrieNode>
+                    <ChargePage>
+                      <Shell>
+                        <div className="shell">
+                          <aside>
+                          <div className="workspace">
+                            <header>
+                            <main className="main" id="content">
+                              <h1>
+                              <p>
+                              <p>
+                              <div>
+                              <h2>
+                              <ul>
+                              <form action="/api/billi..." method="post">
+                                <input
+                                  type="hidden"
+                                  name="expectedVersion"
+                                  value="3"
+-                                 style={{caret-color:"transparent"}}
+                                >
+                                <input
+                                  type="hidden"
+                                  name="reason"
+                                  value="no-longer-needed"
+-                                 style={{caret-color:"transparent"}}
+                                >
+                                ...
+                  ...
+                ...
+      ...
+ 
+ GET /clinical?patient=pat_gh_kofi_a&encounter=enc_f0b2bdd0cedc468e 200 in 1670ms (next.js: 104ms, application-code: 1566ms)
+ GET /access/denied 200 in 1196ms (next.js: 37ms, application-code: 1159ms)
+(node:26352) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 905ms (next.js: 14ms, application-code: 891ms)
+ POST /api/session 303 in 337ms (next.js: 14ms, application-code: 323ms)
+ GET /dashboard 200 in 1172ms (next.js: 12ms, application-code: 1160ms)
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\data\\p04f05-e2e.sqlite-journal").
+ GET /patients/pat_gh_kofi_b/chart 200 in 3.0s (next.js: 74ms, application-code: 2.9s)
+ GET /patients/pat_eu_kofi/chart 200 in 1651ms (next.js: 6ms, application-code: 1644ms)
+(node:20360) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Compiled in 625ms
+ GET / 200 in 947ms (next.js: 23ms, application-code: 924ms)
+ POST /api/session 303 in 459ms (next.js: 23ms, application-code: 436ms)
+ GET /dashboard 200 in 1753ms (next.js: 41ms, application-code: 1712ms)
+ GET /appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=2026-11-10 200 in 3.1s (next.js: 26ms, application-code: 3.0s)
+ POST /api/appointments 303 in 504ms (next.js: 11ms, application-code: 492ms)
+ GET /appointments/apt_405f49b2cddf474b?notice=scheduled 200 in 1498ms (next.js: 23ms, application-code: 1475ms)
+ POST /api/appointments/apt_405f49b2cddf474b 303 in 348ms (next.js: 25ms, application-code: 323ms)
+ GET /appointments/apt_405f49b2cddf474b?notice=confirmed 200 in 1795ms (next.js: 6ms, application-code: 1789ms)
+(node:5528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/appointments/apt_405f49b2cddf474b 303 in 194ms (next.js: 5ms, application-code: 190ms)
+ GET /appointments/apt_405f49b2cddf474b?notice=arrived 200 in 1676ms (next.js: 32ms, application-code: 1643ms)
+(node:4480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Compiled in 2.6s
+ GET /appointments/apt_405f49b2cddf474b?notice=arrived 200 in 8.3s (next.js: 53ms, application-code: 8.3s)
+(node:18552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Finished filesystem cache database compaction in 13.4s
+ GET / 200 in 421ms (next.js: 7ms, application-code: 414ms)
+ POST /api/session 303 in 61ms (next.js: 7ms, application-code: 54ms)
+ GET /dashboard 200 in 1103ms (next.js: 5ms, application-code: 1098ms)
+ GET /appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=2026-11-10 200 in 1471ms (next.js: 16ms, application-code: 1455ms)
+ POST /api/appointments 303 in 471ms (next.js: 15ms, application-code: 456ms)
+ GET /appointments/apt_cec7310eb3fa48e8?notice=scheduled 200 in 1957ms (next.js: 27ms, application-code: 1930ms)
+ POST /api/appointments/apt_cec7310eb3fa48e8 303 in 236ms (next.js: 29ms, application-code: 207ms)
+ GET /appointments/apt_cec7310eb3fa48e8?notice=confirmed 200 in 2.1s (next.js: 6ms, application-code: 2.0s)
+(node:7128) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/appointments/apt_cec7310eb3fa48e8 303 in 271ms (next.js: 5ms, application-code: 267ms)
+ GET /appointments/apt_cec7310eb3fa48e8?notice=arrived 200 in 2.3s (next.js: 24ms, application-code: 2.3s)
+(node:22684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11204) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 611ms (next.js: 5ms, application-code: 606ms)
+ POST /api/session 303 in 61ms (next.js: 4ms, application-code: 56ms)
+ GET /dashboard 200 in 1580ms (next.js: 3ms, application-code: 1577ms)
+ GET /patients/pat_gh_kofi_b/chart 200 in 2.7s (next.js: 50ms, application-code: 2.7s)
+ GET /patients/pat_eu_kofi/chart 200 in 1784ms (next.js: 5ms, application-code: 1779ms)
+(node:25580) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 483ms (next.js: 3ms, application-code: 480ms)
+ POST /api/session 303 in 219ms (next.js: 2ms, application-code: 217ms)
+ GET /dashboard 200 in 3.3s (next.js: 2ms, application-code: 3.3s)
+ GET /appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=2026-11-10 200 in 7.6s (next.js: 8ms, application-code: 7.6s)
+ POST /api/appointments 303 in 774ms (next.js: 3ms, application-code: 771ms)
+ GET /appointments/apt_dda00aa8270848d4?notice=scheduled 200 in 1270ms (next.js: 29ms, application-code: 1241ms)
+ POST /api/appointments/apt_dda00aa8270848d4 303 in 323ms (next.js: 60ms, application-code: 264ms)
+ GET /appointments/apt_dda00aa8270848d4?notice=confirmed 200 in 1718ms (next.js: 5ms, application-code: 1713ms)
+(node:9192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/appointments/apt_dda00aa8270848d4 303 in 210ms (next.js: 7ms, application-code: 202ms)
+ GET /appointments/apt_dda00aa8270848d4?notice=arrived 200 in 1834ms (next.js: 22ms, application-code: 1812ms)
+(node:18764) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+○ Compiling /api/session/end ...
+ POST /api/session/end 303 in 1032ms (next.js: 382ms, application-code: 650ms)
+ GET / 200 in 684ms (next.js: 12ms, application-code: 672ms)
+ GET / 200 in 623ms (next.js: 4ms, application-code: 619ms)
+(node:17192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/session 303 in 67ms (next.js: 4ms, application-code: 63ms)
+ GET /dashboard 200 in 1491ms (next.js: 4ms, application-code: 1486ms)
+✓ Compiled in 24ms
+ GET /appointments/apt_dda00aa8270848d4?notice=scheduled 200 in 2.2s (next.js: 158ms, application-code: 2.0s)
+ GET /appointments/apt_dda00aa8270848d4?notice=scheduled 200 in 1873ms (next.js: 12ms, application-code: 1862ms)
+ POST /api/appointments/apt_dda00aa8270848d4 303 in 281ms (next.js: 43ms, application-code: 238ms)
+(node:15524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /encounters/enc_140e0025109e4a90?notice=started 200 in 1692ms (next.js: 42ms, application-code: 1650ms)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_140e0025109e4a90 200 in 1644ms (next.js: 15ms, application-code: 1629ms)
+ POST /api/clinical/observations 303 in 519ms (next.js: 12ms, application-code: 506ms)
+(node:25580) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23248) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical/observations/obs_5948ba4b6b834447?notice=vital-saved 200 in 2.1s (next.js: 39ms, application-code: 2.1s)
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\data").
+ GET /patients/pat_gh_kofi_a/chart?encounter=enc_140e0025109e4a90 200 in 2.4s (next.js: 52ms, application-code: 2.4s)
+(node:13652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 421ms (next.js: 10ms, application-code: 410ms)
+ POST /api/session 303 in 220ms (next.js: 8ms, application-code: 212ms)
+ GET /dashboard 200 in 1265ms (next.js: 10ms, application-code: 1255ms)
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\data\\p04f05-e2e.sqlite-journal").
+ GET /patients/pat_gh_kofi_b/chart 200 in 2.4s (next.js: 28ms, application-code: 2.4s)
+ GET /patients/pat_eu_kofi/chart 200 in 1049ms (next.js: 6ms, application-code: 1043ms)
+(node:17468) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Compiled in 614ms
+✓ Compiled in 103ms
+ GET / 200 in 487ms (next.js: 5ms, application-code: 482ms)
+ POST /api/session 303 in 102ms (next.js: 6ms, application-code: 96ms)
+ GET /dashboard 200 in 1924ms (next.js: 16ms, application-code: 1907ms)
+ GET /appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=2026-11-10 200 in 1552ms (next.js: 7ms, application-code: 1545ms)
+ POST /api/appointments 303 in 300ms (next.js: 14ms, application-code: 286ms)
+ GET /appointments/apt_a468400264b547e7?notice=scheduled 200 in 1090ms (next.js: 20ms, application-code: 1070ms)
+ POST /api/appointments/apt_a468400264b547e7 303 in 248ms (next.js: 28ms, application-code: 219ms)
+ GET /appointments/apt_a468400264b547e7?notice=confirmed 200 in 1874ms (next.js: 5ms, application-code: 1870ms)
+ POST /api/appointments/apt_a468400264b547e7 303 in 216ms (next.js: 7ms, application-code: 209ms)
+(node:17024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /appointments/apt_a468400264b547e7?notice=arrived 200 in 1588ms (next.js: 32ms, application-code: 1556ms)
+ POST /api/session/end 303 in 299ms (next.js: 9ms, application-code: 291ms)
+(node:16556) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 790ms (next.js: 4ms, application-code: 786ms)
+ GET / 200 in 529ms (next.js: 5ms, application-code: 524ms)
+(node:15908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/session 303 in 42ms (next.js: 4ms, application-code: 38ms)
+ GET /dashboard 200 in 821ms (next.js: 5ms, application-code: 816ms)
+ GET /appointments/apt_a468400264b547e7?notice=scheduled 200 in 1598ms (next.js: 36ms, application-code: 1562ms)
+ POST /api/appointments/apt_a468400264b547e7 303 in 183ms (next.js: 20ms, application-code: 163ms)
+ GET /encounters/enc_711bbb5a228e4526?notice=started 200 in 2.2s (next.js: 25ms, application-code: 2.2s)
+(node:3616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_711bbb5a228e4526 200 in 1594ms (next.js: 13ms, application-code: 1581ms)
+ POST /api/clinical/observations 303 in 401ms (next.js: 4ms, application-code: 397ms)
+(node:16604) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5216) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical/observations/obs_04480f8369f3410c?notice=vital-saved 200 in 1267ms (next.js: 22ms, application-code: 1245ms)
+ GET /patients/pat_gh_kofi_a/chart?encounter=enc_711bbb5a228e4526 200 in 2.2s (next.js: 35ms, application-code: 2.2s)
+(node:17728) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22128) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /encounters/enc_711bbb5a228e4526/close 200 in 1816ms (next.js: 39ms, application-code: 1777ms)
+ POST /api/encounters/enc_711bbb5a228e4526/close 303 in 243ms (next.js: 29ms, application-code: 214ms)
+ GET /encounters/enc_711bbb5a228e4526?notice=closed 200 in 2.2s (next.js: 22ms, application-code: 2.2s)
+ GET /clinical/vitals/new?patient=pat_gh_kofi_a&encounter=enc_711bbb5a228e4526 200 in 2.1s (next.js: 13ms, application-code: 2.1s)
+(node:20328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical?patient=pat_gh_kofi_a&encounter=enc_711bbb5a228e4526&error=source-closed 200 in 6.2s (next.js: 29ms, application-code: 6.1s)
+ GET /billing 200 in 1031ms (next.js: 200ms, application-code: 831ms)
+(node:25056) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /access/denied 200 in 1496ms (next.js: 66ms, application-code: 1430ms)
+ POST /api/session/end 303 in 351ms (next.js: 5ms, application-code: 346ms)
+(node:14360) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET / 200 in 945ms (next.js: 7ms, application-code: 938ms)
+ GET / 200 in 1530ms (next.js: 7ms, application-code: 1523ms)
+ POST /api/session 303 in 378ms (next.js: 31ms, application-code: 347ms)
+ GET /dashboard 200 in 2.1s (next.js: 29ms, application-code: 2.0s)
+ GET /billing/charges/new?patient=pat_gh_kofi_a&encounter=enc_711bbb5a228e4526 200 in 2.8s (next.js: 126ms, application-code: 2.6s)
+ POST /api/billing/charges 303 in 1064ms (next.js: 421ms, application-code: 643ms)
+ GET /billing/charges/chg_8252d46f62384d7d?notice=charge-saved 200 in 2.7s (next.js: 311ms, application-code: 2.4s)
+ POST /api/billing/charges 303 in 517ms (next.js: 5ms, application-code: 512ms)
+ POST /api/billing/charges/chg_8252d46f62384d7d/review 303 in 707ms (next.js: 90ms, application-code: 617ms)
+ GET /billing/charges/chg_8252d46f62384d7d?notice=charge-reviewed 200 in 2.5s (next.js: 64ms, application-code: 2.4s)
+ POST /api/billing/charges/chg_8252d46f62384d7d/finalize 303 in 576ms (next.js: 170ms, application-code: 407ms)
+ GET /billing/charges/chg_8252d46f62384d7d?notice=charge-finalized 200 in 1399ms (next.js: 5ms, application-code: 1395ms)
+(node:9392) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16696) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /clinical?patient=pat_gh_kofi_a&encounter=enc_711bbb5a228e4526 200 in 1239ms (next.js: 192ms, application-code: 1047ms)
+ GET /access/denied 200 in 1479ms (next.js: 50ms, application-code: 1429ms)
+ POST /api/session/end 303 in 863ms (next.js: 8ms, application-code: 855ms)
+ GET / 200 in 967ms (next.js: 14ms, application-code: 953ms)
+ GET / 200 in 1196ms (next.js: 4ms, application-code: 1192ms)
+(node:3956) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ POST /api/session 303 in 662ms (next.js: 113ms, application-code: 549ms)
+ GET /dashboard 200 in 3.2s (next.js: 179ms, application-code: 3.1s)
+ GET /patients/pat_gh_kofi_b/chart 200 in 3.0s (next.js: 41ms, application-code: 3.0s)
+ GET /patients/pat_eu_kofi/chart 200 in 2.4s (next.js: 65ms, application-code: 2.3s)
+(node:20692) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Compiled in 1346ms
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\eslint\\lib\\rules").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\eslint-scope\\dist\\eslint-scope.cjs").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (1.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\keyv").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\eslint-scope\\lib\\index.d.ts").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\eslint\\lib\\linter").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (1.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\eslint\\lib\\rules").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (3.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\user\\Desktop\\curamaster\\node_modules\\eslint\\lib\\rules\\object-shorthand.js").
+ GET / 200 in 2.6s (next.js: 191ms, application-code: 2.4s)

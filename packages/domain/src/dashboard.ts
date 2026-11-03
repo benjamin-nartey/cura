@@ -1,4 +1,5 @@
 import type { SessionContext } from "@curasphere/contracts";
+import { effectivePermissions } from "./authorization";
 import { writeAudit } from "./audit";
 import { get, all, type AppDatabase } from "./db";
 import { ForbiddenError } from "./errors";
@@ -188,8 +189,57 @@ function adminView(db: AppDatabase, ctx: SessionContext): DashboardView {
   };
 }
 
+// Match the authoritative records used by patient, scheduling, clinical and billing pages.
+// Each metric has its own permission; a role label is never sufficient authorization.
+function operationalView(db: AppDatabase, ctx: SessionContext, permissions: string[]): DashboardView {
+  const allowed = new Set(permissions);
+  const metrics: DashboardMetric[] = [];
+  const add = (permission: string, label: string, table: string, href: string, detail: string, filter = "") => {
+    if (!ctx.facilityId || !allowed.has(permission)) return;
+    metrics.push({ label, href, detail, count: tally(db,
+      `SELECT COUNT(*) AS c FROM ${table} WHERE organization_id = ? AND facility_id = ? ${filter}`,
+      ctx.organizationId, ctx.facilityId) });
+  };
+  const patientScope = `p.organization_id = ? AND (p.facility_id = ? OR EXISTS (
+    SELECT 1 FROM patient_facility_registrations r WHERE r.patient_id = p.id AND r.facility_id = ? AND r.status = 'active'))`;
+  const params = [ctx.organizationId, ctx.facilityId, ctx.facilityId];
+  if (ctx.facilityId && allowed.has("patient.read")) metrics.push({
+    label: "Patients", href: "/patients", detail: "Registered at your facility",
+    count: tally(db, `SELECT COUNT(*) AS c FROM patients p WHERE ${patientScope}`, ...params),
+  });
+  add("appointment.read", "Appointments", "appointments", "/appointments", "Today · UTC", "AND source = 'schedule' AND status NOT IN ('cancelled', 'entered-in-error') AND substr(starts_at, 1, 10) = strftime('%Y-%m-%d', 'now')");
+  add("clinical.condition.read", "Open encounters", "visit_encounters", "/clinical", "Visits in progress", "AND status = 'in-progress'");
+  add("clinical.observation.read", "Results", "source_observations", "/clinical", "Recorded observations", "AND status != 'entered-in-error'");
+  add("clinical.condition.read", "Conditions", "source_conditions", "/clinical", "Documented conditions", "AND verification_status != 'entered-in-error'");
+  add("clinical.allergy.read", "Allergies", "source_allergies", "/clinical", "Recorded allergy entries", "AND verification_status != 'entered-in-error'");
+  add("clinical.medication-order.read", "Medication orders", "source_medication_orders", "/clinical", "Recorded medication orders");
+  add("work.order.read", "Department requests", "work_orders", "/work", "Requests at your facility");
+  add("work.plan.read", "Care plans", "work_plans", "/work", "Recorded care plans");
+  if (ctx.facilityId && allowed.has("work.referral.read")) metrics.push({
+    label: "Referrals", href: "/work", detail: "Sent or received at your facility",
+    count: tally(db, `SELECT COUNT(*) AS c FROM work_referrals WHERE organization_id = ? AND (from_facility_id = ? OR to_facility_id = ?)`, ctx.organizationId, ctx.facilityId, ctx.facilityId),
+  });
+  add("billing.charge.read", "Charges", "billing_charges", "/billing", "Recorded charges", "AND status != 'voided'");
+  const encounters = ctx.facilityId && allowed.has("clinical.condition.read");
+  const billing = ctx.facilityId && allowed.has("billing.charge.read");
+  return {
+    metrics,
+    mixTitle: encounters ? "Encounter status" : billing ? "Charge status" : "Activity",
+    mix: encounters ? statusMix(db, "visit_encounters", ctx, true) : billing ? statusMix(db, "billing_charges", ctx, true) : [],
+    listTitle: "Patient directory",
+    rows: ctx.facilityId && allowed.has("patient.read") ? all<{ id: string; given_name: string; family_name: string; mrn: string }>(db,
+      `SELECT p.id, p.given_name, p.family_name, p.mrn FROM patients p WHERE ${patientScope} ORDER BY p.family_name, p.given_name LIMIT 8`, ...params)
+      .map(p => ({ id: p.id, primary: `${p.given_name} ${p.family_name}`, secondary: p.mrn, href: `/patients/${p.id}/chart` })) : [],
+  };
+}
+
 export function readDashboard(db: AppDatabase, ctx: SessionContext): DashboardView {
-  const view = canReadChart(ctx) ? chartView(db, ctx) : ctx.role === "admin" ? adminView(db, ctx) : canReviewAudit(ctx) ? auditorView(db, ctx) : chartView(db, ctx);
+  const user = get<{ account_status: string }>(db, "SELECT account_status FROM users WHERE id = ?", ctx.userId);
+  if (!user || user.account_status !== "active") throw new ForbiddenError();
+  const access = effectivePermissions(db, ctx.userId, ctx.organizationId, ctx.facilityId);
+  const governed = access.roles.length > 0 || access.review.includes("not active");
+  const view = governed ? (access.permissions.includes("security.audit.read") && !access.permissions.includes("patient.read") && !access.permissions.includes("billing.charge.read")
+    ? auditorView(db, ctx) : operationalView(db, ctx, access.permissions)) : canReadChart(ctx) ? chartView(db, ctx) : ctx.role === "admin" ? adminView(db, ctx) : canReviewAudit(ctx) ? auditorView(db, ctx) : chartView(db, ctx);
   writeAudit(db, ctx, { action: "dashboard.read", resourceType: "Dashboard", resourceId: ctx.facilityId, outcome: "success" });
   return view;
 }

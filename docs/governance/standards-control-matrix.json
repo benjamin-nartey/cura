@@ -1,0 +1,392 @@
+{
+  "policy": "CURASPHERE-DEV-GOVERNANCE-v1",
+  "conformityClaim": false,
+  "note": "Frameworks are assessment references. Full texts of ISO, IEC, and OWASP were not copied and complete conformity is not claimed. No healthcare jurisdiction is selected.",
+  "frameworks": [
+    {
+      "id": "WHO-AI-2021",
+      "name": "WHO Ethics and Governance of Artificial Intelligence for Health",
+      "edition": "2021",
+      "url": "https://www.who.int/publications/i/item/9789240029200",
+      "fullTextReviewed": false,
+      "applicability": "Human oversight, accountability, privacy, and the prohibition on autonomous diagnosis in this development scope."
+    },
+    {
+      "id": "WHO-LMM-2024",
+      "name": "WHO Ethics and Governance of AI for Health: Large Multi-Modal Models",
+      "edition": "2024",
+      "url": "https://www.who.int/publications/i/item/9789240084759",
+      "fullTextReviewed": false,
+      "applicability": "Development-time restriction on sending real patient information to a model and on clinical deployment."
+    },
+    {
+      "id": "WHO-DH-2020",
+      "name": "WHO Global Strategy on Digital Health",
+      "edition": "2020-2027",
+      "url": "https://www.who.int/publications/i/item/9789240116870",
+      "fullTextReviewed": false,
+      "applicability": "Governance, workforce safety, and jurisdiction assessment before any deployment."
+    },
+    {
+      "id": "NIST-CSF-2.0",
+      "name": "NIST Cybersecurity Framework",
+      "edition": "2.0",
+      "url": "https://www.nist.gov/cyberframework",
+      "fullTextReviewed": false,
+      "applicability": "Govern, identify, protect, detect, respond, and recover themes for identity and access evidence."
+    },
+    {
+      "id": "NIST-AI-RMF-1.0",
+      "name": "NIST AI Risk Management Framework",
+      "edition": "1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "fullTextReviewed": false,
+      "applicability": "AI features stay blocked for clinical generation until an intended use is accepted. This run does not score a model."
+    },
+    {
+      "id": "OWASP-ASVS-5.0",
+      "name": "OWASP Application Security Verification Standard",
+      "edition": "5.0",
+      "url": "https://owasp.org/www-project-application-security-verification-standard/",
+      "fullTextReviewed": false,
+      "applicability": "Thematic checks for authentication, session, access control, validation, and logging. Not an ASVS certification."
+    },
+    {
+      "id": "OWASP-API-2023",
+      "name": "OWASP API Security Top 10",
+      "edition": "2023",
+      "url": "https://owasp.org/API-Security/",
+      "fullTextReviewed": false,
+      "applicability": "Object-level and function-level access checks in the domain suite."
+    },
+    {
+      "id": "ISO-IEC-27001",
+      "name": "ISO/IEC 27001 Information security management systems",
+      "edition": "2022",
+      "url": "https://www.iso.org/standard/82875.html",
+      "fullTextReviewed": false,
+      "applicability": "Control objectives for access control, supplier vulnerability evidence, and logging. Not a certification."
+    },
+    {
+      "id": "ISO-IEC-27701",
+      "name": "ISO/IEC 27701 Privacy information management systems",
+      "edition": "2025",
+      "url": "https://www.iso.org/standard/27701",
+      "fullTextReviewed": false,
+      "applicability": "Privacy governance is outstanding until Phase 03. The 2025 edition was confirmed as published; its full requirements were not reviewed."
+    },
+    {
+      "id": "ISO-14971",
+      "name": "ISO 14971 Medical devices — Application of risk management",
+      "edition": "2019",
+      "url": "https://www.iso.org/standard/72704.html",
+      "fullTextReviewed": false,
+      "applicability": "Hazard identification and residual-risk ownership. Not a device risk-management file and not a clinical sign-off."
+    },
+    {
+      "id": "IEC-62304",
+      "name": "IEC 62304 Medical device software life cycle",
+      "edition": "2006+A1:2015",
+      "url": "https://www.iso.org/standard/38421.html",
+      "fullTextReviewed": false,
+      "applicability": "Software-item traceability and change records for development evidence. Not a device lifecycle claim."
+    },
+    {
+      "id": "IEC-62366-1",
+      "name": "IEC 62366-1 Medical device usability engineering",
+      "edition": "2015+A1:2020",
+      "url": "https://www.iso.org/standard/63179.html",
+      "fullTextReviewed": false,
+      "applicability": "Emergency screens exist. No usability engineering file was produced in this run."
+    },
+    {
+      "id": "ONC-SAFER-2025",
+      "name": "ONC SAFER Guides",
+      "edition": "2025",
+      "url": "https://healthit.gov/clinical-quality-and-safety/safer-guides/",
+      "fullTextReviewed": false,
+      "applicability": "System-management, identification, contingency, and communication themes. Not a SAFER attestation."
+    }
+  ],
+  "controls": [
+    {
+      "id": "ARCH-DOCS",
+      "review": "P02-R01",
+      "framework": "IEC-62304",
+      "objective": "Phase 02 architecture and emergency decisions are present as documents.",
+      "component": "docs/adr",
+      "check": "files",
+      "paths": [
+        "docs/adr/ADR-0056-server-side-tenant-context.md",
+        "docs/adr/ADR-0057-oidc-session-and-authenticators.md",
+        "docs/adr/ADR-0058-rbac-abac-authorization.md",
+        "docs/adr/ADR-0059-workforce-lifecycle.md",
+        "docs/adr/ADR-0060-emergency-access.md",
+        "docs/adr/ADR-0061-phase-02-architecture-review.md",
+        "docs/identity/PHASE_02_TRACEABILITY.md",
+        "docs/identity/emergency-access.md"
+      ],
+      "hardStop": false
+    },
+    {
+      "id": "ARCH-SCHEMA-SPLIT",
+      "review": "P02-R01",
+      "framework": "IEC-62304",
+      "objective": "Foundation schema history ends at version 15 in V16, and the chart migration head is version 32, with no Foundation V17.",
+      "component": "schema histories",
+      "check": "source",
+      "source": [
+        { "path": "services/foundation/src/main/resources/db/migration/V16__tenancy.sql", "includes": ["schema_version = 15"] },
+        { "path": "packages/domain/src/db.ts", "includes": ["VALUES (32)"] }
+      ],
+      "absent": ["services/foundation/src/main/resources/db/migration/V17__emergency.sql"],
+      "hardStop": true
+    },
+    {
+      "id": "ARCH-AUTHZ-CENTRAL",
+      "review": "P02-R01",
+      "framework": "NIST-CSF-2.0",
+      "objective": "Emergency elevation is a lookup inside authorize, and a client emergency flag is not itself an allow.",
+      "component": "packages/domain/src/authorization.ts",
+      "check": "source",
+      "source": [
+        {
+          "path": "packages/domain/src/authorization.ts",
+          "includes": ["emergency-disabled", "emergencyGrantAllows", "CURASPHERE_ENV === \"production\"", "CURASPHERE_ENV === \"staging\""]
+        }
+      ],
+      "hardStop": true
+    },
+    {
+      "id": "ARCH-PHASE-BOUNDARY",
+      "review": "P02-R01",
+      "framework": "IEC-62304",
+      "objective": "Phase 03 and Phase 04 feature registers have not been started by this governance run.",
+      "component": "progress/feature-register.json",
+      "check": "json-status",
+      "featureStatus": { "P03-F01": "NOT_STARTED", "P04-F01": "NOT_STARTED" },
+      "hardStop": true
+    },
+    {
+      "id": "ARCH-LIVE-FOUNDATION",
+      "review": "P02-R01",
+      "framework": "NIST-CSF-2.0",
+      "objective": "If the local foundation process is up, its health payload reports schema version 15.",
+      "component": "services/foundation",
+      "check": "command",
+      "command": "foundation-health",
+      "hardStop": false
+    },
+    {
+      "id": "ARCH-BACKUP-THIS-RUN",
+      "review": "P02-R01",
+      "framework": "NIST-CSF-2.0",
+      "objective": "A backup restore was not executed in this governance run.",
+      "component": "operations",
+      "check": "human",
+      "hardStop": false,
+      "outstanding": "Rollback text exists in docs/identity/tenancy.md and docs/identity/emergency-access.md. This run did not restore a database."
+    },
+    {
+      "id": "SEC-DOMAIN-SUITE",
+      "review": "P02-R02",
+      "framework": "OWASP-ASVS-5.0",
+      "objective": "The domain suite covering OIDC, PKCE, sessions, TOTP, passkeys, tenant isolation, workforce, and emergency restrictions exits 0. This is not an ASVS certification.",
+      "component": "@curasphere/domain",
+      "check": "command",
+      "command": "domain",
+      "hardStop": true
+    },
+    {
+      "id": "SEC-CONSTITUTION",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "The Phase 00 constitution checks still reject an accepted decision that has no named reviewers.",
+      "component": "tools/constitution",
+      "check": "command",
+      "command": "constitution",
+      "hardStop": true
+    },
+    {
+      "id": "SEC-NPM-DOMAIN",
+      "review": "P02-R02",
+      "framework": "ISO-IEC-27001",
+      "objective": "Production npm audit for the domain workspace reports no vulnerabilities.",
+      "component": "packages/domain",
+      "check": "command",
+      "command": "audit-domain",
+      "hardStop": true
+    },
+    {
+      "id": "SEC-NPM-WEB",
+      "review": "P02-R02",
+      "framework": "ISO-IEC-27001",
+      "objective": "Production npm audit for the web workspace reports no vulnerabilities.",
+      "component": "apps/web",
+      "check": "command",
+      "command": "audit-web",
+      "hardStop": true
+    },
+    {
+      "id": "SEC-GATEWAY",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "The installed FastAPI and Starlette versions meet the patched floor verified against OSV: FastAPI 0.143.0 and Starlette 1.8.0.",
+      "component": "ai/gateway",
+      "check": "command",
+      "command": "gateway",
+      "hardStop": false
+    },
+    {
+      "id": "SEC-PIP-AUDIT",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "pip-audit reports no known vulnerabilities in the locked AI gateway requirements.",
+      "component": "ai/gateway/requirements.lock",
+      "check": "command",
+      "command": "pip-audit",
+      "hardStop": true
+    },
+    {
+      "id": "SEC-IMAGE",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "A fresh container image scan, when the scanner and image are available.",
+      "component": "container image",
+      "check": "command",
+      "command": "trivy",
+      "hardStop": false
+    },
+    {
+      "id": "SEC-HOSTED-CI",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "Hosted GitHub Actions and branch protection are recorded only from a live query.",
+      "component": "hosted delivery",
+      "check": "command",
+      "command": "actions",
+      "hardStop": false
+    },
+    {
+      "id": "SEC-ORG-ADMIN",
+      "review": "P02-R04",
+      "framework": "OWASP-API-2023",
+      "objective": "Organization-administrator does not keep billing.read or security.audit.read.",
+      "component": "packages/domain/src/authorization.ts",
+      "check": "source",
+      "source": [
+        {
+          "path": "packages/domain/src/authorization.ts",
+          "includes": ["permission_id IN ('billing.read', 'security.audit.read')"]
+        }
+      ],
+      "hardStop": true
+    },
+    {
+      "id": "CLIN-ENV-DENY",
+      "review": "P02-R03",
+      "framework": "ISO-14971",
+      "objective": "Production and staging cannot pass the emergency actor gate.",
+      "component": "packages/domain/src/emergency.ts",
+      "check": "source",
+      "source": [
+        {
+          "path": "packages/domain/src/emergency.ts",
+          "includes": ["CURASPHERE_ENV === \"production\" || process.env.CURASPHERE_ENV === \"staging\"", "policy-disabled", "SyntheticRestrictedRecord"]
+        }
+      ],
+      "hardStop": true
+    },
+    {
+      "id": "CLIN-SELF-REVIEW",
+      "review": "P02-R03",
+      "framework": "WHO-AI-2021",
+      "objective": "The requesting principal cannot review their own emergency access.",
+      "component": "packages/domain/src/emergency.ts",
+      "check": "source",
+      "source": [
+        {
+          "path": "packages/domain/src/emergency.ts",
+          "includes": ["The requester cannot review this access.", "actor.userId === requester"]
+        }
+      ],
+      "hardStop": true
+    },
+    {
+      "id": "CLIN-DURATION-DEFAULTS",
+      "review": "P02-R03",
+      "framework": "ISO-14971",
+      "objective": "The five-minute freshness window and fifteen-minute grant cap are present only as engineering defaults.",
+      "component": "packages/domain/src/emergency.ts",
+      "check": "source",
+      "source": [
+        {
+          "path": "packages/domain/src/emergency.ts",
+          "includes": ["EMERGENCY_MAX_SECONDS = 900", "EMERGENCY_FRESHNESS_MS = 5 * 60 * 1000"]
+        }
+      ],
+      "resultOverride": "HUMAN_JUDGMENT_REQUIRED",
+      "hardStop": false,
+      "outstanding": "These durations are not approved clinical policy. P02-R03 does not decide that they are clinically appropriate."
+    },
+    {
+      "id": "CLIN-DEFAULTS",
+      "review": "P02-R05",
+      "framework": "ISO-14971",
+      "objective": "Record the five-minute freshness and fifteen-minute cap as unapproved engineering defaults.",
+      "component": "packages/domain/src/emergency.ts",
+      "check": "source",
+      "source": [
+        {
+          "path": "packages/domain/src/emergency.ts",
+          "includes": ["EMERGENCY_MAX_SECONDS = 900", "EMERGENCY_FRESHNESS_MS = 5 * 60 * 1000"]
+        }
+      ],
+      "resultOverride": "HUMAN_JUDGMENT_REQUIRED",
+      "hardStop": false,
+      "outstanding": "A clinical reviewer must decide whether these durations are acceptable. This run does not decide that."
+    },
+    {
+      "id": "CLIN-SIGNOFF",
+      "review": "P02-R03",
+      "framework": "WHO-AI-2021",
+      "objective": "Named clinical safety sign-off is a human decision.",
+      "component": "docs/identity/PHASE_02_APPROVALS.json",
+      "check": "human",
+      "hardStop": false,
+      "outstanding": "P02-R03 stays pending. This evidence file is not a clinical signature."
+    },
+    {
+      "id": "CLIN-ROLE-MATRIX",
+      "review": "P02-R04",
+      "framework": "ONC-SAFER-2025",
+      "objective": "Approval of the clinical role matrix remains a human decision.",
+      "component": "docs/identity/PHASE_02_ROLE_MATRIX.md",
+      "check": "human",
+      "hardStop": false,
+      "outstanding": "Do not auto-approve or auto-defer P02-R04."
+    },
+    {
+      "id": "CLIN-INTENDED-USE",
+      "review": "P02-R05",
+      "framework": "IEC-62366-1",
+      "objective": "Approval of emergency intended use remains a human decision. No usability engineering file was produced.",
+      "component": "docs/identity/PHASE_02_EMERGENCY_INTENDED_USE.md",
+      "check": "human",
+      "hardStop": false,
+      "outstanding": "Do not auto-approve or auto-defer P02-R05. IEC 62366-1 conformity is not claimed."
+    },
+    {
+      "id": "PRIV-PHASE03",
+      "review": "P02-R03",
+      "framework": "ISO-IEC-27701",
+      "objective": "Consent, retention, and privacy scrubbing are not implemented. Phase 03 has not started.",
+      "component": "phase 03",
+      "check": "json-status",
+      "featureStatus": { "P03-F01": "NOT_STARTED", "P03-F02": "NOT_STARTED", "P03-F05": "NOT_STARTED" },
+      "resultOverride": "HUMAN_JUDGMENT_REQUIRED",
+      "hardStop": false,
+      "outstanding": "ISO/IEC 27701 conformity is not claimed. Privacy dependencies stay outstanding."
+    }
+  ]
+}

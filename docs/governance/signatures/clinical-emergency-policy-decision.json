@@ -1,0 +1,21 @@
+{
+  "recordType": "proposed-decision",
+  "decisionId": "P02-R05-EMERGENCY-INTENDED-USE",
+  "role": "clinical",
+  "review": "P02-R05",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+  "decision": null,
+  "reviewerName": null,
+  "signedAt": null,
+  "statement": null,
+  "allowedDecisions": ["APPROVE", "REJECT", "DEFERRED"],
+  "unapprovedDefaults": {
+    "stepUpFreshness": "5 minutes",
+    "grantLimit": "15 minutes",
+    "constants": ["EMERGENCY_FRESHNESS_MS", "EMERGENCY_MAX_SECONDS"]
+  },
+  "deferralRequires": ["reason", "conditions", "futureReview"],
+  "reason": null,
+  "conditions": [],
+  "futureReview": null
+}

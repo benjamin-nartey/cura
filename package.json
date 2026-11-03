@@ -7,6 +7,8 @@
     "packages/*"
   ],
   "scripts": {
+    "test:e2e:mobile": "playwright test --config playwright.mobile.config.ts",
+    "test:e2e:p04f05": "playwright test tools/e2e/p04-f05.spec.ts",
     "dev": "npm run dev --workspace @curasphere/web",
     "mobile": "npm start --prefix apps/mobile",
     "build": "npm run build --workspace @curasphere/web",
@@ -15,9 +17,31 @@
     "platform:skeleton": "node --test tools/platform/workspace-rules.test.mjs && npm run typecheck && npm run typecheck --prefix apps/mobile",
     "platform:up": "bash infra/local/up.sh",
     "platform:contracts": "node --test tools/platform/contract-compat.test.mjs",
-    "constitution:phase00": "node --test tools/constitution/charter.test.mjs tools/constitution/intended-use.test.mjs tools/constitution/decision.test.mjs tools/constitution/risk.test.mjs tools/constitution/gates.test.mjs"
+    "constitution:phase00": "node --test tools/constitution/charter.test.mjs tools/constitution/intended-use.test.mjs tools/constitution/decision.test.mjs tools/constitution/risk.test.mjs tools/constitution/gates.test.mjs",
+    "governance:review:dev": "node tools/governance/review-dev.mjs",
+    "governance:local-experiment": "node tools/governance/local-experiment.mjs",
+    "governance:test": "node --test tools/governance/review-dev.test.mjs tools/governance/local-experiment.test.mjs",
+    "lint": "eslint tools/governance/v2 eslint.config.mjs packages/domain/src/billing.ts packages/domain/src/patient-chart.ts packages/domain/src/experimental-healthcare.ts apps/web/app/billing apps/web/app/api/billing \"apps/web/app/patients/**/chart/*.tsx\" apps/web/lib/billing.ts tools/e2e/p04-f05.spec.ts playwright.config.ts apps/web/app/api/mobile-workspace apps/web/lib/mobile-origin.ts apps/web/proxy.ts apps/web/app/login apps/web/app/page.tsx apps/web/app/dashboard/page.tsx apps/web/components/brand.tsx apps/web/components/platform-illustration.tsx apps/web/components/shell.tsx apps/web/app/layout.tsx packages/domain/src/dashboard.ts packages/domain/test/dashboard-data.test.ts apps/mobile/App.tsx apps/mobile/src tools/e2e/mobile-workspace.spec.ts tools/e2e/premium-ui.spec.ts playwright.mobile.config.ts tools/platform/mobile-origin.test.ts apps/web/components/sidebar.tsx apps/web/components/account-menu.tsx apps/web/app/portal/home/page.tsx tools/e2e/workspace-polish.spec.ts packages/domain/src/code-system-registry.ts packages/domain/src/code-system-schema.ts packages/domain/test/code-system-registry.test.ts apps/web/app/terminology apps/web/app/api/terminology apps/web/lib/terminology-registry.ts apps/web/components/release-form.tsx tools/e2e/p05-f01.spec.ts packages/domain/src/unit-conversion.ts packages/domain/src/terminology-validation.ts packages/domain/test/terminology-validation.test.ts apps/web/components/terminology-tools.tsx tools/e2e/p05-f02.spec.ts packages/domain/src/terminology-mappings.ts packages/domain/src/terminology-mapping-schema.ts packages/domain/test/terminology-mappings.test.ts apps/web/components/mapping-tools.tsx tools/e2e/p05-f03.spec.ts packages/domain/src/facility-catalogs.ts packages/domain/src/facility-catalog-schema.ts packages/domain/test/facility-catalogs.test.ts packages/domain/src/work.ts apps/web/components/catalog-form.tsx tools/e2e/p05-f04.spec.ts apps/web/app/work/orders apps/web/app/api/work/orders/route.ts packages/domain/src/clinical-coding.ts packages/domain/src/clinical-coding-schema.ts packages/domain/src/clinical-code-pickers.ts packages/domain/test/clinical-coding.test.ts packages/domain/src/clinical-source.ts apps/web/components/clinical-code-picker.tsx apps/web/app/clinical apps/web/app/api/clinical apps/web/lib/clinical-coding.ts apps/web/lib/clinical.ts tools/e2e/p05-f05.spec.ts tools/e2e/booking.ts packages/domain/src/fhir-source.ts packages/domain/src/fhir-source-map.ts packages/domain/test/fhir-source.test.ts packages/domain/test/fhir-source-fixtures.ts apps/web/app/interop/source apps/web/app/api/integrations/r4 apps/web/components/fhir-source-preview.tsx apps/web/lib/fhir-source.ts tools/fhir tools/e2e/p06-f01.spec.ts tools/platform/fhir-source-http.test.ts packages/domain/src/smart.ts packages/domain/src/smart-schema.ts packages/domain/test/smart.test.ts packages/domain/test/smart-racer.ts apps/web/lib/smart.ts apps/web/components/smart-app.tsx apps/web/app/interop/apps apps/web/app/api/smart apps/web/app/.well-known tools/e2e/p06-f02.spec.ts packages/contracts/src/index.ts tools/platform/smart-http.test.ts",
+    "governance:verify": "node tools/governance/v2/cli.mjs",
+    "engineering:run": "node tools/governance/v2/runner.mjs",
+    "governance:v2:test": "node --test tools/governance/v2/core.test.mjs tools/governance/v2/runner.test.mjs",
+    "fhir:validate": "node tools/fhir/validate.mjs",
+    "fhir:fixtures": "node --import tsx tools/fhir/generate-fixtures.ts",
+    "fhir:test": "node --import tsx --test tools/fhir/validate.test.mjs tools/platform/fhir-source-http.test.ts",
+    "smart:test": "node --import tsx --test packages/domain/test/smart.test.ts tools/platform/smart-http.test.ts"
   },
   "engines": {
     "node": ">=22.13.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@typescript-eslint/parser": "^8.72.1",
+    "eslint": "^10.14.0",
+    "globals": "^16.5.0"
+  },
+  "overrides": {
+    "minimatch": "11.0.1"
   }
 }

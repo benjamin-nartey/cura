@@ -26,7 +26,7 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
           <p className="eyebrow">Operations</p>
           <h1 className="page-title">{ctx.facilityName}</h1>
           <p className="lede">
-            Each sentence compares stored rows and shows its factors and confidence. A hold keeps that sentence. This page does not forecast, staff, or direct care.
+            Review operational indicators with their source factors and confidence. Holding an indicator preserves it for review; it does not change staffing or care assignments.
           </p>
         </div>
       </header>
@@ -38,7 +38,7 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
       </p>
       <form action="/api/operations/rebuild" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
-        <button className="btn-line" type="submit">Rebuild from stored rows</button>
+        <button className="btn-line" type="submit">Refresh overview</button>
       </form>
       {view.state ? (
         <section className="card wide" style={{ marginTop: 16 }}>
@@ -60,7 +60,7 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
         ))}
         <section className="card">
           <p className="eyebrow">On-hand count</p>
-          <p className="muted">A stored count is not a forecast of later use.</p>
+          <p className="muted">Current inventory balance. Future demand is not estimated.</p>
           <form action="/api/operations/inventory" method="post" className="form-grid">
             <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
             <label className="field">

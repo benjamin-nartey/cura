@@ -1,0 +1,11 @@
+
+> curasphere@0.1.0 test:e2e:p04f05
+> playwright test tools/e2e/p04-f05.spec.ts
+
+
+Running 2 tests using 1 worker
+
+  ok 1 tools\e2e\p04-f05.spec.ts:17:5 › synthetic visit from booking through clinician closure, with separated billing (1.9m)
+  ok 2 tools\e2e\p04-f05.spec.ts:91:5 › chart denies a foreign tenant and shows an empty source record truthfully (16.4s)
+
+  2 passed (2.8m)

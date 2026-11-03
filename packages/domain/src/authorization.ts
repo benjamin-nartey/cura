@@ -4,8 +4,31 @@ import type { AppDatabase } from "./db";
 import { get, run, transaction } from "./db";
 import { ConflictError, ForbiddenError } from "./errors";
 
+const now = () => new Date().toISOString();
+const id = (prefix: string) => `${prefix}_${randomUUID()}`;
+
 export const POLICY_ID = "p02-rbac-2026.10";
 export const POLICY_VERSION = 1;
+
+let consentGate: ((
+  db: AppDatabase,
+  principalId: string,
+  action: string,
+  resource: AuthzResource,
+  context: AuthzContext,
+) => AuthzDecision | null) | null = null;
+
+export function registerConsentGate(
+  gate: (
+    db: AppDatabase,
+    principalId: string,
+    action: string,
+    resource: AuthzResource,
+    context: AuthzContext,
+  ) => AuthzDecision | null,
+) {
+  consentGate = gate;
+}
 
 const ROLES = [
   ["platform-administrator", "Platform administrator. Platform configuration only."],
@@ -20,15 +43,27 @@ const ROLES = [
   ["patient", "Patient. Own administrative access only."],
   ["service-principal", "Service principal. Explicit machine capabilities only."],
   ["auditor", "Existing product auditor. Audit review without chart access."],
+  ["privacy-officer", "Synthetic privacy officer. Consent and retention workflows only, not an approved clinical role."],
+  ["records-manager", "Synthetic records manager. Retention execution only, not an approved clinical role."],
+  ["legal-hold-admin", "Synthetic legal-hold administrator. Hold creation only, not an approved clinical role."],
+  ["privacy-engineer", "Synthetic privacy engineer. Telemetry rule changes only, not an approved clinical role."],
 ] as const;
 
 const PERMISSIONS: Array<[string, string, string, string]> = [
+  ["terminology.read", "terminology", "read", "administrative"],
+  ["terminology.manage", "terminology", "manage", "administrative"],
+  ["terminology.review", "terminology", "review", "administrative"],
+  ["facility.catalog.manage", "facility-catalog", "manage", "administrative"],
   ["organization.read", "organization", "read", "standard"],
   ["organization.manage", "organization", "manage", "administrative"],
   ["facility.read", "facility", "read", "standard"],
   ["facility.manage", "facility", "manage", "administrative"],
   ["facility.switch", "facility", "switch", "standard"],
   ["workforce.read", "workforce", "read", "administrative"],
+  ["workforce.invite", "workforce", "invite", "administrative"],
+  ["workforce.update", "workforce", "update", "administrative"],
+  ["workforce.suspend", "workforce", "suspend", "administrative"],
+  ["workforce.assign-role", "workforce", "assign-role", "administrative"],
   ["security.role.read", "security-role", "read", "administrative"],
   ["security.role.manage", "security-role", "manage", "restricted"],
   ["security.policy.read", "security-policy", "read", "administrative"],
@@ -41,22 +76,131 @@ const PERMISSIONS: Array<[string, string, string, string]> = [
   ["medication.read", "medication", "read", "clinical"],
   ["billing.read", "billing", "read", "administrative"],
   ["billing.create", "billing", "create", "administrative"],
+  ["billing.catalog.read", "billing-catalog", "read", "administrative"],
+  ["billing.catalog.manage", "billing-catalog", "manage", "administrative"],
+  ["billing.charge.read", "billing-charge", "read", "administrative"],
+  ["billing.charge.create", "billing-charge", "create", "administrative"],
+  ["billing.charge.adjust", "billing-charge", "adjust", "administrative"],
+  ["billing.charge.review", "billing-charge", "review", "administrative"],
+  ["billing.charge.void", "billing-charge", "void", "administrative"],
+  ["billing.charge.status", "billing-charge", "status", "administrative"],
+  ["billing.history.read", "billing-history", "read", "administrative"],
+  ["emergency.request", "emergency", "request", "administrative"],
+  ["emergency.review.read", "emergency-review", "read", "administrative"],
+  ["emergency.review.assign", "emergency-review", "assign", "administrative"],
+  ["emergency.review.disposition", "emergency-review", "disposition", "administrative"],
+  ["emergency.review.escalate", "emergency-review", "escalate", "administrative"],
+  ["emergency.grant.revoke", "emergency-grant", "revoke", "administrative"],
+  ["consent.read", "consent", "read", "administrative"],
+  ["consent.record", "consent", "record", "administrative"],
+  ["consent.verify", "consent", "verify", "administrative"],
+  ["consent.manage", "consent", "manage", "administrative"],
+  ["consent.withdraw", "consent", "withdraw", "administrative"],
+  ["consent.history.read", "consent", "history", "administrative"],
+  ["consent.policy.evaluate", "consent", "evaluate", "administrative"],
+  ["consent.communication.dispatch", "consent-communication", "dispatch", "administrative"],
+  ["consent.sharing.release", "consent-sharing", "release", "administrative"],
+  ["consent.research.use", "consent-research", "use", "administrative"],
+  ["retention.policy.read", "retention-policy", "read", "administrative"],
+  ["retention.policy.manage", "retention-policy", "manage", "administrative"],
+  ["retention.evaluate", "retention", "evaluate", "administrative"],
+  ["retention.dry-run", "retention", "dry-run", "administrative"],
+  ["retention.execute", "retention", "execute", "administrative"],
+  ["retention.job.read", "retention-job", "read", "administrative"],
+  ["legal-hold.read", "legal-hold", "read", "administrative"],
+  ["legal-hold.create", "legal-hold", "create", "administrative"],
+  ["legal-hold.activate", "legal-hold", "activate", "administrative"],
+  ["legal-hold.release", "legal-hold", "release", "administrative"],
+  ["retention.audit.read", "retention-audit", "read", "administrative"],
+  ["privacy.request.read", "privacy-request", "read", "administrative"],
+  ["privacy.request.create", "privacy-request", "create", "administrative"],
+  ["privacy.request.verify", "privacy-request", "verify", "administrative"],
+  ["privacy.request.approve", "privacy-request", "approve", "administrative"],
+  ["privacy.bulk.approve", "privacy-request", "bulk-approve", "administrative"],
+  ["privacy.export.run", "privacy-export", "run", "administrative"],
+  ["privacy.export.download", "privacy-export", "download", "administrative"],
+  ["privacy.export.revoke", "privacy-export", "revoke", "administrative"],
+  ["privacy.audit.read", "privacy-audit", "read", "administrative"],
+  ["privacy.telemetry.read", "privacy-telemetry", "read", "administrative"],
+  ["privacy.alert.read", "privacy-alert", "read", "administrative"],
+  ["privacy.alert.acknowledge", "privacy-alert", "acknowledge", "administrative"],
+  ["privacy.alert.investigate", "privacy-alert", "investigate", "administrative"],
+  ["privacy.rule.read", "privacy-rule", "read", "administrative"],
+  ["privacy.rule.manage", "privacy-rule", "manage", "administrative"],
+  ["privacy.telemetry.test", "privacy-telemetry", "test", "administrative"],
+  ["patient.read", "patient", "read", "clinical"],
+  ["patient.register", "patient", "register", "clinical"],
+  ["patient.update", "patient", "update", "clinical"],
+  ["patient.merge", "patient", "merge", "restricted"],
+  ["practitioner.read", "practitioner", "read", "administrative"],
+  ["practitioner.manage", "practitioner", "manage", "administrative"],
+  ["practitioner.link", "practitioner", "link", "restricted"],
+  ["appointment.read", "appointment", "read", "administrative"],
+  ["appointment.create", "appointment", "create", "administrative"],
+  ["appointment.confirm", "appointment", "confirm", "administrative"],
+  ["appointment.reschedule", "appointment", "reschedule", "administrative"],
+  ["appointment.cancel", "appointment", "cancel", "administrative"],
+  ["appointment.arrive", "appointment", "arrive", "administrative"],
+  ["appointment.no-show", "appointment", "no-show", "administrative"],
+  ["encounter.read", "encounter", "read", "clinical"],
+  ["encounter.start", "encounter", "start", "clinical"],
+  ["encounter.close", "encounter", "close", "clinical"],
+  ["encounter.history.read", "encounter", "history", "administrative"],
+  ["clinical.condition.read", "clinical-condition", "read", "clinical"],
+  ["clinical.condition.record", "clinical-condition", "record", "clinical"],
+  ["clinical.condition.amend", "clinical-condition", "amend", "clinical"],
+  ["clinical.allergy.read", "clinical-allergy", "read", "clinical"],
+  ["clinical.allergy.record", "clinical-allergy", "record", "clinical"],
+  ["clinical.allergy.amend", "clinical-allergy", "amend", "clinical"],
+  ["clinical.observation.read", "clinical-observation", "read", "clinical"],
+  ["clinical.observation.record", "clinical-observation", "record", "clinical"],
+  ["clinical.observation.correct", "clinical-observation", "correct", "clinical"],
+  ["clinical.medication-order.read", "clinical-medication-order", "read", "clinical"],
+  ["clinical.medication-order.draft", "clinical-medication-order", "draft", "clinical"],
+  ["clinical.medication-order.amend", "clinical-medication-order", "amend", "clinical"],
+  ["clinical.medication-order.cancel", "clinical-medication-order", "cancel", "clinical"],
+  ["clinical.source.history.read", "clinical-source", "history", "clinical"],
+  ["work.order.read", "work-order", "read", "clinical"],
+  ["work.order.submit", "work-order", "submit", "clinical"],
+  ["work.order.route", "work-order", "route", "clinical"],
+  ["work.order.cancel", "work-order", "cancel", "clinical"],
+  ["work.plan.read", "work-plan", "read", "clinical"],
+  ["work.plan.record", "work-plan", "record", "clinical"],
+  ["work.plan.update", "work-plan", "update", "clinical"],
+  ["work.referral.read", "work-referral", "read", "clinical"],
+  ["work.referral.submit", "work-referral", "submit", "clinical"],
+  ["work.referral.decide", "work-referral", "decide", "clinical"],
+  ["work.referral.cancel", "work-referral", "cancel", "clinical"],
+  ["work.task.read", "work-task", "read", "clinical"],
+  ["work.task.assign", "work-task", "assign", "clinical"],
+  ["work.attachment.add", "work-attachment", "add", "clinical"],
+  ["work.pending.read", "work-queue", "read", "clinical"],
+  ["work.history.read", "work-history", "read", "clinical"],
 ];
 
 const GRANTS: Record<string, string[]> = {
   "platform-administrator": ["organization.read", "security.policy.read"],
-  "organization-administrator": ["organization.read", "organization.manage", "facility.read", "facility.manage", "facility.switch", "workforce.read", "security.role.read", "security.role.manage", "security.policy.read", "security.audit.read", "billing.read"],
-  "facility-administrator": ["facility.read", "facility.manage", "facility.switch", "workforce.read", "security.role.read"],
-  doctor: ["facility.read", "facility.switch", "clinical.read", "clinical.create", "clinical.update", "medication.read", "laboratory.order.read", "laboratory.result.read"],
-  nurse: ["facility.read", "facility.switch", "clinical.read", "clinical.update", "medication.read"],
+  "organization-administrator": ["organization.read", "organization.manage", "facility.read", "facility.manage", "facility.switch", "workforce.read", "workforce.invite", "workforce.update", "workforce.suspend", "workforce.assign-role", "security.role.read", "security.role.manage", "security.policy.read", "patient.read", "patient.register", "patient.update", "patient.merge", "practitioner.read", "practitioner.manage", "practitioner.link"],
+  "facility-administrator": ["facility.read", "facility.manage", "facility.switch", "workforce.read", "workforce.invite", "workforce.update", "workforce.assign-role", "security.role.read"],
+  doctor: ["facility.read", "facility.switch", "clinical.read", "clinical.create", "clinical.update", "medication.read", "laboratory.order.read", "laboratory.result.read", "emergency.request", "patient.read", "patient.register", "practitioner.read", "appointment.read", "encounter.read", "encounter.start", "encounter.close", "encounter.history.read", "clinical.condition.read", "clinical.condition.record", "clinical.condition.amend", "clinical.allergy.read", "clinical.allergy.record", "clinical.allergy.amend", "clinical.observation.read", "clinical.observation.record", "clinical.observation.correct", "clinical.medication-order.read", "clinical.medication-order.draft", "clinical.medication-order.amend", "clinical.medication-order.cancel", "clinical.source.history.read", "work.order.read", "work.order.submit", "work.order.route", "work.order.cancel", "work.plan.read", "work.plan.record", "work.plan.update", "work.referral.read", "work.referral.submit", "work.referral.decide", "work.referral.cancel", "work.task.read", "work.task.assign", "work.attachment.add", "work.pending.read", "work.history.read", "billing.charge.status"],
+  nurse: ["facility.read", "facility.switch", "clinical.read", "clinical.update", "medication.read", "patient.read", "practitioner.read", "appointment.read", "appointment.create", "appointment.confirm", "appointment.reschedule", "appointment.cancel", "appointment.arrive", "appointment.no-show", "encounter.read", "clinical.condition.read", "clinical.allergy.read", "clinical.observation.read", "clinical.medication-order.read", "clinical.source.history.read", "work.order.read", "work.plan.read", "work.referral.read", "work.task.read", "work.task.assign", "work.pending.read", "work.history.read"],
   pharmacist: ["facility.read", "medication.read"],
-  "laboratory-scientist": ["facility.read", "laboratory.order.read", "laboratory.result.read"],
-  receptionist: ["facility.read", "facility.switch", "organization.read"],
-  "billing-officer": ["facility.read", "billing.read", "billing.create"],
+  "laboratory-scientist": ["facility.read", "laboratory.order.read", "laboratory.result.read", "work.order.read", "work.order.route", "work.referral.read", "work.referral.decide", "work.task.read", "work.task.assign", "work.pending.read", "work.history.read"],
+  receptionist: ["facility.read", "facility.switch", "organization.read", "patient.read", "practitioner.read", "appointment.read", "appointment.create", "appointment.confirm", "appointment.reschedule", "appointment.cancel", "appointment.arrive", "appointment.no-show"],
+  "billing-officer": ["facility.read", "facility.switch", "patient.read", "encounter.read", "billing.read", "billing.create", "billing.catalog.read", "billing.charge.read", "billing.charge.create", "billing.charge.adjust", "billing.charge.review", "billing.charge.void", "billing.history.read"],
   patient: ["organization.read"],
   "service-principal": ["organization.read"],
-  auditor: ["organization.read", "facility.read", "security.audit.read", "security.policy.read"],
+  auditor: ["organization.read", "facility.read", "security.audit.read", "security.policy.read", "emergency.review.read", "emergency.review.assign", "emergency.review.disposition", "emergency.review.escalate", "emergency.grant.revoke", "consent.read", "consent.history.read", "retention.policy.read", "retention.job.read", "legal-hold.read", "retention.audit.read", "privacy.request.read", "privacy.audit.read", "privacy.telemetry.read", "privacy.alert.read", "privacy.rule.read", "clinical.condition.read", "clinical.allergy.read", "clinical.observation.read", "clinical.medication-order.read", "clinical.source.history.read", "work.order.read", "work.plan.read", "work.referral.read", "work.task.read", "work.pending.read", "work.history.read", "billing.charge.read", "billing.catalog.read", "billing.history.read"],
+  "privacy-officer": ["organization.read", "facility.read", "consent.read", "consent.record", "consent.verify", "consent.manage", "consent.withdraw", "consent.history.read", "consent.policy.evaluate", "consent.communication.dispatch", "consent.sharing.release", "consent.research.use", "retention.policy.read", "retention.policy.manage", "retention.evaluate", "retention.dry-run", "retention.job.read", "legal-hold.read", "legal-hold.release", "retention.audit.read", "privacy.request.read", "privacy.request.verify", "privacy.request.approve", "privacy.export.run", "privacy.export.revoke", "privacy.audit.read", "privacy.telemetry.read", "privacy.alert.read", "privacy.alert.acknowledge", "privacy.alert.investigate", "privacy.rule.read", "privacy.telemetry.test"],
+  "records-manager": ["organization.read", "facility.read", "retention.policy.read", "retention.evaluate", "retention.dry-run", "retention.execute", "retention.job.read", "legal-hold.read", "privacy.request.read", "privacy.request.create", "privacy.export.download"],
+  "legal-hold-admin": ["organization.read", "facility.read", "legal-hold.read", "legal-hold.create", "legal-hold.activate", "retention.policy.read", "retention.job.read", "privacy.request.read", "privacy.bulk.approve"],
+  "privacy-engineer": ["organization.read", "privacy.telemetry.read", "privacy.rule.read", "privacy.rule.manage"],
 };
+for (const role of ["platform-administrator", "organization-administrator", "facility-administrator", "doctor", "nurse", "pharmacist", "laboratory-scientist", "auditor"]) GRANTS[role].push("terminology.read");
+GRANTS["organization-administrator"].push("terminology.manage");
+for (const role of ["organization-administrator", "doctor", "pharmacist"]) GRANTS[role].push("terminology.review");
+for (const role of ["organization-administrator", "facility-administrator", "pharmacist"]) GRANTS[role].push("facility.catalog.manage");
+
 
 const ROLE_FROM_MEMBERSHIP: Record<string, string> = {
   admin: "organization-administrator",
@@ -67,10 +211,14 @@ const ROLE_FROM_MEMBERSHIP: Record<string, string> = {
   receptionist: "receptionist",
   laboratory: "laboratory-scientist",
   auditor: "auditor",
+  "facility-administrator": "facility-administrator",
+  "billing-officer": "billing-officer",
+  billing: "billing-officer",
 };
 
 export type AuthzResource = {
   type: string;
+  id?: string | null;
   organizationId?: string | null;
   facilityId?: string | null;
   sensitivity?: "standard" | "administrative" | "clinical" | "confidential" | "restricted" | null;
@@ -87,6 +235,7 @@ export type AuthzContext = {
   forwardedUserId?: string | null;
   bulk?: boolean;
   correlationId?: string | null;
+  sessionId?: string | null;
 };
 
 export type AuthzDecision = {
@@ -152,6 +301,11 @@ export function seedAuthorization(db: AppDatabase) {
     }
     run(
       db,
+      `DELETE FROM authorization_role_permissions
+       WHERE role_id = 'organization-administrator' AND permission_id IN ('billing.read', 'security.audit.read')`,
+    );
+    run(
+      db,
       `INSERT INTO authorization_policies (id, version, scope, conditions_json, effect, status, approved_at, effective_from, effective_until)
        VALUES (?, ?, 'platform', ?, 'deny', 'active', NULL, ?, NULL)
        ON CONFLICT(id, version) DO NOTHING`,
@@ -160,7 +314,7 @@ export function seedAuthorization(db: AppDatabase) {
       JSON.stringify({
         denyOverrides: true,
         emergency: "disabled",
-        unimplemented: ["clinical.sign", "medication.prescribe", "medication.dispense", "laboratory.result.authorize", "billing.adjust", "workforce.invite"],
+        unimplemented: ["clinical.sign", "medication.prescribe", "medication.dispense", "laboratory.result.authorize", "billing.adjust"],
         review: "Proposed clinical role permissions are not an approved clinical policy.",
       }),
       now,
@@ -183,6 +337,13 @@ export function seedAuthorization(db: AppDatabase) {
     for (const user of users) {
       const roleId = ROLE_FROM_MEMBERSHIP[user.role];
       if (!roleId) continue;
+      const membership = get<{ status: string }>(
+        db,
+        `SELECT status FROM organization_memberships WHERE user_id = ? AND organization_id = ?`,
+        user.id,
+        user.organization_id,
+      );
+      if (membership && membership.status !== "active") continue;
       const facilityMember = get<{ id: string }>(
         db,
         `SELECT id FROM facility_memberships WHERE user_id = ? AND organization_id = ? LIMIT 1`,
@@ -198,6 +359,15 @@ export function seedAuthorization(db: AppDatabase) {
       );
       if (!existing) assignStored(db, user.id, roleId, user.organization_id, "", "seed");
     }
+    if (get(db, `SELECT id FROM users WHERE id = 'usr_gh_privacy'`)) {
+      assignStored(db, "usr_gh_privacy", "privacy-officer", "org_demo_gh", "fac_gh_accra", "seed");
+    }
+    if (get(db, `SELECT id FROM users WHERE id = 'usr_gh_records'`)) {
+      assignStored(db, "usr_gh_records", "records-manager", "org_demo_gh", "fac_gh_accra", "seed");
+    }
+    if (get(db, `SELECT id FROM users WHERE id = 'usr_gh_legal'`)) {
+      assignStored(db, "usr_gh_legal", "legal-hold-admin", "org_demo_gh", "fac_gh_accra", "seed");
+    }
     const services = db
       .prepare(`SELECT id, organization_id FROM service_principals WHERE status = 'active'`)
       .all() as Array<{ id: string; organization_id: string }>;
@@ -212,6 +382,7 @@ export function seedAuthorization(db: AppDatabase) {
              AND m.organization_id = authorization_assignments.organization_id
          )`,
     );
+    run(db, `DELETE FROM authorization_cache`);
   });
 }
 
@@ -245,15 +416,18 @@ export function authorize(
   try {
     const control = get<{ value: string }>(db, `SELECT value FROM authorization_controls WHERE name = 'dependency'`);
     const override = matchingDeny(db, subject.principalId, action);
+    const account = get<{ account_status: string }>(db, `SELECT account_status FROM users WHERE id = ?`, subject.principalId);
     if (!control || control.value !== "available") {
       decision = deny("policy-unavailable");
+    } else if (account?.account_status === "disabled") {
+      decision = deny("account-disabled");
     } else if (context.emergency) {
       decision = deny("emergency-disabled");
     } else if (context.forwardedUserId && context.forwardedUserId !== subject.principalId) {
       decision = deny("delegation");
     } else if (subject.accountActive === false || context.sessionActive === false) {
       decision = deny("session-inactive");
-    } else if (context.bulk || action.includes("*") || action.endsWith(".export") || action === "clinical.sign" || action === "billing.adjust" || action === "medication.prescribe" || action === "medication.dispense" || action === "laboratory.result.authorize" || action === "workforce.invite") {
+    } else if (context.bulk || action.includes("*") || action.endsWith(".export") || action === "clinical.sign" || action === "billing.adjust" || action === "medication.prescribe" || action === "medication.dispense" || action === "laboratory.result.authorize") {
       decision = context.bulk || action.endsWith(".export") ? deny("bulk") : deny("unimplemented");
     } else if (!APPROVED_PURPOSES.has(context.purpose ?? "")) {
       decision = deny("purpose-denied");
@@ -271,6 +445,14 @@ export function authorize(
       else if (!permitted(db, subject.principalId, action, resource.organizationId ?? null, resource.facilityId ?? null)) decision = deny("permission");
       else if (action === "security.role.manage" && context.assurance !== "mfa") decision = deny("assurance-required");
       else decision = { allow: true, reason: "permit", policyId: POLICY_ID, policyVersion: POLICY_VERSION };
+    }
+    if (!decision.allow && !context.emergency && (decision.reason === "relationship-required" || decision.reason === "permission") && emergencyGrantAllows(db, subject.principalId, action, resource, context)) {
+      decision = { allow: true, reason: "emergency-grant", policyId: POLICY_ID, policyVersion: POLICY_VERSION };
+      recordEmergencyUse(db, subject.principalId, action, resource, context);
+    }
+    if (decision.allow && consentGate) {
+      const gated = consentGate(db, subject.principalId, action, resource, context);
+      if (gated && !gated.allow) decision = gated;
     }
   } catch {
     decision = deny("policy-unavailable");
@@ -303,16 +485,15 @@ function deny(reason: string): AuthzDecision {
 
 function activeMembership(db: AppDatabase, principalId: string, organizationId: string | null) {
   if (!organizationId) return true;
+  const membership = get<{ status: string }>(
+    db,
+    `SELECT status FROM organization_memberships WHERE user_id = ? AND organization_id = ?`,
+    principalId,
+    organizationId,
+  );
+  if (membership) return membership.status === "active";
   return Boolean(
-    get(
-      db,
-      `SELECT id FROM organization_memberships WHERE user_id = ? AND organization_id = ? AND status = 'active'
-       UNION SELECT id FROM service_principals WHERE id = ? AND organization_id = ? AND status = 'active'`,
-      principalId,
-      organizationId,
-      principalId,
-      organizationId,
-    ) ||
+    get(db, `SELECT id FROM service_principals WHERE id = ? AND organization_id = ? AND status = 'active'`, principalId, organizationId) ||
       get(db, `SELECT id FROM users WHERE id = ? AND organization_id = ?`, principalId, organizationId),
   );
 }
@@ -397,6 +578,13 @@ function record(
 }
 
 export function effectivePermissions(db: AppDatabase, principalId: string, organizationId: string, facilityId: string | null) {
+  const organization = get<{ status: string }>(db, `SELECT status FROM organization_memberships WHERE user_id = ? AND organization_id = ?`, principalId, organizationId);
+  if (organization && organization.status !== "active") {
+    return { roles: [], permissions: [], version: 0, policyId: POLICY_ID, policyVersion: POLICY_VERSION, review: "This organization membership is not active." };
+  }
+  const facility = facilityId
+    ? get<{ status: string }>(db, `SELECT status FROM facility_memberships WHERE user_id = ? AND facility_id = ?`, principalId, facilityId)
+    : undefined;
   const rows = db
     .prepare(
       `SELECT a.role_id AS roleId, a.facility_id AS facilityId, a.version, rp.permission_id AS permission
@@ -406,13 +594,17 @@ export function effectivePermissions(db: AppDatabase, principalId: string, organ
          AND (a.facility_id = '' OR a.facility_id IS NULL OR a.facility_id = ?)`,
     )
     .all(principalId, organizationId, facilityId ?? "") as Array<{ roleId: string; facilityId: string; version: number; permission: string }>;
+  const visible = facility && facility.status !== "active" ? rows.filter((row) => row.facilityId === "") : rows;
+  const review = facility && facility.status !== "active"
+    ? "This facility membership is not active."
+    : "Proposed clinical permissions are not an approved clinical policy.";
   return {
-    roles: [...new Set(rows.map((row) => row.roleId))],
-    permissions: [...new Set(rows.map((row) => row.permission))].sort(),
-    version: rows.reduce((sum, row) => sum + row.version, 0),
+    roles: [...new Set(visible.map((row) => row.roleId))],
+    permissions: [...new Set(visible.map((row) => row.permission))].sort(),
+    version: visible.reduce((sum, row) => sum + row.version, 0),
     policyId: POLICY_ID,
     policyVersion: POLICY_VERSION,
-    review: "Proposed clinical permissions are not an approved clinical policy.",
+    review,
   };
 }
 
@@ -492,6 +684,39 @@ export function setAuthorizationDependency(db: AppDatabase, value: "available" |
 
 export function authorizationCount(db: AppDatabase, name: string) {
   return Number(get<{ value: string }>(db, `SELECT value FROM authorization_controls WHERE name = ?`, name)?.value ?? 0);
+}
+
+function emergencyGrantAllows(db: AppDatabase, principalId: string, action: string, resource: AuthzResource, context: AuthzContext) {
+  if (resource.type !== "SyntheticRestrictedRecord" || action !== "synthetic.read" || !context.sessionId || !resource.organizationId) return false;
+  if (process.env.CURASPHERE_ENV === "production" || process.env.CURASPHERE_ENV === "staging") return false;
+  const session = get<{ revoked_at: string | null }>(db, `SELECT revoked_at FROM auth_sessions WHERE session_id = ?`, context.sessionId);
+  if (session?.revoked_at) return false;
+  const membership = get<{ status: string }>(db, `SELECT status FROM organization_memberships WHERE user_id = ? AND organization_id = ?`, principalId, resource.organizationId);
+  if (membership && membership.status !== "active") return false;
+  const grant = get<{ id: string; expires_at: string; policy_version: number }>(
+    db,
+    `SELECT g.id, g.expires_at, g.policy_version FROM emergency_grants g
+     JOIN emergency_policies p ON p.organization_id = g.organization_id AND p.facility_id = g.facility_id AND p.resource_type = g.resource_type AND p.action = g.action
+     WHERE g.principal_id = ? AND g.session_id = ? AND g.organization_id = ? AND g.facility_id = ? AND g.resource_id = ? AND g.action = ?
+       AND g.status = 'active' AND g.revoked_at IS NULL AND p.status = 'enabled' AND p.environment = 'development' AND p.version = g.policy_version`,
+    principalId, context.sessionId, resource.organizationId, resource.facilityId ?? "", resource.id ?? "", action,
+  );
+  return Boolean(grant && Date.parse(grant.expires_at) > Date.now());
+}
+
+function recordEmergencyUse(db: AppDatabase, principalId: string, action: string, resource: AuthzResource, context: AuthzContext) {
+  const grant = get<{ id: string; request_id: string; policy_version: number }>(
+    db,
+    `SELECT id, request_id, policy_version FROM emergency_grants WHERE principal_id = ? AND session_id = ? AND resource_id = ? AND status = 'active'`,
+    principalId, context.sessionId ?? "", resource.id ?? "",
+  );
+  if (!grant) return;
+  run(
+    db,
+    `INSERT INTO emergency_events (id, request_id, grant_id, actor_id, event_type, created_at, decision, resource_id, action, outcome, reason_code, policy_version, correlation_id)
+     VALUES (?, ?, ?, ?, 'resource-accessed', ?, 'permit', ?, ?, 'allowed', 'emergency-grant', ?, ?)`,
+    id("eem"), grant.request_id, grant.id, principalId, now(), resource.id ?? null, action, grant.policy_version, context.correlationId ?? id("cor"),
+  );
 }
 
 export function latestDecision(db: AppDatabase, principalId: string) {
