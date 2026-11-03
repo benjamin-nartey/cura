@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip" href="#content">
           Skip to content
         </a>
-        <div className="notice">CuraSphere · one chart for the people in this clinic’s care.</div>
+        <div className="notice" role="region" aria-label="Product notice">CuraSphere · one chart for the people in this clinic’s care.</div>
         {children}
       </body>
     </html>

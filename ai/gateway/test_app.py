@@ -85,6 +85,7 @@ class GatewayScaffoldTest(unittest.TestCase):
             self.assertNotIn("cough", text)
             self.assertNotIn("local-sim-token", text)
             self.assertNotIn("Bearer", text)
+            self.assertNotIn("555-010-0199", JsonFormatter().format(logging.LogRecord("curasphere.gateway", logging.INFO, __file__, 1, "call 555-010-0199", (), None)))
         finally:
             log.removeHandler(handler)
             os.environ.pop("CURASPHERE_LOCAL_TOKEN", None)

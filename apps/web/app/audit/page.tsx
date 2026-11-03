@@ -20,6 +20,7 @@ export default async function AuditPage() {
       <p className="eyebrow">{ctx.organizationName}</p>
       <h1 className="page-title">Access decisions</h1>
       <p className="lede">Who opened or changed a record, and whether the decision was allowed. Limited to this organization.</p>
+      <p><a href="/audit/ledger">Open the experimental access ledger</a></p>
       <div className="list">
         {entries.map((entry) => (
           <article className="row" key={entry.id} style={{ gridTemplateColumns: "180px minmax(0, 1fr) auto" }}>

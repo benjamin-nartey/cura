@@ -160,7 +160,7 @@ const phases: { name: string; check: () => void }[] = [
       present("packages/domain/package.json");
       present("packages/contracts/package.json");
       const { db } = signIn(FIXTURES.amira);
-      assert.equal(healthcheck(db).schemaVersion, 30);
+      assert.equal(healthcheck(db).schemaVersion, 43);
     },
   },
   {
@@ -785,7 +785,7 @@ const phases: { name: string; check: () => void }[] = [
       );
       const drill = recordRegionDrill(db, ctx, { idempotencyKey: "phase27-drill1" });
       assert.equal(drill.failover, "not-run");
-      assert.equal(drill.schemaVersion, 30);
+      assert.equal(drill.schemaVersion, 43);
       assert.ok(drill.elapsedMs >= 0 && drill.elapsedMs < 5000);
       assert.equal(readEnterprise(db, ctx).rtoNote, ENTERPRISE_RTO_NOTE);
       assert.throws(() => moveTenant(db, ctx, { targetRegion: "eu-central-1", idempotencyKey: "phase27-move01" }), (error: unknown) => error instanceof ValidationError);

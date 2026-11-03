@@ -297,3 +297,20 @@ test("P02-S31 and P02-S36 a Dex restart rotates keys and then accepts a new logi
   const next = await exchangeAuthorizationCode(recovered.callback, recovered);
   assert.equal((await verifyPresentedIdToken(next.idToken)).sub, next.subject);
 });
+
+test("local synthetic Dex accounts keep the configured issuer and subject", async () => {
+  const accounts = [
+    ["amira.solano@harborlight.invalid", "usr_amira"],
+    ["akosua.owusu@demo-gh.invalid", "usr_gh_nurse"],
+    ["marta.keller@demo-eu.invalid", "usr_eu_admin"],
+    ["engineer@adom.invalid", "usr_local_engineer"],
+  ] as const;
+  for (const [email, userId] of accounts) {
+    const started = await dexPasswordLogin(email, "password");
+    const tokens = await exchangeAuthorizationCode(started.callback, started);
+    assert.equal(tokens.subject, dexLocalSubject(userId));
+    const payload = await verifyPresentedIdToken(tokens.idToken);
+    assert.equal(payload.iss, LOCAL_ISSUER);
+    assert.equal(payload.sub, tokens.subject);
+  }
+});

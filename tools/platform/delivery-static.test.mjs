@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { testBash } from "../test-shell.mjs";
 
 const root = new URL("../../", import.meta.url);
 
@@ -24,7 +25,7 @@ test("dev and staging do not share a namespace, secret, or data store", () => {
 });
 
 test("production deployment is rejected before helm runs", () => {
-  const result = spawnSync("bash", ["infra/delivery/deploy.sh", "production"], { encoding: "utf8" });
+  const result = spawnSync(testBash, ["infra/delivery/deploy.sh", "production"], { encoding: "utf8" });
   assert.equal(result.status, 2);
   assert.match(result.stderr, /not authorized/);
 });

@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "test:e2e:p04f05": "playwright test tools/e2e/p04-f05.spec.ts",
     "dev": "npm run dev --workspace @curasphere/web",
     "mobile": "npm start --prefix apps/mobile",
     "build": "npm run build --workspace @curasphere/web",
@@ -15,9 +16,27 @@
     "platform:skeleton": "node --test tools/platform/workspace-rules.test.mjs && npm run typecheck && npm run typecheck --prefix apps/mobile",
     "platform:up": "bash infra/local/up.sh",
     "platform:contracts": "node --test tools/platform/contract-compat.test.mjs",
-    "constitution:phase00": "node --test tools/constitution/charter.test.mjs tools/constitution/intended-use.test.mjs tools/constitution/decision.test.mjs tools/constitution/risk.test.mjs tools/constitution/gates.test.mjs"
+    "constitution:phase00": "node --test tools/constitution/charter.test.mjs tools/constitution/intended-use.test.mjs tools/constitution/decision.test.mjs tools/constitution/risk.test.mjs tools/constitution/gates.test.mjs",
+    "governance:review:dev": "node tools/governance/review-dev.mjs",
+    "governance:local-experiment": "node tools/governance/local-experiment.mjs",
+    "governance:test": "node --test tools/governance/review-dev.test.mjs tools/governance/local-experiment.test.mjs",
+    "lint": "eslint tools/governance/v2 eslint.config.mjs packages/domain/src/billing.ts packages/domain/src/patient-chart.ts packages/domain/src/experimental-healthcare.ts apps/web/app/billing apps/web/app/api/billing \"apps/web/app/patients/**/chart/*.tsx\" apps/web/lib/billing.ts tools/e2e/p04-f05.spec.ts playwright.config.ts",
+    "governance:verify": "node tools/governance/v2/cli.mjs",
+    "engineering:run": "node tools/governance/v2/runner.mjs",
+    "governance:v2:test": "node --test tools/governance/v2/core.test.mjs tools/governance/v2/runner.test.mjs"
   },
   "engines": {
     "node": ">=22.13.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@typescript-eslint/parser": "^8.72.1",
+    "eslint": "^10.14.0",
+    "globals": "^16.5.0"
+  },
+  "overrides": {
+    "minimatch": "11.0.1"
   }
 }

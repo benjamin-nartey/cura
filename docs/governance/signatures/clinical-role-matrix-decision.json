@@ -1,0 +1,21 @@
+{
+  "recordType": "proposed-decision",
+  "decisionId": "P02-R04-ROLE-MATRIX",
+  "role": "clinical",
+  "review": "P02-R04",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+  "decision": null,
+  "reviewerName": null,
+  "signedAt": null,
+  "statement": null,
+  "allowedDecisions": ["APPROVE", "REJECT", "DEFERRED"],
+  "deferralRequires": ["reason", "conditions", "futureReview"],
+  "reason": null,
+  "conditions": [],
+  "futureReview": null,
+  "preservedIfDeferred": [
+    "Clinical roles remain unapproved for real clinical use.",
+    "Production clinical break-glass remains disabled.",
+    "No regulatory or clinical authorization is implied."
+  ]
+}

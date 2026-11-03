@@ -10,6 +10,11 @@ type LinkId =
   | "facility"
   | "worklist"
   | "patients"
+  | "practitioners"
+  | "appointments"
+  | "clinical"
+  | "work"
+  | "billing"
   | "coordination"
   | "operations"
   | "interop"
@@ -28,15 +33,28 @@ type LinkId =
   | "enterprise"
   | "marketplace"
   | "tenancy"
-  | "access";
+  | "access"
+  | "workforce"
+  | "emergency"
+  | "consent"
+  | "retention"
+  | "requests"
+  | "telemetry";
 
 const LINKS: ReadonlyArray<{ href: string; id: LinkId; label: string; group: string; icon: IconName }> = [
   { href: "/dashboard", id: "dashboard", label: "Dashboard", group: "Main", icon: "grid" },
   { href: "/tenancy", id: "tenancy", label: "Organization", group: "Main", icon: "shieldCheck" },
   { href: "/access", id: "access", label: "Access", group: "Main", icon: "shieldCheck" },
+  { href: "/workforce", id: "workforce", label: "Workforce", group: "Main", icon: "users" },
+  { href: "/emergency", id: "emergency", label: "Emergency access", group: "Main", icon: "shieldCheck" },
   { href: "/facility", id: "facility", label: "Beds and wards", group: "Main", icon: "bed" },
   { href: "/worklist", id: "worklist", label: "Worklist", group: "Main", icon: "checklist" },
   { href: "/patients", id: "patients", label: "Patients", group: "Main", icon: "users" },
+  { href: "/practitioners", id: "practitioners", label: "Practitioners", group: "Main", icon: "users" },
+  { href: "/appointments", id: "appointments", label: "Appointments", group: "Main", icon: "calendar" },
+  { href: "/clinical", id: "clinical", label: "Clinical entries", group: "Main", icon: "activity" },
+  { href: "/work", id: "work", label: "Pending work", group: "Main", icon: "checklist" },
+  { href: "/billing", id: "billing", label: "Charges", group: "Main", icon: "wallet" },
   { href: "/coordination", id: "coordination", label: "Coordination", group: "Main", icon: "handoff" },
   { href: "/operations", id: "operations", label: "Operations", group: "Monitoring", icon: "activity" },
   { href: "/interop", id: "interop", label: "Interop", group: "Monitoring", icon: "plug" },
@@ -45,6 +63,10 @@ const LINKS: ReadonlyArray<{ href: string; id: LinkId; label: string; group: str
   { href: "/imaging", id: "imaging", label: "Imaging", group: "Monitoring", icon: "scan" },
   { href: "/devices", id: "devices", label: "Devices", group: "Monitoring", icon: "heartPulse" },
   { href: "/audit", id: "audit", label: "Audit", group: "Reports", icon: "fileSearch" },
+  { href: "/consent", id: "consent", label: "Consent", group: "Reports", icon: "shieldCheck" },
+  { href: "/privacy/retention", id: "retention", label: "Retention", group: "Reports", icon: "shieldCheck" },
+  { href: "/privacy/requests", id: "requests", label: "Privacy requests", group: "Reports", icon: "fileSearch" },
+  { href: "/privacy/telemetry", id: "telemetry", label: "Privacy telemetry", group: "Reports", icon: "shield" },
   { href: "/analytics", id: "analytics", label: "Analytics", group: "Reports", icon: "chart" },
   { href: "/population", id: "population", label: "Population", group: "Reports", icon: "globe" },
   { href: "/research", id: "research", label: "Research", group: "Reports", icon: "flask" },
@@ -60,9 +82,16 @@ const TITLES: Record<LinkId | "account", string> = {
   dashboard: "Dashboard",
   tenancy: "Organization",
   access: "Access",
+  workforce: "Workforce",
+  emergency: "Emergency access",
   facility: "Beds and wards",
   worklist: "Worklist",
   patients: "Patients",
+  practitioners: "Practitioners",
+  appointments: "Appointments",
+  clinical: "Clinical entries",
+  work: "Pending work",
+  billing: "Charges",
   coordination: "Coordination",
   operations: "Operations",
   interop: "Interop",
@@ -71,6 +100,10 @@ const TITLES: Record<LinkId | "account", string> = {
   imaging: "Imaging",
   devices: "Devices",
   audit: "Audit",
+  consent: "Consent",
+  retention: "Retention",
+  requests: "Privacy requests",
+  telemetry: "Privacy telemetry",
   analytics: "Analytics",
   population: "Population",
   research: "Research",
@@ -89,18 +122,22 @@ export async function Shell({
   ctx,
   current,
   title,
+  compactMobile = false,
   children,
 }: {
   ctx: SessionContext;
   current: ShellSection;
   title?: string;
+  compactMobile?: boolean;
   children: React.ReactNode;
 }) {
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   const allowed = new Set(access.permissions);
-  const governed = access.roles.length > 0;
+  const governed = access.roles.length > 0 || access.review.includes("not active");
   const chart = governed ? allowed.has("clinical.read") : canReadChart(ctx);
   const links = LINKS.filter((link) => {
+    if (link.id === "workforce") return governed && allowed.has("workforce.read");
+    if (link.id === "emergency") return allowed.has("emergency.request") || allowed.has("emergency.review.read");
     if (link.id === "access" || link.id === "dashboard") return true;
     if (!governed) {
       if (link.id === "audit") return canReviewAudit(ctx);
@@ -110,10 +147,20 @@ export async function Shell({
       if (link.id === "gateway" || link.id === "tenancy") return true;
       return canReadChart(ctx);
     }
+    if (link.id === "consent") return allowed.has("consent.read") || allowed.has("consent.manage") || allowed.has("consent.history.read");
+    if (link.id === "retention") return allowed.has("retention.policy.read") || allowed.has("legal-hold.read") || allowed.has("retention.job.read");
+    if (link.id === "requests") return allowed.has("privacy.request.read") || allowed.has("privacy.audit.read");
+    if (link.id === "telemetry") return allowed.has("privacy.telemetry.read") || allowed.has("privacy.alert.read");
     if (link.id === "audit" || link.id === "analytics" || link.id === "population" || link.id === "research" || link.id === "evaluation" || link.id === "release-train" || link.id === "modules") return allowed.has("security.audit.read");
     if (link.id === "marketplace") return allowed.has("billing.read") || allowed.has("security.audit.read");
     if (link.id === "revenue" || link.id === "enterprise") return allowed.has("billing.read");
     if (link.id === "tenancy" || link.id === "gateway") return allowed.has("organization.read") || allowed.has("facility.read");
+    if (link.id === "patients") return allowed.has("patient.read") || allowed.has("clinical.read");
+    if (link.id === "practitioners") return allowed.has("practitioner.read");
+    if (link.id === "appointments") return allowed.has("appointment.read");
+    if (link.id === "clinical") return allowed.has("clinical.condition.read") || allowed.has("clinical.observation.read");
+    if (link.id === "work") return allowed.has("work.pending.read") || allowed.has("work.order.read");
+    if (link.id === "billing") return allowed.has("billing.charge.read") || allowed.has("billing.read");
     return allowed.has("clinical.read");
   });
   const groups = [...new Set(links.map((link) => link.group))];
@@ -124,8 +171,8 @@ export async function Shell({
   }
   const home = "/dashboard";
   return (
-    <div className="shell">
-      <aside className="side">
+    <div className={`shell${compactMobile ? " compact-mobile" : ""}`}>
+      <aside className="side" id="workspace-navigation" tabIndex={-1}>
         <a className="brand" href={home}>
           <span className="mark" aria-hidden="true" />
           CuraSphere
@@ -162,6 +209,7 @@ export async function Shell({
         <header className="topbar">
           <h1>{title ?? TITLES[current]}</h1>
           <div className="top-actions">
+            {compactMobile ? <a className="mobile-nav-link" href="#workspace-navigation">Navigation</a> : null}
             {chart ? (
               <a className="bell" href="/worklist" aria-label={alerts === 0 ? "No open encounters" : `${alerts} open encounters`}>
                 <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">

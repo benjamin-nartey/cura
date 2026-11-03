@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+# Preserve the original byte representation of the five CRLF governance records.
+CuraSphere_Cursor_Pack/progress/feature-register.json text eol=crlf
+CuraSphere_Cursor_Pack/progress/phase-register.json text eol=crlf
+docs/constitution/P00-F01-evidence.md text eol=crlf
+docs/constitution/product-charter.json text eol=crlf
+docs/constitution/product-charter.md text eol=crlf
+
+# Recorded tool output and HTTP response headers retain their original formatting.
+docs/healthcare/*.log -whitespace
+docs/governance/evidence/runtime/*.headers -whitespace

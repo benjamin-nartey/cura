@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Disposable local delivery checks. Does not apply paid cloud resources.
 set -euo pipefail
+if [[ "${CURASPHERE_LOCAL_PHASE_OVERRIDE:-}" == "true" ]]; then
+  echo "Experimental artifacts cannot be published or deployed." >&2
+  exit 1
+fi
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 bin="$root/tools/bin"
 mkdir -p "$bin"

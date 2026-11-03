@@ -17,8 +17,85 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Refuse the local experimental override
+        run: node tools/governance/sandbox.mjs --deployment
+      - name: Start Dex for the identity tests
+        working-directory: infra/local
+        run: |
+          docker compose up -d dex
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            curl -fsS http://127.0.0.1:15556/dex/.well-known/openid-configuration && exit 0
+            sleep 2
+          done
+          docker compose logs dex
+          exit 1
       - run: npm test
       - run: npm run typecheck
       - run: node --test tools/platform/contract-compat.test.mjs tools/platform/signing.test.mjs tools/platform/delivery-static.test.mjs
       - run: npm audit --audit-level=critical
       - run: npm sbom --sbom-format cyclonedx
+
+  governance-v2-synthetic:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16.10
+        env:
+          POSTGRES_USER: curasphere
+          POSTGRES_PASSWORD: synthetic-ci-only
+          POSTGRES_DB: curasphere
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U curasphere"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      CURASPHERE_ENV: local
+      CURASPHERE_DEV_DIRECTORY: local-test
+      CURASPHERE_DATA_CLASS: synthetic
+      CURASPHERE_LOCAL_PHASE_OVERRIDE: 'true'
+      CURASPHERE_DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/curasphere
+      CURASPHERE_DATABASE_USER: curasphere
+      CURASPHERE_DATABASE_PASSWORD: synthetic-ci-only
+      CURASPHERE_E2E_BROWSER: chromium
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Start isolated integration dependencies
+        run: |
+          mkdir -p artifacts/governance-v2
+          docker compose -f infra/local/compose.yaml up -d dex
+          bash services/foundation/run.sh bootRun > artifacts/governance-v2/foundation.log 2>&1 &
+          for attempt in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:8081/health && curl -fsS http://127.0.0.1:15556/dex/.well-known/openid-configuration; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+      - name: Seed synthetic billing directory persona
+        env:
+          PGPASSWORD: synthetic-ci-only
+        run: psql -h 127.0.0.1 -U curasphere -d curasphere -v ON_ERROR_STOP=1 -f tools/fixtures/seed-p04-f05-directory.sql
+      - name: Verify parallel engineering scope without release authority
+        run: npm run governance:verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: governance-v2-synthetic-evidence
+          path: artifacts/governance-v2

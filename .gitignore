@@ -1,5 +1,10 @@
 node_modules/
 .next/
+.next-p04f05/
+.next-p04f05-build/
+test-results/
+playwright-report/
+artifacts/governance-v2/
 dist/
 .gradle/
 build/
@@ -17,3 +22,7 @@ data/*.sqlite
 data/*.sqlite-journal
 data/*.sqlite-wal
 data/*.sqlite-shm
+**/data/*.sqlite
+**/data/*.sqlite-journal
+**/data/*.sqlite-wal
+**/data/*.sqlite-shm

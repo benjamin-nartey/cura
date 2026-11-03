@@ -31,7 +31,7 @@ export default async function AccessPage() {
           ))}
         </ul>
         <p className="lede">{access.review}</p>
-        <p className="lede">Sensitive role changes require a fresh MFA session. Emergency elevation is not available.</p>
+        <p className="lede">Sensitive role changes require a fresh MFA session. Emergency elevation is not available for clinical records.</p>
         {devDirectoryEnabled() ? <p><a href="/access/diagnose">Local policy check</a></p> : null}
       </section>
     </Shell>

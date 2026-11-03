@@ -1,0 +1,321 @@
+{
+  "policy": "CURASPHERE-DEV-GOVERNANCE-v1",
+  "exception": "DEV-GOV-2026-001",
+  "evaluatedAt": "2026-10-14T13:37:15.248Z",
+  "revision": "84f0fc06044237aed8b2c98ca031f19333e3e8bb",
+  "dirty": true,
+  "automatedAssessment": "AUTOMATED_EVIDENCE_WITH_FAILURES",
+  "engineeringAcceptance": "ENGINEERING_ACCEPTED",
+  "developmentException": "PROPOSED",
+  "governanceApproval": "PENDING",
+  "productionAuthorization": "NOT_AUTHORIZED",
+  "phase02": "IN_PROGRESS",
+  "phase03Development": "NOT_AUTHORIZED",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+  "humanReviewsChanged": false,
+  "activationBlocked": [
+    "No signed authorization file is present."
+  ],
+  "commands": {
+    "domain": {
+      "exitCode": 0,
+      "result": null,
+      "summary": "# tests 208 # suites 0 # pass 208 # fail 0 # cancelled 0 # skipped 0 # todo 0 # duration_ms 48424.338"
+    },
+    "constitution": {
+      "exitCode": 0,
+      "result": null,
+      "summary": "# tests 19 # suites 0 # pass 19 # fail 0 # cancelled 0 # skipped 0 # todo 0 # duration_ms 368.414"
+    },
+    "audit-domain": {
+      "exitCode": 0,
+      "result": null,
+      "summary": "found 0 vulnerabilities"
+    },
+    "audit-web": {
+      "exitCode": 0,
+      "result": null,
+      "summary": "found 0 vulnerabilities"
+    },
+    "gateway": {
+      "exitCode": 0,
+      "result": "PASS",
+      "summary": "FastAPI 0.143.0, Starlette 1.8.0, Python 3.13.1."
+    },
+    "pip-audit": {
+      "exitCode": 0,
+      "result": "PASS",
+      "summary": "WARNING:pip_audit._cli:--no-deps is supported, but users are encouraged to fully hash their pinned dependencies WARNING:pip_audit._cli:Consider using a tool like `pip-compile`: https://pip-tools.readthedocs.io/en/latest/#using-hashes No known vulnerabilities found"
+    },
+    "trivy": {
+      "exitCode": 1,
+      "result": "FAIL",
+      "summary": "│               │ CVE-2026-78409 │          │              │                                   │               │ util-linux: util-linux: X-mount.subdir detached-tree        │ │               │                │          │              │                                   │               │ resolution can escape via intermediate symlinks             │ │               │                │          │              │                                   │               │ https://avd.aquasec.com/nvd/cve-2026-78409                  │ │               ├────────────────┤          │              │                                   ├───────────────┼─────────────────────────────────────────────────────────────┤ │               │ CVE-2026-78410 │          │              │                                   │               │ util-linux: util-linux: restricted bind mounts do not pin   │ │               │                │          │              │                                   │               │ the source, allowing X-mount.owner/group/mode...            │ │               │                │          │              │                                   │               │ https://avd.aquasec.com/nvd/cve-2026-78410                  │ └───────────────┴────────────────┴──────────┴──────────────┴───────────────────────────────────┴───────────────┴─────────────────────────────────────────────────────────────┘"
+    },
+    "actions": {
+      "exitCode": 0,
+      "result": "NOT_VERIFIED",
+      "summary": "http 200 conclusion failure sha 84f0fc06044237aed8b2c98ca031f19333e3e8bb url https://github.com/benjamin-nartey/cura/actions/runs/38533405132 gh is not installed. This is not branch-protection evidence and it does not cover the unpushed working tree."
+    },
+    "foundation-health": {
+      "exitCode": 0,
+      "result": "PASS",
+      "summary": "Foundation health responded and included schema version 15."
+    }
+  },
+  "findings": [
+    {
+      "id": "ARCH-DOCS",
+      "review": "P02-R01",
+      "framework": "IEC-62304",
+      "objective": "Phase 02 architecture and emergency decisions are present as documents.",
+      "component": "docs/adr",
+      "hardStop": false,
+      "result": "PASS",
+      "summary": "All listed files exist.",
+      "outstanding": ""
+    },
+    {
+      "id": "ARCH-SCHEMA-SPLIT",
+      "review": "P02-R01",
+      "framework": "IEC-62304",
+      "objective": "Foundation schema history ends at version 15 in V16, and the chart migration head is version 32, with no Foundation V17.",
+      "component": "schema histories",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "Source checks matched.",
+      "outstanding": ""
+    },
+    {
+      "id": "ARCH-AUTHZ-CENTRAL",
+      "review": "P02-R01",
+      "framework": "NIST-CSF-2.0",
+      "objective": "Emergency elevation is a lookup inside authorize, and a client emergency flag is not itself an allow.",
+      "component": "packages/domain/src/authorization.ts",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "Source checks matched.",
+      "outstanding": ""
+    },
+    {
+      "id": "ARCH-PHASE-BOUNDARY",
+      "review": "P02-R01",
+      "framework": "IEC-62304",
+      "objective": "Phase 03 and Phase 04 feature registers have not been started by this governance run.",
+      "component": "progress/feature-register.json",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "Feature statuses matched.",
+      "outstanding": ""
+    },
+    {
+      "id": "ARCH-LIVE-FOUNDATION",
+      "review": "P02-R01",
+      "framework": "NIST-CSF-2.0",
+      "objective": "If the local foundation process is up, its health payload reports schema version 15.",
+      "component": "services/foundation",
+      "hardStop": false,
+      "result": "PASS",
+      "summary": "Foundation health responded and included schema version 15.",
+      "outstanding": ""
+    },
+    {
+      "id": "ARCH-BACKUP-THIS-RUN",
+      "review": "P02-R01",
+      "framework": "NIST-CSF-2.0",
+      "objective": "A backup restore was not executed in this governance run.",
+      "component": "operations",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "No automated result can satisfy this control.",
+      "outstanding": "Rollback text exists in docs/identity/tenancy.md and docs/identity/emergency-access.md. This run did not restore a database."
+    },
+    {
+      "id": "SEC-DOMAIN-SUITE",
+      "review": "P02-R02",
+      "framework": "OWASP-ASVS-5.0",
+      "objective": "The domain suite covering OIDC, PKCE, sessions, TOTP, passkeys, tenant isolation, workforce, and emergency restrictions exits 0. This is not an ASVS certification.",
+      "component": "@curasphere/domain",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "# tests 208 # suites 0 # pass 208 # fail 0 # cancelled 0 # skipped 0 # todo 0 # duration_ms 48424.338",
+      "outstanding": ""
+    },
+    {
+      "id": "SEC-CONSTITUTION",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "The Phase 00 constitution checks still reject an accepted decision that has no named reviewers.",
+      "component": "tools/constitution",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "# tests 19 # suites 0 # pass 19 # fail 0 # cancelled 0 # skipped 0 # todo 0 # duration_ms 368.414",
+      "outstanding": ""
+    },
+    {
+      "id": "SEC-NPM-DOMAIN",
+      "review": "P02-R02",
+      "framework": "ISO-IEC-27001",
+      "objective": "Production npm audit for the domain workspace reports no vulnerabilities.",
+      "component": "packages/domain",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "found 0 vulnerabilities",
+      "outstanding": ""
+    },
+    {
+      "id": "SEC-NPM-WEB",
+      "review": "P02-R02",
+      "framework": "ISO-IEC-27001",
+      "objective": "Production npm audit for the web workspace reports no vulnerabilities.",
+      "component": "apps/web",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "found 0 vulnerabilities",
+      "outstanding": ""
+    },
+    {
+      "id": "SEC-GATEWAY",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "The installed FastAPI and Starlette versions meet the patched floor verified against OSV: FastAPI 0.143.0 and Starlette 1.8.0.",
+      "component": "ai/gateway",
+      "hardStop": false,
+      "result": "PASS",
+      "summary": "FastAPI 0.143.0, Starlette 1.8.0, Python 3.13.1.",
+      "outstanding": ""
+    },
+    {
+      "id": "SEC-PIP-AUDIT",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "pip-audit reports no known vulnerabilities in the locked AI gateway requirements.",
+      "component": "ai/gateway/requirements.lock",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "WARNING:pip_audit._cli:--no-deps is supported, but users are encouraged to fully hash their pinned dependencies WARNING:pip_audit._cli:Consider using a tool like `pip-compile`: https://pip-tools.readthedocs.io/en/latest/#using-hashes No known vulnerabilities found",
+      "outstanding": ""
+    },
+    {
+      "id": "SEC-IMAGE",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "A fresh container image scan, when the scanner and image are available.",
+      "component": "container image",
+      "hardStop": false,
+      "result": "FAIL",
+      "summary": "│               │ CVE-2026-78409 │          │              │                                   │               │ util-linux: util-linux: X-mount.subdir detached-tree        │ │               │                │          │              │                                   │               │ resolution can escape via intermediate symlinks             │ │               │                │          │              │                                   │               │ https://avd.aquasec.com/nvd/cve-2026-78409                  │ │               ├────────────────┤          │              │                                   ├───────────────┼─────────────────────────────────────────────────────────────┤ │               │ CVE-2026-78410 │          │              │                                   │               │ util-linux: util-linux: restricted bind mounts do not pin   │ │               │                │          │              │                                   │               │ the source, allowing X-mount.owner/group/mode...            │ │               │                │          │              │                                   │               │ https://avd.aquasec.com/nvd/cve-2026-78410                  │ └───────────────┴────────────────┴──────────┴──────────────┴───────────────────────────────────┴───────────────┴─────────────────────────────────────────────────────────────┘",
+      "outstanding": "│               │ CVE-2026-78409 │          │              │                                   │               │ util-linux: util-linux: X-mount.subdir detached-tree        │ │               │                │          │              │                                   │               │ resolution can escape via intermediate symlinks             │ │               │                │          │              │                                   │               │ https://avd.aquasec.com/nvd/cve-2026-78409                  │ │               ├────────────────┤          │              │                                   ├───────────────┼─────────────────────────────────────────────────────────────┤ │               │ CVE-2026-78410 │          │              │                                   │               │ util-linux: util-linux: restricted bind mounts do not pin   │ │               │                │          │              │                                   │               │ the source, allowing X-mount.owner/group/mode...            │ │               │                │          │              │                                   │               │ https://avd.aquasec.com/nvd/cve-2026-78410                  │ └───────────────┴────────────────┴──────────┴──────────────┴───────────────────────────────────┴───────────────┴─────────────────────────────────────────────────────────────┘"
+    },
+    {
+      "id": "SEC-HOSTED-CI",
+      "review": "P02-R02",
+      "framework": "NIST-CSF-2.0",
+      "objective": "Hosted GitHub Actions and branch protection are recorded only from a live query.",
+      "component": "hosted delivery",
+      "hardStop": false,
+      "result": "NOT_VERIFIED",
+      "summary": "http 200 conclusion failure sha 84f0fc06044237aed8b2c98ca031f19333e3e8bb url https://github.com/benjamin-nartey/cura/actions/runs/38533405132 gh is not installed. This is not branch-protection evidence and it does not cover the unpushed working tree.",
+      "outstanding": "http 200 conclusion failure sha 84f0fc06044237aed8b2c98ca031f19333e3e8bb url https://github.com/benjamin-nartey/cura/actions/runs/38533405132 gh is not installed. This is not branch-protection evidence and it does not cover the unpushed working tree."
+    },
+    {
+      "id": "SEC-ORG-ADMIN",
+      "review": "P02-R04",
+      "framework": "OWASP-API-2023",
+      "objective": "Organization-administrator does not keep billing.read or security.audit.read.",
+      "component": "packages/domain/src/authorization.ts",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "Source checks matched.",
+      "outstanding": ""
+    },
+    {
+      "id": "CLIN-ENV-DENY",
+      "review": "P02-R03",
+      "framework": "ISO-14971",
+      "objective": "Production and staging cannot pass the emergency actor gate.",
+      "component": "packages/domain/src/emergency.ts",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "Source checks matched.",
+      "outstanding": ""
+    },
+    {
+      "id": "CLIN-SELF-REVIEW",
+      "review": "P02-R03",
+      "framework": "WHO-AI-2021",
+      "objective": "The requesting principal cannot review their own emergency access.",
+      "component": "packages/domain/src/emergency.ts",
+      "hardStop": true,
+      "result": "PASS",
+      "summary": "Source checks matched.",
+      "outstanding": ""
+    },
+    {
+      "id": "CLIN-DURATION-DEFAULTS",
+      "review": "P02-R03",
+      "framework": "ISO-14971",
+      "objective": "The five-minute freshness window and fifteen-minute grant cap are present only as engineering defaults.",
+      "component": "packages/domain/src/emergency.ts",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "Source checks matched.",
+      "outstanding": "These durations are not approved clinical policy. P02-R03 does not decide that they are clinically appropriate."
+    },
+    {
+      "id": "CLIN-DEFAULTS",
+      "review": "P02-R05",
+      "framework": "ISO-14971",
+      "objective": "Record the five-minute freshness and fifteen-minute cap as unapproved engineering defaults.",
+      "component": "packages/domain/src/emergency.ts",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "Source checks matched.",
+      "outstanding": "A clinical reviewer must decide whether these durations are acceptable. This run does not decide that."
+    },
+    {
+      "id": "CLIN-SIGNOFF",
+      "review": "P02-R03",
+      "framework": "WHO-AI-2021",
+      "objective": "Named clinical safety sign-off is a human decision.",
+      "component": "docs/identity/PHASE_02_APPROVALS.json",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "No automated result can satisfy this control.",
+      "outstanding": "P02-R03 stays pending. This evidence file is not a clinical signature."
+    },
+    {
+      "id": "CLIN-ROLE-MATRIX",
+      "review": "P02-R04",
+      "framework": "ONC-SAFER-2025",
+      "objective": "Approval of the clinical role matrix remains a human decision.",
+      "component": "docs/identity/PHASE_02_ROLE_MATRIX.md",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "No automated result can satisfy this control.",
+      "outstanding": "Do not auto-approve or auto-defer P02-R04."
+    },
+    {
+      "id": "CLIN-INTENDED-USE",
+      "review": "P02-R05",
+      "framework": "IEC-62366-1",
+      "objective": "Approval of emergency intended use remains a human decision. No usability engineering file was produced.",
+      "component": "docs/identity/PHASE_02_EMERGENCY_INTENDED_USE.md",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "No automated result can satisfy this control.",
+      "outstanding": "Do not auto-approve or auto-defer P02-R05. IEC 62366-1 conformity is not claimed."
+    },
+    {
+      "id": "PRIV-PHASE03",
+      "review": "P02-R03",
+      "framework": "ISO-IEC-27701",
+      "objective": "Consent, retention, and privacy scrubbing are not implemented. Phase 03 has not started.",
+      "component": "phase 03",
+      "hardStop": false,
+      "result": "HUMAN_JUDGMENT_REQUIRED",
+      "summary": "Feature statuses matched.",
+      "outstanding": "ISO/IEC 27701 conformity is not claimed. Privacy dependencies stay outstanding."
+    }
+  ]
+}

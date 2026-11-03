@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: the generated platform contract matches the versioned schema
+ok 1 - the generated platform contract matches the versioned schema
+  ---
+  duration_ms: 5.8272
+  ...
+# Subtest: an incompatible contract change is rejected
+ok 2 - an incompatible contract change is rejected
+  ---
+  duration_ms: 3.1678
+  ...
+# Subtest: dev and staging do not share a namespace, secret, or data store
+ok 3 - dev and staging do not share a namespace, secret, or data store
+  ---
+  duration_ms: 14.1375
+  ...
+# Subtest: production deployment is rejected before helm runs
+ok 4 - production deployment is rejected before helm runs
+  ---
+  duration_ms: 362.2582
+  ...
+# Subtest: a tampered artifact fails signature verification
+ok 5 - a tampered artifact fails signature verification
+  ---
+  duration_ms: 23.7497
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 722.6111

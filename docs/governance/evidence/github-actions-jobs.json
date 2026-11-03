@@ -1,0 +1,129 @@
+{
+  "total_count": 1,
+  "jobs": [
+    {
+      "id": 115750391687,
+      "run_id": 38533405132,
+      "workflow_name": "ci",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/benjamin-nartey/cura/actions/runs/38533405132",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVIJiWc8AAAAa80LPhw",
+      "head_sha": "84f0fc06044237aed8b2c98ca031f19333e3e8bb",
+      "url": "https://api.github.com/repos/benjamin-nartey/cura/actions/jobs/115750391687",
+      "html_url": "https://github.com/benjamin-nartey/cura/actions/runs/38533405132/job/115750391687",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-10-14T08:11:46Z",
+      "started_at": "2026-10-14T08:11:49Z",
+      "completed_at": "2026-10-14T08:12:19Z",
+      "name": "verify",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-14T08:11:50Z",
+          "completed_at": "2026-10-14T08:11:50Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-14T08:11:50Z",
+          "completed_at": "2026-10-14T08:11:51Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-14T08:11:51Z",
+          "completed_at": "2026-10-14T08:11:54Z"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-14T08:11:54Z",
+          "completed_at": "2026-10-14T08:12:04Z"
+        },
+        {
+          "name": "Run npm test",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 5,
+          "started_at": "2026-10-14T08:12:04Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Run npm run typecheck",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Run node --test tools/platform/contract-compat.test.mjs tools/platform/signing.test.mjs tools/platform/delivery-static.test.mjs",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Run npm audit --audit-level=critical",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Run npm sbom --sbom-format cyclonedx",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 17,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-14T08:12:17Z",
+          "completed_at": "2026-10-14T08:12:17Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/benjamin-nartey/cura/check-runs/115750391687",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000000004,
+      "runner_name": "GitHub Actions 1000000004",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

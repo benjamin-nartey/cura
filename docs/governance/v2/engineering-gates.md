@@ -1,0 +1,17 @@
+# Automated engineering gate specification
+
+Status: implemented; execution evidence is separate from this specification. `npm run governance:verify` runs deterministic checks. `npm run engineering:run` additionally invokes a bounded implementation/repair worker after failed gates. Both require the four established local synthetic variables and reject unsafe environment flags.
+
+Twenty mandatory dimensions are present for every feature: functionality, database, typecheck, lint, unit, integration, contracts, authorization, tenant isolation, privacy, security, clinical safety, E2E, accessibility, failure recovery, migration recovery, audit, observability, documentation and dependency regression. `engineering-plan.json` maps each to actual commands and required observed proofs.
+
+Results are PASS, FAIL, NOT_VERIFIED or NOT_APPLICABLE. Missing execution is NOT_VERIFIED; failed/timeout/interrupted execution is FAIL; skipped tests do not satisfy a mandatory proof. Only tooling-only A features may declare database/migration/UI checks not applicable with an explicit reason. All other dimensions remain required. Existence of a document is not evidence that its promised tests ran.
+
+The command catalog is code-defined, uses argument arrays without shell evaluation, and records actual exit codes, signals, UTC timestamps, revision, dirty state, source digests, argv/cwd, log paths and log hashes. The snapshot includes tracked and untracked nonignored source and the mobile submodule source. Runtime databases, managed artifacts, declared browser outputs and Next's generated `next-env.d.ts` are excluded; no application/security source is excluded.
+
+Evidence archives use unique directories and exclusive file creation. A mutable latest index may reference archives but cannot replace them. Every gate is recomputed from its command record and observed log proof. Stale evidence (over 24 hours), another revision/source, changed logs, changed command identity, missing gates, or source changes during verification prevent acceptance. Freshly generated in-process assessments are the only progression input; uploaded or hand-edited PASS JSON is never imported as authority. These are local execution records, not cryptographic hosted-build attestations.
+
+The runner holds a single filesystem lock, selects dependencies first, and records exactly one active feature. A failed verification gets at most two repair attempts before returning BLOCKED. The Codex worker runs noninteractively in workspace-write mode; the runner constrains scope, verifies changed paths, preserves historical evidence, and independently reruns gates. A worker's final text is never acceptance evidence. Worker/network/tool failures remain failures; no fallback green status is generated.
+
+`MIGRATION-EVIDENCE.md` is a generated summary, not a policy or command input, and is excluded from source binding alongside the managed artifact directory. Policies, gate definitions, classifications, dependency graph, source, tests and lockfiles remain bound. Environment variables and ignored secrets are not attested by a source hash; nonlocal release therefore requires its own verified configuration/provenance evidence.
+
+Actual local integration tests exercise child-process failure, repair, retest, scope stopping, timeout, missing executable, exclusive locking, stale/tampered evidence, lowered classification, protected environments, and historical preservation. The real Codex adapter is not automatically invoked when existing feature code already passes.
