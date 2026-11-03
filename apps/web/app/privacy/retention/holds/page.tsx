@@ -14,7 +14,7 @@ export default async function LegalHoldsPage({ searchParams }: { searchParams: P
   return (
     <Shell ctx={ctx} current="retention">
       <h1 className="page-title">Legal holds</h1>
-      <p>A synthetic development hold is not a court order. Releasing a hold does not delete records.</p>
+      <p>Review preservation holds and their supporting authority. Releasing a hold does not delete records.</p>
       {query.error ? <p>The hold action was not accepted.</p> : null}
       {holds.length === 0 ? <p>No legal holds are stored for this organization.</p> : null}
       <div className="list">

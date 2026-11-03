@@ -26,7 +26,7 @@ export default async function DuplicateReviewPage({
   const canMerge = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId).permissions.includes("patient.merge");
   const side = (label: string, row: NonNullable<typeof candidate.left>) => (
     <section className="card">
-      <h2 style={{ fontSize: 20, marginTop: 0 }}>{label}</h2>
+      <h2 style={{ marginTop: 0 }}>{label}</h2>
       <p>
         {row.given_name} {row.family_name}
       </p>
@@ -49,7 +49,7 @@ export default async function DuplicateReviewPage({
         {candidate.right ? side("Right record", candidate.right) : <p>The right record is not available.</p>}
       </div>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>If these are merged</h2>
+        <h2 style={{ marginTop: 0 }}>If these are merged</h2>
         <p>The retired identity stays in history with its identifiers. Conditions, encounters, observations, allergies, and medications stay on the retired record and are listed as blocked.</p>
       </section>
       {candidate.status !== "open" ? <p>This candidate is already decided.</p> : null}

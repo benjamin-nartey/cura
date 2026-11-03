@@ -1,8 +1,10 @@
-import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from "@curasphere/domain";
+import { AppError, ConflictError, ForbiddenError, NotFoundError, ValidationError } from "@curasphere/domain";
 import { failureCode } from "@/lib/http";
 
 export function sourceError(error: unknown) {
+  if(error instanceof AppError && error.code==="unavailable")return "coding-unavailable";
   if (error instanceof ConflictError) {
+    if(error.message.includes("coding definition"))return "coding-stale";
     if (error.message.includes("closed")) return "source-closed";
     if (error.message.includes("changed")) return "source-stale";
     return "source";

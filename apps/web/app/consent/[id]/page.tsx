@@ -26,7 +26,7 @@ export default async function ConsentDetailPage({ params, searchParams }: { para
         {query.notice === "blocked" ? <p>Dispatch was blocked. The current consent does not allow this processing.</p> : null}
         {query.notice === "dispatched" ? <p>The local sink accepted the reminder.</p> : null}
         <p>Purpose {row.purpose}. Scope {row.resource_category}. Recipient {row.recipient}.</p>
-        <p>Policy synthetic-development version 1. Authority {row.verification_status}. Version {row.version}.</p>
+        <p>Workspace consent policy, version 1. Authority {row.verification_status}. Version {row.version}.</p>
         <p>Effective {row.effective_at ?? "not set"}. Expires {row.expires_at ?? "not set"}.</p>
         <p><a href={`/consent/${row.id}/history`}>Version history</a></p>
         {access.permissions.includes("consent.verify") && row.status === "pending_verification" ? (

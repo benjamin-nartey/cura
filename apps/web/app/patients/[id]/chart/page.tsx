@@ -61,7 +61,7 @@ export default async function UnifiedChartPage({
     <Shell ctx={ctx} current="patients" compactMobile>
       <p className="eyebrow">{ctx.facilityName}</p>
       <h1 className="page-title">{patient.given_name} {patient.family_name}</h1>
-      <p><strong>SYNTHETIC — experimental workspace. Not authorized for clinical use.</strong></p>
+      <p><strong>Simulation record · Not for live clinical use.</strong></p>
       <p className="lede">MRN {patient.mrn} · {patient.registration_status} · facility context {ctx.facilityName}. {chart.notice}</p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       {chart.failures?.length ? <p role="alert">Some chart sections could not load: {chart.failures.join(", ")}. <a href={`/patients/${id}/chart${chart.encounter ? `?encounter=${chart.encounter.id}` : ""}`}>Reload chart</a></p> : null}
@@ -76,7 +76,7 @@ export default async function UnifiedChartPage({
               <a href={`/work?patient=${id}&encounter=${chart.encounter.id}`}>Orders and referrals</a>
             </p>
           ) : null}
-          {access.permissions.includes("billing.charge.create") ? <p><a href={`/billing/charges/new?patient=${id}&encounter=${chart.encounter.id}`}>Create synthetic charge</a></p> : null}
+          {access.permissions.includes("billing.charge.create") ? <p><a href={`/billing/charges/new?patient=${id}&encounter=${chart.encounter.id}`}>Create charge</a></p> : null}
         </div>
       ) : (
         <p>No encounter is selected. Open an appointment or encounter to continue the visit.</p>
@@ -152,7 +152,7 @@ export default async function UnifiedChartPage({
             </li>
           ))}
         </ul>
-      ) : Array.isArray(sections.charges) ? <p>No synthetic charge is recorded.</p> : null}
+      ) : Array.isArray(sections.charges) ? <p>No charge is recorded.</p> : null}
       <p><a href={`/patients/${id}`}>Identity record</a></p>
     </Shell>
   );

@@ -14,7 +14,7 @@ export default async function EmergencyRestrictedPage() {
       </header>
       {eligibility.eligible ? (
         <section className="panel card">
-          <p>Routine access is not available for this synthetic restricted record.</p>
+          <p>Routine access is not available for this restricted record.</p>
           <p>Emergency access is an exception. It is recorded, time limited, and reviewed.</p>
           <p><a href="/emergency/justify">Emergency Access</a></p>
           <p><a href="/dashboard">Cancel</a></p>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "@curasphere/design-system/system.css";
 import "./globals.css";
+import "./premium.css";
+import "./workspace.css";
 
 const sans = Inter({
   subsets: ["latin"],
@@ -31,7 +33,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip" href="#content">
           Skip to content
         </a>
-        <div className="notice" role="region" aria-label="Product notice">CuraSphere · one chart for the people in this clinic’s care.</div>
         {children}
       </body>
     </html>

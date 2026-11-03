@@ -13,9 +13,9 @@ export default async function PrivacyTelemetryPage({ searchParams }: { searchPar
   const overview = telemetryOverview(getDb(), privacyActor(ctx));
   return (
     <Shell ctx={ctx} current="telemetry">
-      <p className="eyebrow">Experimental privacy telemetry</p>
+      <p className="eyebrow">Privacy telemetry</p>
       <h1 className="page-title">Privacy and security overview</h1>
-      <p className="lede">Signals are possible incident indicators. Thresholds are engineering simulation values, not statutory breach rules. Formal Phase 03 is not authorized.</p>
+      <p className="lede">Review potential privacy incidents and collection health. Detection thresholds support review and do not determine statutory breach obligations.</p>
       {query.notice === "canary-pass" ? <p>The canary check passed. The stored telemetry does not contain the submitted marker.</p> : null}
       {query.error ? <p>That telemetry action was not completed.</p> : null}
       <div className="list">
@@ -27,12 +27,12 @@ export default async function PrivacyTelemetryPage({ searchParams }: { searchPar
         <p>Collector {overview.health.collector}</p>
         <p>Destination {overview.health.destination}</p>
       </div>
-      {overview.alerts === 0 ? <p>No privacy alerts are stored for this organization.</p> : null}
+      {overview.alerts === 0 ? <p>No privacy alerts have been recorded for this organization.</p> : null}
       <p><a href="/privacy/alerts">Privacy alerts</a></p>
       <p><a href="/privacy/telemetry/health">Pipeline health</a></p>
       <p><a href="/privacy/telemetry/rules">Detection rules</a></p>
       <p><a href="/privacy/telemetry/policy">Scrubbing policy</a></p>
-      {access.permissions.includes("privacy.telemetry.test") ? <p><a href="/privacy/telemetry/canary">Synthetic canary console</a></p> : null}
+      {access.permissions.includes("privacy.telemetry.test") ? <p><a href="/privacy/telemetry/canary">Telemetry validation console</a></p> : null}
     </Shell>
   );
 }

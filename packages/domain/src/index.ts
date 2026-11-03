@@ -457,3 +457,16 @@ export {
 } from "./documentation";
 export { FIXTURES, seed } from "./seed";
 export type { AppDatabase } from "./db";
+
+export { assertLocalHealthcareSandbox } from "./experimental-healthcare";
+
+export { registerCodeSystemRelease, listCodeSystemReleases, readCodeSystemRelease, lookupControlledConcept, type ReleaseInput } from "./code-system-registry";
+export { listControlledValueSets, registerControlledValueSet, readControlledValueSet, validateControlledMembership, inspectUnitConversion, type ValueSetInput, type MembershipInput } from "./terminology-validation";
+export { UNIT_PACK_VERSION, UNIT_ROUNDING, SUPPORTED_UNIT_CODES, type ConversionInput } from "./unit-conversion";
+export { proposeTerminologyMapping, reviewTerminologyMapping, readTerminologyMapping, listTerminologyMappings, translateTerminologyMapping, type MappingInput, type MappingReviewInput, type TranslationInput } from "./terminology-mappings";
+export { registerFacilityCatalogVersion, listFacilityCatalog, resolveFacilityCatalog, readFacilityCatalogVersion, CATALOG_UNIT_CODES, CATALOG_UNIT_PACK_VERSION, type CatalogInput } from "./facility-catalogs";
+export { getClinicalCodeChoices, getWorkCatalogCodeChoices, type ClinicalCodeChoice } from "./clinical-code-pickers";
+export { codingConformanceReport, inspectCodingMappings, type CodingSelection, type CodingKind } from "./clinical-coding";
+export * from "./fhir-source";
+export * from "./fhir-source-map";
+export * from "./smart";

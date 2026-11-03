@@ -13,7 +13,7 @@ export default async function TelemetryRulesPage() {
   return (
     <Shell ctx={ctx} current="telemetry">
       <h1 className="page-title">Detection rules</h1>
-      <p>Thresholds are synthetic engineering values with approval state pending_policy_approval. This screen cannot disable scrubbing.</p>
+      <p>Review detection thresholds and their pending policy approval. Data scrubbing remains mandatory.</p>
       {rules.length === 0 ? <p>No detection rules are stored.</p> : null}
       <div className="list">
         {rules.map((rule) => <p key={rule.id}>{rule.id} {rule.category} threshold {rule.threshold} {rule.severity} version {rule.version} {rule.status}</p>)}

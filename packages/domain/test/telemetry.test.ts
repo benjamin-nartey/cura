@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -163,11 +164,12 @@ test("P03-F05-S31 through S46 alert access and lifecycle", () => {
   const persisted = createDatabase(file);
   const row = persisted.prepare(`SELECT status FROM privacy_security_alerts WHERE source_ref = 'exp-restart'`).get() as { status: string };
   assert.equal(row.status, stored.created ? "delivered" : row.status);
+  persisted.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   persisted.exec(TELEMETRY_ROLLBACK);
   assert.equal((persisted.prepare(`SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1`).get() as { version: number }).version, 36);
   persisted.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 43);
+  assert.equal(healthcheck(upgraded).schemaVersion, 49);
   upgraded.close();
 });
 

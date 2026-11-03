@@ -15,17 +15,15 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   const rows = listCharges(getDb(), masterActor(ctx), query.patient || undefined);
   return (
     <Shell ctx={ctx} current="billing">
-      <h1 className="page-title">Synthetic charges</h1>
-      <p className="lede">These amounts are fictional test records. Nothing was billed or collected.</p>
+      <h1 className="page-title">Charges</h1>
+      <p className="lede">Review charges, track their status, and manage adjustments. No payment is collected from this workspace.</p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       {rows.length === 0 ? <p>No charge is recorded for this facility.</p> : (
-        <ul>
-          {rows.map((row) => (
-            <li key={row.id}>
-              <a href={`/billing/charges/${row.id}`}>{row.id}</a> · {row.status} · {row.currency} {(row.total_minor / 100).toFixed(2)} · version {row.version}
-            </li>
-          ))}
-        </ul>
+        <div className="data-table-region" role="region" aria-label="Facility charges" tabIndex={0}>
+          <table><caption className="sr">Charges recorded at this facility</caption><thead><tr><th scope="col">Charge</th><th scope="col">Status</th><th scope="col" className="numeric">Amount</th><th scope="col" className="numeric">Version</th><th scope="col">Action</th></tr></thead>
+            <tbody>{rows.map(row => <tr key={row.id}><th scope="row" className="table-id">{row.id}</th><td><span className="record-status">{row.status}</span></td><td className="numeric">{row.currency} {(row.total_minor / 100).toFixed(2)}</td><td className="numeric">{row.version}</td><td><a href={`/billing/charges/${row.id}`}>View charge<span className="sr"> {row.id}</span></a></td></tr>)}</tbody>
+          </table>
+        </div>
       )}
     </Shell>
   );

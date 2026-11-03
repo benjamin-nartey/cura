@@ -50,6 +50,10 @@ const ROLES = [
 ] as const;
 
 const PERMISSIONS: Array<[string, string, string, string]> = [
+  ["terminology.read", "terminology", "read", "administrative"],
+  ["terminology.manage", "terminology", "manage", "administrative"],
+  ["terminology.review", "terminology", "review", "administrative"],
+  ["facility.catalog.manage", "facility-catalog", "manage", "administrative"],
   ["organization.read", "organization", "read", "standard"],
   ["organization.manage", "organization", "manage", "administrative"],
   ["facility.read", "facility", "read", "standard"],
@@ -192,6 +196,11 @@ const GRANTS: Record<string, string[]> = {
   "legal-hold-admin": ["organization.read", "facility.read", "legal-hold.read", "legal-hold.create", "legal-hold.activate", "retention.policy.read", "retention.job.read", "privacy.request.read", "privacy.bulk.approve"],
   "privacy-engineer": ["organization.read", "privacy.telemetry.read", "privacy.rule.read", "privacy.rule.manage"],
 };
+for (const role of ["platform-administrator", "organization-administrator", "facility-administrator", "doctor", "nurse", "pharmacist", "laboratory-scientist", "auditor"]) GRANTS[role].push("terminology.read");
+GRANTS["organization-administrator"].push("terminology.manage");
+for (const role of ["organization-administrator", "doctor", "pharmacist"]) GRANTS[role].push("terminology.review");
+for (const role of ["organization-administrator", "facility-administrator", "pharmacist"]) GRANTS[role].push("facility.catalog.manage");
+
 
 const ROLE_FROM_MEMBERSHIP: Record<string, string> = {
   admin: "organization-administrator",

@@ -1,4 +1,5 @@
-import { effectivePermissions, getDb, listPractitioners, listSourceCatalog, readVisitEncounter } from "@curasphere/domain";
+import { ClinicalCodePicker } from "@/components/clinical-code-picker";
+import { effectivePermissions, getDb, listPractitioners, getClinicalCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
 import { requireSession } from "@/lib/session";
@@ -14,7 +15,7 @@ export default async function NewConditionPage({ searchParams }: { searchParams:
   if (!query.patient || !encounter || encounter.patient_id !== query.patient) redirect("/clinical");
   if (encounter.status === "completed") redirect(`/clinical?patient=${query.patient}&encounter=${query.encounter}&error=source-closed`);
   const practitioners = listPractitioners(getDb(), actor).filter((row) => row.status === "active");
-  const catalog = listSourceCatalog();
+  const choices = getClinicalCodeChoices(getDb(),ctx,"condition");
   return (
     <Shell ctx={ctx} current="clinical">
       <h1 className="page-title">Record a condition</h1>
@@ -22,9 +23,7 @@ export default async function NewConditionPage({ searchParams }: { searchParams:
       <form className="form-grid" action="/api/clinical/conditions" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
-        <label className="field">Term
-          <select name="code" required>{catalog.conditions.map((item) => <option key={item.code} value={item.code}>{item.display}</option>)}</select>
-        </label>
+        <ClinicalCodePicker label="Term" choices={choices}/>
         <label className="field">Clinical status
           <select name="clinicalStatus" defaultValue="active"><option value="active">Active problem</option><option value="historical">Historical problem</option></select>
         </label>

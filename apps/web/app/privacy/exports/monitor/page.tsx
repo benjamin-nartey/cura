@@ -14,7 +14,7 @@ export default async function PrivacyMonitorPage({ searchParams }: { searchParam
   return (
     <Shell ctx={ctx} current="requests">
       <h1 className="page-title">Bulk export monitoring</h1>
-      <p>The large-export threshold of 1000 records is an engineering simulation value, not a legal rule.</p>
+      <p>Exports of 1,000 or more records are flagged for review. This workspace threshold is not a legal reporting threshold.</p>
       {query.notice === "cleaned" ? <p>Cleanup recorded for {query.count} expired artifacts. Archive and backup copies were not verified.</p> : null}
       {query.error ? <p>Cleanup did not run.</p> : null}
       {access.permissions.includes("privacy.export.revoke") ? (

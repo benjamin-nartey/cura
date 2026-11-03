@@ -25,6 +25,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   const here = ctx.facilityId;
   return (
     <Shell ctx={ctx} current="work">
+      <p><a href={`/clinical/coding/work-order/${id}`}>Recorded coding provenance</a></p>
       <h1 className="page-title">Department request</h1>
       <p className="lede"><strong>Not a transmitted order.</strong></p>
       <Feedback error={feedback.error} notice={feedback.notice} />
@@ -33,6 +34,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
         <p>Status: <strong>{row.status}</strong> · version {row.version}</p>
         <p>Due {row.due_on} · priority {row.priority} · {row.fulfillment}</p>
         <p><a href={`/work/history?kind=order&id=${id}`}>History</a></p>
+        {row.catalogSnapshot?<section><h2>Original catalog version</h2><p>{row.catalogSnapshot.display} · revision {row.catalogSnapshot.revision}</p><p>Unit: {row.catalogSnapshot.unitCode} · {row.catalogSnapshot.unitPackVersion}</p><p style={{overflowWrap:"anywhere"}}>{row.catalogSnapshot.system} · {row.catalogSnapshot.codeSystemVersion} · {row.catalogSnapshot.code}</p><a href={`/terminology/catalogs/${row.catalogSnapshot.entryVersionId}`}>Catalog provenance</a><p className="muted">This immutable snapshot remains attached after catalog changes or encounter closure.</p></section>:null}
       </div>
       <h2>Tasks</h2>
       <ul>
@@ -71,7 +73,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
           <input type="hidden" name="code" value="syn-request-note" />
           <input type="hidden" name="byteLength" value="128" />
           <input type="hidden" name="sha256" value={"ab".repeat(32)} />
-          <button className="btn-line" type="submit">Attach synthetic note</button>
+          <button className="btn-line" type="submit">Attach note</button>
         </form>
       ) : null}
       <h2>Attachments</h2>

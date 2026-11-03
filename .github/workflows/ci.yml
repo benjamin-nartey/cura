@@ -8,6 +8,37 @@ permissions:
   contents: read
 
 jobs:
+  fhir-source-profiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.fhir/packages
+            artifacts/governance-v2/fhir-validator
+          key: fhir-r4-${{ runner.os }}-${{ hashFiles('tools/fhir/validator.lock.json') }}
+      - run: node tools/fhir/install-validator.mjs
+      - run: node --test tools/fhir/validate.test.mjs
+      - run: node --import tsx --test tools/platform/fhir-source-http.test.ts tools/platform/smart-http.test.ts
+      - run: node --import tsx --import ./packages/domain/test/dev-env.ts --test packages/domain/test/fhir-source.test.ts packages/domain/test/smart.test.ts
+      - run: node --import tsx tools/fhir/generate-fixtures.ts
+      - run: node tools/fhir/validate.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fhir-source-validation
+          path: artifacts/governance-v2/P06-F01-validator
   verify:
     runs-on: ubuntu-latest
     steps:

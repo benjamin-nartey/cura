@@ -1,3 +1,4 @@
+import { selectOpenFollowUpSlot } from "./booking";
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import path from "node:path";
@@ -10,8 +11,9 @@ function screenshotPath(name: string) {
 }
 
 async function signIn(page: Page, userId: string) {
-  await page.goto("/");
-  await page.locator(`input[name="userId"][value="${userId}"]`).check();
+  await page.goto("/login");
+  await page.locator(".development-login summary").click();
+  await page.getByLabel("Workspace identity").selectOption(userId);
   await page.locator('form[action="/api/session"] button[type="submit"]').click();
   await expect(page).toHaveURL(/dashboard/);
 }
@@ -19,18 +21,14 @@ async function signIn(page: Page, userId: string) {
 async function signOut(page: Page) {
   await page.locator('.account > button[aria-haspopup="menu"]').click();
   await page.locator('form[action="/api/session/end"] button').click();
-  await expect(page.locator('input[name="userId"]').first()).toBeVisible();
+  await page.goto("/login");
+  await expect(page.getByRole("heading", { name: "Welcome back." })).toBeVisible();
 }
 
 test("synthetic visit from booking through clinician closure, with separated billing", async ({ page }) => {
   const nurse = page;
   await signIn(nurse, "usr_gh_nurse");
-  // Tuesday, within the existing practitioner's synthetic availability.
-  const date = new Date();
-  date.setUTCDate(date.getUTCDate() + 7 + ((2 - date.getUTCDay() + 7) % 7));
-  const day = date.toISOString().slice(0, 10);
-  await nurse.goto(`/appointments/new?patient=pat_gh_kofi_a&practitioner=pr_gh_kwame&category=follow-up&date=${day}`);
-  await nurse.locator('input[name="startsAt"]').first().check();
+  const day = await selectOpenFollowUpSlot(nurse);
   await nurse.getByRole("button", { name: "Request appointment" }).click();
   await expect(nurse).toHaveURL(/\/appointments\/apt_/);
   const appointmentUrl = nurse.url();

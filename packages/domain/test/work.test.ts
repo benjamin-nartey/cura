@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import "./fixture-clock.ts";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -36,6 +37,9 @@ import {
 } from "../src/work.ts";
 
 process.env.CURASPHERE_DEV_DIRECTORY ??= "local-test";
+process.env.CURASPHERE_ENV ??= "local";
+process.env.CURASPHERE_DATA_CLASS ??= "synthetic";
+process.env.CURASPHERE_LOCAL_PHASE_OVERRIDE ??= "true";
 
 const domainRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const doctor = { userId: DEMO_GH.users.doctor, organizationId: DEMO_GH.organizationId, facilityId: DEMO_GH.facilities.accra.id, sessionId: "ses_p04f04_doctor" };
@@ -295,11 +299,12 @@ test("P04-F04-S16 restart and rollback preserve the schema head", () => {
   const reopened = createDatabase(file);
   assert.equal(get<{ status: string }>(reopened, `SELECT status FROM work_orders WHERE id = ?`, created.id)?.status, "submitted");
   assert.equal(get<{ executable: number }>(reopened, `SELECT executable FROM source_medication_orders WHERE id = ?`, draft.id)?.executable, 0);
-  assert.equal(healthcheck(reopened).schemaVersion, 43);
+  assert.equal(healthcheck(reopened).schemaVersion, 49);
+  reopened.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   reopened.exec(WORK_ROLLBACK);
   reopened.close();
   const restored = createDatabase(file);
-  assert.equal(healthcheck(restored).schemaVersion, 43);
+  assert.equal(healthcheck(restored).schemaVersion, 49);
   assert.equal(get<{ name: string }>(restored, `SELECT name FROM sqlite_master WHERE name = 'work_orders'`)?.name, "work_orders");
   restored.close();
 });

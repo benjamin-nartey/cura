@@ -66,7 +66,7 @@ export default async function WorkPage({ searchParams }: { searchParams: Promise
           </ul>
         </>
       ) : null}
-      <p>{departments.length} synthetic departments are available. Routing stays inside this system.</p>
+      <p>{departments.length} departments are available for internal requests. External transmission is not enabled.</p>
     </Shell>
   );
 }

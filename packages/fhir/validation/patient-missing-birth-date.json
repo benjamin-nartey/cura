@@ -1,0 +1,32 @@
+{
+  "resourceType": "Patient",
+  "id": "2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2",
+  "meta": {
+    "versionId": "1",
+    "profile": [
+      "https://curasphere.local/fhir/StructureDefinition/source-Patient|1.0.0"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
+      "valueString": "{\"facts\":{\"author_id\":\"usr_gh_doctor\",\"birth_date\":\"1990-04-04\",\"confidentiality\":\"normal\",\"facility_id\":\"fac_gh_accra\",\"family_name\":\"Mensah\",\"given_name\":\"Kofi\",\"id\":\"pat_gh_kofi_a\",\"merged_into_id\":null,\"mrn\":\"ACC-4401\",\"organization_id\":\"org_demo_gh\",\"preferred_name\":null,\"recorded_at\":\"2026-01-15T00:00:00.000Z\",\"registration_source\":\"synthetic-fixture\",\"registration_status\":\"active\",\"retention_class\":\"clinical-standard\",\"sex\":\"male\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Patient\"}"
+    }
+  ],
+  "active": true,
+  "identifier": [
+    {
+      "system": "urn:curasphere:mrn:org_demo_gh",
+      "value": "ACC-4401"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Mensah",
+      "given": [
+        "Kofi"
+      ]
+    }
+  ]
+}

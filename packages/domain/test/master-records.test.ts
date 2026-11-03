@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync } from "node:fs";
@@ -53,7 +54,7 @@ function db() {
 
 test("P04-F01-S01 through S07 registration validation authorization and idempotency", () => {
   const database = db();
-  assert.equal(healthcheck(database).schemaVersion, 43);
+  assert.equal(healthcheck(database).schemaVersion, 49);
   const harbor = database.prepare(`SELECT COUNT(*) AS c FROM patients WHERE organization_id = 'org_harborlight'`).get() as { c: number };
   const north = database.prepare(`SELECT COUNT(*) AS c FROM patients WHERE organization_id = 'org_northwind'`).get() as { c: number };
   assert.equal(harbor.c, 13);
@@ -202,11 +203,12 @@ test("P04-F01-S33 through S40 privacy isolation concurrency and recovery", () =>
   first.close();
   const persisted = createDatabase(file);
   assert.equal((persisted.prepare(`SELECT id FROM patients WHERE id = 'pat_gh_kofi_a'`).get() as { id: string }).id, "pat_gh_kofi_a");
+  persisted.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   persisted.exec(MASTER_ROLLBACK);
   assert.equal((persisted.prepare(`SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1`).get() as { version: number }).version, 37);
   persisted.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 43);
+  assert.equal(healthcheck(upgraded).schemaVersion, 49);
   assert.equal((upgraded.prepare(`SELECT id FROM patients WHERE id = 'pat_gh_kofi_a'`).get() as { id: string }).id, "pat_gh_kofi_a");
   upgraded.close();
 });

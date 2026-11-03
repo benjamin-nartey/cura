@@ -27,7 +27,7 @@ export default async function PrivacyRequestsPage({ searchParams }: { searchPara
         <p>Processing {overview.processing}</p>
         <p>Ready or fulfilled {overview.fulfilled}</p>
         <p>Denied {overview.denied}</p>
-        <p>Overdue under the simulation policy {overview.overdue}</p>
+        <p>Overdue under workspace policy {overview.overdue}</p>
       </div>
       {overview.total === 0 ? <p>No privacy requests are stored for this organization.</p> : null}
       <p><a href="/privacy/requests/directory">Request directory</a></p>

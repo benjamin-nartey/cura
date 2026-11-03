@@ -1,4 +1,6 @@
+import { codingCommandHash, codingForAuthorizedSource, pinClinicalCoding, workCodingDefinition, type CodingSelection } from "./clinical-coding";
 import { randomUUID } from "node:crypto";
+import { catalogForOrder, type OrderCatalogSnapshot } from "./facility-catalogs";
 import { writeAudit } from "./audit";
 import { authorize, effectivePermissions } from "./authorization";
 import { all, get, run, transaction, type AppDatabase } from "./db";
@@ -51,11 +53,11 @@ function gate(db: AppDatabase, actor: WorkActor, permission: string) {
   if (!actor.sessionId || !actor.facilityId) throw new ForbiddenError();
   const permissions = effectivePermissions(db, actor.userId, actor.organizationId, actor.facilityId).permissions;
   if (!permissions.includes(permission)) throw new ForbiddenError();
-  const user = get<{ role: string }>(db, `SELECT role FROM users WHERE id = ?`, actor.userId);
+  const user = get<{ role: string; account_status:string }>(db, `SELECT role,account_status FROM users WHERE id = ?`, actor.userId);
   const purpose = user?.role === "auditor" ? "AUDIT" : user?.role === "admin" ? "OPERATIONS" : "TREATMENT";
   const decision = authorize(
     db,
-    { principalId: actor.userId, accountActive: true },
+    { principalId: actor.userId, accountActive: user?.account_status === "active" },
     permission,
     { type: "WorkCoordination", organizationId: actor.organizationId, facilityId: actor.facilityId, sensitivity: "clinical" },
     { purpose, assurance: "directory", sessionActive: true, activeFacilityId: actor.facilityId, correlationId: actor.sessionId.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 80) },
@@ -172,13 +174,14 @@ function audit(db: AppDatabase, actor: WorkActor, action: string, resourceType: 
   writeAudit(db, sessionFor(db, actor), { action, resourceType, resourceId, outcome: "success" });
 }
 
-export function submitOrder(db: AppDatabase, actor: WorkActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; departmentId: string; priority: string; dueOn: string; idempotencyKey: string }) {
+export function submitOrder(db: AppDatabase, actor: WorkActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; departmentId: string; priority: string; dueOn: string; idempotencyKey: string; catalogItemVersionId?: string; coding?: CodingSelection }) {
   gate(db, actor, "work.order.submit");
   assertKey(input.idempotencyKey);
-  const hash = JSON.stringify(["order", input.patientId, input.encounterId, input.code, input.departmentId, input.priority, input.dueOn]);
+  const hash = codingCommandHash(input.catalogItemVersionId ? JSON.stringify(["catalog-order", actor.userId,actor.facilityId,input.patientId,input.encounterId,input.practitionerId,input.catalogItemVersionId,input.departmentId,input.priority,input.dueOn]) : JSON.stringify(["order", input.patientId, input.encounterId, input.code, input.departmentId, input.priority, input.dueOn]),input.coding,actor);
   const prior = readCommand<{ id: string; version: number; status: string; idempotent?: boolean }>(db, actor.organizationId, input.idempotencyKey, hash);
   if (prior) return { ...prior, idempotent: true };
-  const concept = ORDERS.find((item) => item.code === input.code);
+  const catalog = input.catalogItemVersionId ? catalogForOrder(db,sessionFor(db,actor),input.catalogItemVersionId) : null;
+  const concept = catalog ? { code:catalog.item.code,system:catalog.item.system,version:catalog.item.code_system_version,display:catalog.item.display,category:catalog.item.order_category } : ORDERS.find((item) => item.code === input.code);
   if (!concept) throw new ValidationError("code", "That code is not on the synthetic catalog.");
   const destination = department(input.departmentId);
   if (destination.organizationId !== actor.organizationId || destination.kind !== concept.category) throw new ValidationError("code", "That department cannot receive this request.");
@@ -191,11 +194,13 @@ export function submitOrder(db: AppDatabase, actor: WorkActor, input: { patientI
   const id = newId("ord_");
   const taskId = newId("tsk_");
   const response = { id, taskId, version: 1, status: "submitted" };
-  const snapshot = { code: concept.code, display: concept.display, status: "submitted", departmentId: destination.id, priority: input.priority, dueOn: input.dueOn, fulfillment: "not-transmitted" };
+  const snapshot = { code: concept.code, display: concept.display, status: "submitted", departmentId: destination.id, priority: input.priority, dueOn: input.dueOn, fulfillment: "not-transmitted", ...(catalog?{catalog:catalog.snapshot}:{}) };
   try {
     transaction(db, () => {
       const again = readCommand<typeof response>(db, actor.organizationId, input.idempotencyKey, hash);
       if (again) return;
+      // Revalidate within the order transaction so a changed head cannot race the picker.
+      if (input.catalogItemVersionId) catalogForOrder(db,sessionFor(db,actor),input.catalogItemVersionId);
       run(
         db,
         `INSERT INTO work_orders (id, organization_id, facility_id, destination_department_id, patient_id, encounter_id, practitioner_id, code, code_system, code_system_version, display, category, priority, status, due_on, fulfillment, recorded_at, recorded_by, version, correlation_id, created_at, updated_at)
@@ -220,6 +225,8 @@ export function submitOrder(db: AppDatabase, actor: WorkActor, input: { patientI
         now,
         now,
       );
+      pinClinicalCoding(db,actor,"work-order",id,workCodingDefinition(concept,catalog?.snapshot),input.coding);
+      if(catalog) run(db,"INSERT INTO work_order_catalog_pins(order_id,organization_id,facility_id,entry_version_id,snapshot_json,created_at) VALUES(?,?,?,?,?,?)",id,actor.organizationId,actor.facilityId,catalog.item.id,JSON.stringify(catalog.snapshot),now);
       run(
         db,
         `INSERT INTO work_tasks (id, organization_id, facility_id, parent_kind, parent_id, patient_id, status, assignee_user_id, due_on, recorded_at, recorded_by, version, correlation_id)
@@ -311,7 +318,8 @@ export function readOrder(db: AppDatabase, actor: WorkActor, id: string) {
   gate(db, actor, "work.order.read");
   const row = orderVisible(db, actor, id);
   audit(db, actor, "work.order.read", "WorkOrder", id);
-  return row;
+  const pin=get<{snapshot_json:string}>(db,"SELECT snapshot_json FROM work_order_catalog_pins WHERE order_id=? AND organization_id=?",id,actor.organizationId);
+  return {...row,coding:codingForAuthorizedSource(db,actor.organizationId,"work-order",id),catalogSnapshot:pin?JSON.parse(pin.snapshot_json) as OrderCatalogSnapshot:null};
 }
 
 export function listOrders(db: AppDatabase, actor: WorkActor, patientId: string) {

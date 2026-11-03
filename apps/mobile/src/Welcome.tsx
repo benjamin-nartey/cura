@@ -4,7 +4,7 @@ import { Animated, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleS
 import { color, lift, shadow } from "./theme";
 import { Field, Icon, Orbs, type IconName } from "./ui";
 
-export type Mode = "patient" | "clinic";
+export type Mode = "patient" | "clinic" | "foundation";
 
 export function Welcome({ host, onHost, onChoose }: { host: string; onHost: (host: string) => void; onChoose: (mode: Mode) => void }) {
   const [editing, setEditing] = useState(false);
@@ -28,11 +28,11 @@ export function Welcome({ host, onHost, onChoose }: { host: string; onHost: (hos
           <Icon name="heart-pulse" size={30} tint={color.primary} />
         </View>
         <Text style={styles.brand}>CuraSphere</Text>
-        <Text style={styles.lede}>One chart for the people in this clinic’s care.</Text>
+        <Text style={styles.lede}>Connected care. Human at heart.</Text>
       </View>
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
         <Animated.View style={enter}>
-          <Text style={styles.ask}>How are you signing in?</Text>
+          <Text style={styles.ask}>Choose your workspace</Text>
           <Choice
             icon="account-heart-outline"
             title="I’m a patient"
@@ -43,21 +43,23 @@ export function Welcome({ host, onHost, onChoose }: { host: string; onHost: (hos
           />
           <Choice
             icon="stethoscope"
-            title="Clinic staff"
-            body="Open the day’s visits and the charts at your facility."
+            title="Care team"
+            body="Review your facility’s patients, visits, clinical chart, work, and charges."
             tint={color.accent}
             wash={color.accentSoft}
             onPress={() => onChoose("clinic")}
           />
-          <Pressable style={styles.server} onPress={() => setEditing((open) => !open)}>
+          <Pressable accessibilityRole="button" accessibilityState={{ expanded: editing }} style={styles.server} onPress={() => setEditing((open) => !open)}>
             <Icon name="lan-connect" size={18} tint={color.muted} />
-            <Text style={styles.serverText}>Server · {host}</Text>
+            <Text style={styles.serverText}>Connection settings</Text>
             <Icon name={editing ? "chevron-up" : "chevron-down"} size={18} tint={color.muted} />
           </Pressable>
           {editing ? (
             <View>
-              <Field icon="ip-network-outline" value={host} onChangeText={onHost} autoCapitalize="none" autoCorrect={false} placeholder="192.168.1.20" />
-              <Text style={styles.hint}>This is the address of the computer running CuraSphere. Patients use port 3000. Clinic staff use port 8081.</Text>
+              <Field accessibilityLabel="Workspace server address" icon="ip-network-outline" value={host} onChangeText={onHost} autoCapitalize="none" autoCorrect={false} placeholder="192.168.1.20" />
+              <Text style={styles.hint}>Use the address of your CuraSphere server. The care team and patient workspaces connect to the web service.</Text>
+              <Pressable accessibilityRole="button" onPress={() => onChoose("foundation")} style={styles.server}><Text style={styles.serverText}>Foundation service tools</Text></Pressable>
+              <Text style={styles.hint}>Separate directory-service records. These tools do not edit the unified chart.</Text>
             </View>
           ) : null}
         </Animated.View>
@@ -68,7 +70,7 @@ export function Welcome({ host, onHost, onChoose }: { host: string; onHost: (hos
 
 function Choice({ icon, title, body, tint, wash, onPress }: { icon: IconName; title: string; body: string; tint: string; wash: string; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.choice, pressed ? styles.pressed : null]}>
+    <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.choice, pressed ? styles.pressed : null]}>
       <View style={[styles.choiceIcon, { backgroundColor: wash }]}>
         <Icon name={icon} size={28} tint={tint} />
       </View>
@@ -90,20 +92,20 @@ const styles = StyleSheet.create({
     paddingTop: 84,
     paddingBottom: 44,
     paddingHorizontal: 24,
-    borderBottomLeftRadius: 36,
-    borderBottomRightRadius: 36,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     overflow: "hidden",
   },
   mark: { width: 60, height: 60, borderRadius: 20, backgroundColor: "#ffffff", alignItems: "center", justifyContent: "center", ...lift },
-  brand: { color: "#ffffff", fontSize: 34, fontWeight: "800", letterSpacing: -1, marginTop: 22 },
-  lede: { color: "#d1d5db", fontSize: 15, lineHeight: 22, marginTop: 6, maxWidth: 280 },
+  brand: { color: "#ffffff", fontSize: 34, fontWeight: "600", letterSpacing: -1, marginTop: 22 },
+  lede: { color: "#bdd0c0", fontSize: 15, lineHeight: 22, marginTop: 6, maxWidth: 280 },
   body: { padding: 20, paddingBottom: 48 },
   ask: { color: color.muted, fontWeight: "700", fontSize: 13, letterSpacing: 0.6, textTransform: "uppercase", marginTop: 6, marginBottom: 14 },
-  choice: { backgroundColor: color.surface, borderRadius: 26, padding: 18, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 14, ...shadow },
+  choice: { backgroundColor: color.surface, borderRadius: 12, padding: 18, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 14, ...shadow },
   pressed: { opacity: 0.88, transform: [{ scale: 0.985 }] },
   choiceIcon: { width: 58, height: 58, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   choiceCopy: { flex: 1 },
-  choiceTitle: { color: color.ink, fontWeight: "800", fontSize: 17 },
+  choiceTitle: { color: color.ink, fontWeight: "600", fontSize: 17 },
   choiceBody: { color: color.muted, marginTop: 4, lineHeight: 19, fontSize: 13 },
   go: { width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" },
   server: { flexDirection: "row", alignItems: "center", gap: 8, alignSelf: "center", paddingVertical: 12, paddingHorizontal: 16, marginTop: 6, marginBottom: 8 },

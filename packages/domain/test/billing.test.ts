@@ -1,4 +1,5 @@
 import "./fixture-clock.ts";
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { mkdtempSync } from "node:fs";
@@ -209,7 +210,8 @@ test("P04-F05-S45 S46 S47 S49 outage restart migration rollback", () => {
   assert.throws(() => createCharge(database, billing, { patientId: "pat_gh_kofi_a", encounterId: opened.id, catalogId: "cat_gh_consultation", quantity: 1, idempotencyKey: "bill-down" }), ConflictError);
   setBillingDependency(database, "available");
   const created = createCharge(database, billing, { patientId: "pat_gh_kofi_a", encounterId: opened.id, catalogId: "cat_gh_consultation", quantity: 1, idempotencyKey: "bill-up-again" });
-  assert.equal(healthcheck(database).schemaVersion, 43);
+  assert.equal(healthcheck(database).schemaVersion, 49);
+  database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(BILLING_ROLLBACK);
   assert.equal(healthcheck(database).schemaVersion, 41);
   assert.equal(get(database, `SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'billing_charges'`), undefined);
@@ -217,7 +219,7 @@ test("P04-F05-S45 S46 S47 S49 outage restart migration rollback", () => {
   database.close();
   const restored = createDatabase(file);
   seedDemoTenants(restored);
-  assert.equal(healthcheck(restored).schemaVersion, 43);
+  assert.equal(healthcheck(restored).schemaVersion, 49);
   assert.equal(get<{ c: number }>(restored, `SELECT COUNT(*) AS c FROM patients`)!.c, patientCount);
   assert.equal(get<{ id: string }>(restored, `SELECT id FROM visit_encounters WHERE id = ?`, opened.id)?.id, opened.id);
   assert.equal(get(restored, `SELECT id FROM billing_charges WHERE id = ?`, created.id), undefined);
@@ -305,6 +307,7 @@ test("P04-F05-S53 database rejects invalid amounts, cross-tenant links and mutab
 test("P04-F05-S54 failed additive migration rolls back its marker and can recover", () => {
   const file = path.join(mkdtempSync(path.join(tmpdir(), "cura-billing-upgrade-")), "chart.sqlite");
   const database = createDatabase(file);
+  database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(`DELETE FROM schema_migrations WHERE version = 43;
     DROP TRIGGER billing_charge_integrity_insert;
     DROP TRIGGER billing_charge_integrity_update;
@@ -317,6 +320,6 @@ test("P04-F05-S54 failed additive migration rolls back its marker and can recove
   repair.exec(`ALTER TABLE billing_charges_recovery RENAME TO billing_charges`);
   repair.close();
   const recovered = createDatabase(file);
-  assert.equal(healthcheck(recovered).schemaVersion, 43);
+  assert.equal(healthcheck(recovered).schemaVersion, 49);
   recovered.close();
 });

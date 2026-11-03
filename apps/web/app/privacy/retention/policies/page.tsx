@@ -13,7 +13,7 @@ export default async function RetentionPoliciesPage() {
   return (
     <Shell ctx={ctx} current="retention">
       <h1 className="page-title">Retention policy matrix</h1>
-      <p className="lede">These are synthetic development rules. They are not approved production retention periods and they are not a statement of Ghanaian or European law.</p>
+      <p className="lede">Review configured retention rules and approval status. Production retention periods require policy and jurisdictional approval.</p>
       {policies.length === 0 ? <p>No retention policies are stored for this organization.</p> : null}
       <div className="list">
         {policies.map((policy) => (

@@ -16,7 +16,7 @@ export default async function AccessLedgerPage() {
         <p className="eyebrow">Experimental ledger</p>
         <h1 className="page-title">Access ledger</h1>
         <p className="lede">
-          Append-only identifiers and hashes for this organization. This screen is experimental local development and is not a formal Phase 03 acceptance.
+          Review the organization’s append-only access history, record identifiers, and integrity hashes.
         </p>
         <p className={ledger.intact ? "meta" : "error"}>{ledger.intact ? "The hash chain matches." : `The hash chain broke at sequence ${ledger.brokenAt}.`}</p>
         <div className="list">

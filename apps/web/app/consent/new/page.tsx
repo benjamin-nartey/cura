@@ -18,9 +18,9 @@ export default async function RecordConsentPage({ searchParams }: { searchParams
     <Shell ctx={ctx} current="consent">
       <p className="eyebrow">Guided record</p>
       <h1 className="page-title">Record consent</h1>
-      <p className="lede">Research permission is not selected. This acknowledgment is a synthetic test record, not a legally binding signature.</p>
+      <p className="lede">Research permission is not selected by default. Recording an acknowledgment here does not create a legally binding signature.</p>
       {query.error ? <p>The consent could not be recorded. Check the subject, authority, and dates.</p> : null}
-      {subjects.length === 0 ? <p>No synthetic subjects are available in this organization.</p> : null}
+      {subjects.length === 0 ? <p>No subjects are available in this organization.</p> : null}
       <form action="/api/consents" method="post">
         <input type="hidden" name="idempotencyKey" value={`cns${crypto.randomUUID().replaceAll("-", "")}`} />
         <label>Subject
@@ -37,7 +37,7 @@ export default async function RecordConsentPage({ searchParams }: { searchParams
         <label>Purpose
           <select name="purpose" required defaultValue="COMMUNICATION">
             <option value="COMMUNICATION">Appointment reminder</option>
-            <option value="SHARING">Local synthetic sharing</option>
+            <option value="SHARING">Internal record sharing</option>
             <option value="RESEARCH">Research use</option>
           </select>
         </label>

@@ -33,13 +33,13 @@ export default async function PractitionerProfilePage({
       </p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Credential</h2>
+        <h2 style={{ marginTop: 0 }}>Credential</h2>
         <p>License: {practitioner.license_number ?? "Not recorded"}</p>
         <p>Issuer: {practitioner.license_issuer ?? "Not recorded"}</p>
-        <p>Verification stays fictional for synthetic records. Signing in does not verify a license.</p>
+        <p>Practitioner credentials require independent verification. Account access does not verify a professional license.</p>
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Facilities</h2>
+        <h2 style={{ marginTop: 0 }}>Facilities</h2>
         <ul>
           {practitioner.affiliations.map((affiliation) => (
             <li key={affiliation.facility_id}>
@@ -60,7 +60,7 @@ export default async function PractitionerProfilePage({
         ) : null}
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Workforce identity</h2>
+        <h2 style={{ marginTop: 0 }}>Workforce identity</h2>
         {practitioner.link ? (
           <p>
             {practitioner.link.user_id} · {practitioner.link.status}

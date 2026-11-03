@@ -1,0 +1,2 @@
+"use client";
+export default function ClinicalError({reset}:{reset:()=>void}){return <main className="main workspace"><h1 className="page-title">Clinical coding unavailable</h1><p role="alert">The workflow could not load its verified definitions or record context. No selection has been saved. Retry, or return to the clinical workspace.</p><button className="btn-dark" onClick={reset}>Retry workflow</button> <a href="/clinical">Return to clinical workspace</a></main>;}

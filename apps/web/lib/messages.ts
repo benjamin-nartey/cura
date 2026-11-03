@@ -22,6 +22,8 @@ const ERROR_COPY: Record<string, string> = {
   cancelled: "The sign-in was cancelled before a session was opened.",
   mfa: "That authenticator code was not accepted.",
   source: "That clinical change is not allowed from the current status.",
+  "coding-unavailable": "The coding dependency is unavailable. No new record was saved; retry when the workflow is available.",
+  "coding-stale": "The selected code definition changed. Reload the workflow and choose again.",
   "source-stale": "This clinical entry changed. Review the current version before trying again.",
   "source-closed": "This encounter is closed. Ordinary recording is not available.",
   "work-stale": "This work item changed. Review the current version before trying again.",
@@ -33,10 +35,10 @@ const NOTICE_COPY: Record<string, string> = {
   "allergy-saved": "The allergy information is saved.",
   "vital-saved": "The vital sign is saved. It is not a treatment recommendation.",
   "source-corrected": "The correction is saved. The earlier value remains in the history.",
-  "draft-saved": "The synthetic medication draft is saved. It is not a prescription.",
-  "draft-amended": "The synthetic draft is updated. It is still not a prescription.",
-  "order-cancelled": "The synthetic draft is cancelled. Nothing was transmitted.",
-  "charge-saved": "The synthetic charge is saved. Nothing was billed or collected.",
+  "draft-saved": "The medication draft is saved. It is not an executable prescription.",
+  "draft-amended": "The medication draft is updated. Prescription transmission is not enabled.",
+  "order-cancelled": "The medication draft is cancelled. Nothing was transmitted.",
+  "charge-saved": "The charge is saved. No payment has been collected.",
   "charge-reviewed": "The charge is marked reviewed.",
   "charge-finalized": "The charge is finalized locally. No invoice was issued.",
   "charge-adjusted": "The charge adjustment is saved. Earlier totals remain in history.",
@@ -185,7 +187,7 @@ const NOTICE_COPY: Record<string, string> = {
   reviewed: "The duplicate review is stored. The records were not merged.",
   merged: "The controlled merge is stored. Original identifiers remain on the retired record.",
   linked: "The practitioner identity link is stored. It does not change access.",
-  practitioner: "The practitioner record is stored. Licensing remains fictional and unverified.",
+  practitioner: "The practitioner record is saved. Professional credentials still require verification.",
 };
 
 export function readFeedback(query: { error?: string; notice?: string }) {

@@ -1,4 +1,5 @@
-import { effectivePermissions, getDb, listSourceCatalog, readVisitEncounter } from "@curasphere/domain";
+import { ClinicalCodePicker } from "@/components/clinical-code-picker";
+import { effectivePermissions, getDb, getClinicalCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
 import { requireSession } from "@/lib/session";
@@ -11,7 +12,7 @@ export default async function NewMedicationPage({ searchParams }: { searchParams
   if (!access.permissions.includes("clinical.medication-order.draft")) redirect("/access/denied");
   const encounter = query.encounter ? readVisitEncounter(getDb(), masterActor(ctx), query.encounter) : null;
   if (!query.patient || !encounter || encounter.status === "completed") redirect(`/clinical?patient=${query.patient ?? ""}&encounter=${query.encounter ?? ""}&error=source-closed`);
-  const catalog = listSourceCatalog();
+  const choices = getClinicalCodeChoices(getDb(),ctx,"medication-order");
   return (
     <Shell ctx={ctx} current="clinical">
       <h1 className="page-title">Medication draft</h1>
@@ -20,9 +21,7 @@ export default async function NewMedicationPage({ searchParams }: { searchParams
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <input type="hidden" name="practitionerId" value={encounter.practitioner_id} />
-        <label className="field">Medication
-          <select name="code" required>{catalog.medications.map((item) => <option key={item.code} value={item.code}>{item.display}</option>)}</select>
-        </label>
+        <ClinicalCodePicker label="Medication" choices={choices}/>
         <label className="field">Dose in mg
           <input name="dose" type="number" min={1} max={4000} required />
         </label>

@@ -22,6 +22,7 @@ export default async function MedicationPage({ params, searchParams }: { params:
   if (!row) return <Shell ctx={ctx} current="clinical"><p role="alert">That draft is not available.</p></Shell>;
   return (
     <Shell ctx={ctx} current="clinical">
+      <p><a href={`/clinical/coding/medication-order/${id}`}>Recorded coding provenance</a></p>
       <h1 className="page-title">Medication draft</h1>
       <p className="lede"><strong>Synthetic draft — not a valid prescription.</strong></p>
       <Feedback error={feedback.error} notice={feedback.notice} />

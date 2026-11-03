@@ -50,7 +50,7 @@ export function EmergencyActive({
         <strong>Emergency Access Active</strong>
         <span className="sr"> Temporary read-only access. The server ends this access at the expiry time.</span>
       </p>
-      <p>Scope: read-only synthetic record {resourceName}</p>
+      <p>Scope: read-only simulation record {resourceName}</p>
       <p>Remaining duration: {remaining || "Checking the server expiry"}</p>
       <p>Grant expiry: {expiresAt}</p>
       <p>Request reference: {requestId}</p>

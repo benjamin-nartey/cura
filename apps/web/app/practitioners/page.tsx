@@ -52,7 +52,7 @@ export default async function PractitionersPage({ searchParams }: { searchParams
       </div>
       {access.permissions.includes("practitioner.manage") ? (
         <section className="card" style={{ marginTop: 36, maxWidth: 520 }}>
-          <h2 style={{ fontSize: 20, marginTop: 0 }}>Create a practitioner</h2>
+          <h2 style={{ marginTop: 0 }}>Create a practitioner</h2>
           <form className="form-grid" action="/api/practitioners" method="post">
             <label className="field">
               Professional name

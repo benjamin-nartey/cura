@@ -62,8 +62,10 @@ export default async function InteropPage({
     <Shell ctx={ctx} current="interop">
       <p className="eyebrow">{ctx.facilityName}</p>
       <h1 className="page-title">FHIR R4</h1>
+      <p><a href="/interop/source">Open current-record FHIR source workbench</a></p>
+      <p><a href="/interop/apps">Manage SMART applications and patient grants</a></p>
       <p className="lede">
-        This is the same facility chart, published as R4 JSON. The directory session is the authorization. SMART on FHIR is not available, and notifications stay in the local inbox.
+        This legacy chart exchange uses your workspace session. Connected applications provide scoped SMART-style reads for current source records. Legacy notifications stay in the local inbox.
       </p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="stack">

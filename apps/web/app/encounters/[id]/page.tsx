@@ -43,7 +43,7 @@ export default async function EncounterPage({ params, searchParams }: { params: 
           {access.permissions.includes("clinical.condition.read") || access.permissions.includes("clinical.observation.read") ? <p><a href={`/clinical?patient=${row.patient_id}&encounter=${row.id}`}>Clinical source entries</a></p> : null}
           {access.permissions.includes("work.order.read") || access.permissions.includes("work.pending.read") ? <p><a href={`/work?patient=${row.patient_id}&encounter=${row.id}`}>Orders and referrals</a></p> : null}
           {access.permissions.includes("patient.read") ? <p><a href={`/patients/${row.patient_id}/chart?encounter=${row.id}`}>Unified patient chart</a></p> : null}
-          {access.permissions.includes("billing.charge.create") ? <p><a href={`/billing/charges/new?patient=${row.patient_id}&encounter=${row.id}`}>Create synthetic charge</a></p> : null}
+          {access.permissions.includes("billing.charge.create") ? <p><a href={`/billing/charges/new?patient=${row.patient_id}&encounter=${row.id}`}>Create charge</a></p> : null}
           <p>{row.started_at ? `Started ${clockLabel(row.started_at, timeZone)}` : "Not started"}</p>
           <p>{row.ended_at ? `Ended ${clockLabel(row.ended_at, timeZone)}` : "Not ended"}</p>
           {access.permissions.includes("encounter.close") && row.status === "in-progress" ? <a href={`/encounters/${row.id}/close`}>Close encounter</a> : null}

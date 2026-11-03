@@ -1,18 +1,18 @@
 export const color = {
-  ink: "#111827",
-  body: "#374151",
-  muted: "#6b7280",
-  faint: "#9ca3af",
-  hairline: "#e5e7eb",
-  canvas: "#f4f5f7",
-  surface: "#ffffff",
-  primary: "#f97316",
-  primaryDeep: "#ea580c",
-  primarySoft: "#ffedd5",
-  primaryWash: "#fff7ed",
-  accent: "#2563eb",
-  accentSoft: "#dbeafe",
-  success: "#16a34a",
+  ink: "#173f3b",
+  body: "#425557",
+  muted: "#617267",
+  faint: "#607361",
+  hairline: "#dce5d8",
+  canvas: "#f6f7f0",
+  surface: "#fffefa",
+  primary: "#235f54",
+  primaryDeep: "#174a40",
+  primarySoft: "#e5eee0",
+  primaryWash: "#f0f4e8",
+  accent: "#29695e",
+  accentSoft: "#e0eee5",
+  success: "#28654c",
   successSoft: "#dcfce7",
   danger: "#e11d48",
   dangerSoft: "#ffe4e6",
@@ -21,7 +21,7 @@ export const color = {
 };
 
 export const shadow = {
-  shadowColor: "#0f172a",
+  shadowColor: "#193e32",
   shadowOpacity: 0.07,
   shadowRadius: 18,
   shadowOffset: { width: 0, height: 8 },
@@ -29,7 +29,7 @@ export const shadow = {
 };
 
 export const lift = {
-  shadowColor: "#ea580c",
+  shadowColor: "#174a40",
   shadowOpacity: 0.3,
   shadowRadius: 20,
   shadowOffset: { width: 0, height: 12 },

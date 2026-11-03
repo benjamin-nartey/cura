@@ -1,10 +1,13 @@
+import { codingCommandKey, codingSelectionFromForm } from "@/lib/clinical-coding";
+import { terminologySameOrigin } from "@/lib/terminology-registry";
 import { facilityClock, getDb, localToUtc, recordSourceObservation } from "@curasphere/domain";
-import { sourceError, sourceKey } from "@/lib/clinical";
+import { sourceError } from "@/lib/clinical";
 import { redirectTo } from "@/lib/http";
 import { masterActor } from "@/lib/master";
 import { requireSession } from "@/lib/session";
 
 export async function POST(request: Request) {
+  if(!terminologySameOrigin(request))return new Response("Forbidden",{status:403});
   const ctx = await requireSession();
   const form = await request.formData();
   const patientId = String(form.get("patientId") ?? "");
@@ -17,7 +20,9 @@ export async function POST(request: Request) {
   const systolic = form.get("systolic");
   const diastolic = form.get("diastolic");
   try {
+    const coding=codingSelectionFromForm(form);
     const created = recordSourceObservation(getDb(), masterActor(ctx), {
+      coding,
       patientId,
       encounterId,
       practitionerId: String(form.get("practitionerId") ?? ""),
@@ -26,7 +31,7 @@ export async function POST(request: Request) {
       components: code === "syn-bp" ? [{ code: "syn-sbp", value: Number(systolic) }, { code: "syn-dbp", value: Number(diastolic) }] : undefined,
       status: "final",
       effectiveAt,
-      idempotencyKey: sourceKey(["vital", patientId, encounterId, code, effectiveAt, String(value ?? systolic ?? "")]),
+      idempotencyKey: codingCommandKey(form),
     });
     return redirectTo(request, `/clinical/observations/${created.id}`, { notice: "vital-saved" });
   } catch (error) {

@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import assert from "node:assert/strict";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -281,11 +282,12 @@ test("P03-F02 schema rollback returns to version 33 and the next open upgrades",
   const dir = mkdtempSync(path.join(tmpdir(), "curasphere-consent-rollback-"));
   const file = path.join(dir, "chart.sqlite");
   const database = createDatabase(file);
+  database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(CONSENT_ROLLBACK);
   const rolled = database.prepare("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").get() as { version: number };
   assert.equal(rolled.version, 33);
   database.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 43);
+  assert.equal(healthcheck(upgraded).schemaVersion, 49);
   upgraded.close();
 });

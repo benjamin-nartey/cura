@@ -30,9 +30,9 @@ export default async function PrivacyRequestDetailPage({ params, searchParams }:
         {query.notice === "partial" ? <p>Partial approval. Restricted categories stay out of the approved scope.</p> : null}
         {query.notice === "denied" ? <p>The request is denied. No export can be generated.</p> : null}
         {query.notice === "authority-revoked" ? <p>The representative authority is revoked. Later downloads that depend on it are denied.</p> : null}
-        {query.notice === "corrected" ? <p>The supported synthetic source record was updated and the previous value was kept.</p> : null}
+        {query.notice === "corrected" ? <p>The source record was updated. The previous value remains in its history.</p> : null}
         {query.notice === "erasure-partial" ? <p>Erasure was partial. Held or protected records were not deleted. Backups outside this database were not verified.</p> : null}
-        {query.notice === "erasure-fulfilled" ? <p>Eligible synthetic records were disposed. This is not a claim that every copy everywhere was destroyed.</p> : null}
+        {query.notice === "erasure-fulfilled" ? <p>Eligible records were disposed. Copies outside this workflow are not covered by this action.</p> : null}
         <p>Subject {row.subject_id}. Requester {row.requester_id}. Relationship {row.relationship}. Authority {row.authority_id ?? "none"}.</p>
         <p>Policy {row.policy_id ?? "missing"} version {row.policy_version ?? "none"}. Jurisdiction {row.jurisdiction}. Due {row.due_at ?? "not set"}.</p>
         <p>Verification {row.verification_state}. Decision {row.decision_state}. Categories {row.categories}. Approved {row.approved_categories ?? "none"}.</p>
@@ -75,7 +75,7 @@ export default async function PrivacyRequestDetailPage({ params, searchParams }:
         ) : null}
         {access.permissions.includes("privacy.request.approve") && row.request_type === "correction" && ["approved", "partially_approved"].includes(row.status) ? (
           <form action={`/api/privacy/requests/${row.id}/correct`} method="post">
-            <button type="submit">Apply the correction to the synthetic record</button>
+            <button type="submit">Apply the correction</button>
           </form>
         ) : null}
         {access.permissions.includes("privacy.export.run") && row.request_type === "erasure" && ["approved", "partially_approved"].includes(row.status) && row.decision_state !== "partial" ? (

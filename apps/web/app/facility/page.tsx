@@ -34,7 +34,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
         <div>
           <p className="eyebrow">Beds and wards</p>
           <h1 className="page-title">{ctx.facilityName}</h1>
-          <p className="lede">These counts are stored bed rows. They are not a forecast and they do not assign the next bed.</p>
+          <p className="lede">Review current bed occupancy and availability by ward. Bed assignment requires a separate action.</p>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
@@ -45,7 +45,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
       </p>
       <form action="/api/facility/rebuild" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
-        <button className="btn-line" type="submit">Rebuild from stored rows</button>
+        <button className="btn-line" type="submit">Refresh overview</button>
       </form>
       <div className="stat-grid">
         <section className="card stat">
@@ -56,7 +56,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
         <section className="card stat">
           <p className="eyebrow">Occupied</p>
           <p className="stat-value">{occupied}</p>
-          <p className="muted">{board.beds.length === 0 ? "No rows stored" : `${Math.round((occupied / board.beds.length) * 100)}% of stored beds`}</p>
+          <p className="muted">{board.beds.length === 0 ? "No records available" : `${Math.round((occupied / board.beds.length) * 100)}% of registered beds`}</p>
         </section>
         <section className="card stat">
           <p className="eyebrow">Open</p>
@@ -85,13 +85,13 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
         {beds.length === 0 ? (
           <p>No bed rows are stored for this ward.</p>
         ) : (
-          <table className="ward-table">
+          <div className="data-table-region" role="region" aria-label="Ward occupancy" tabIndex={0}><table className="ward-table">
             <thead>
               <tr>
-                <th>Bed</th>
-                <th>Patient</th>
-                <th>Status</th>
-                <th>Ward</th>
+                <th scope="col">Bed</th>
+                <th scope="col">Patient</th>
+                <th scope="col">Status</th>
+                <th scope="col">Ward</th>
               </tr>
             </thead>
             <tbody>
@@ -115,7 +115,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
       </section>
       <section className="card" style={{ marginTop: 16 }}>

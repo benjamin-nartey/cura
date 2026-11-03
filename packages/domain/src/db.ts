@@ -1,3 +1,5 @@
+import { CODE_SYSTEM_REGISTRY_SCHEMA, TERMINOLOGY_VALIDATION_SCHEMA } from "./code-system-schema";
+import { SMART_SCHEMA } from "./smart-schema";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -1903,6 +1905,43 @@ export function registerBilling(ensure: (db: AppDatabase) => void) {
 }
 
 function migrate(db: AppDatabase) {
+  const exists = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'schema_migrations'").get();
+  const current = exists ? db.prepare("SELECT MAX(version) AS version FROM schema_migrations").get() as { version: number | null } : null;
+  if (current?.version === 49) return;
+  if (current?.version && current.version > 49) throw new Error("Unsupported database schema.");
+  if (!current?.version || current.version < 44) {
+    migrateLegacy(db);
+    transaction(db, () => {
+      db.exec(CODE_SYSTEM_REGISTRY_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (44)").run();
+    });
+  }
+  if (!current?.version || current.version < 45) {
+    transaction(db, () => {
+      db.exec(TERMINOLOGY_VALIDATION_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (45)").run();
+    });
+  }
+  if (!current?.version || current.version < 46) {
+    transaction(db, () => {
+      db.exec(TERMINOLOGY_MAPPING_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (46)").run();
+    });
+  }
+  if (!current?.version || current.version < 47) {
+    transaction(db, () => {
+      db.exec(FACILITY_CATALOG_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (47)").run();
+    });
+  }
+  if(!current?.version || current.version<48) transaction(db, () => {
+    db.exec(CLINICAL_CODING_SCHEMA);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (48)").run();
+  });
+  transaction(db,()=>{db.exec(SMART_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (49)").run();});
+}
+
+function migrateLegacy(db: AppDatabase) {
   // Identity 29, authorization 30, workforce 31, emergency access 32, access ledger 33, consent 34, retention 35, privacy requests 36, privacy telemetry 37, master records 38, scheduling 39, clinical source 40, work coordination 41, billing 42, billing integrity 43.
   db.exec("CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY)");
   const row = db.prepare("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").get() as
@@ -5053,3 +5092,6 @@ export function all<T>(db: AppDatabase, sql: string, ...params: Array<string | n
 export function run(db: AppDatabase, sql: string, ...params: Array<string | number | null | Uint8Array>) {
   return db.prepare(sql).run(...params);
 }
+import { TERMINOLOGY_MAPPING_SCHEMA } from "./terminology-mapping-schema";
+import { FACILITY_CATALOG_SCHEMA } from "./facility-catalog-schema";
+import { CLINICAL_CODING_SCHEMA } from "./clinical-coding-schema";

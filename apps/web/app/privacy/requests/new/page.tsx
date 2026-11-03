@@ -12,7 +12,7 @@ export default async function NewPrivacyRequestPage({ searchParams }: { searchPa
   return (
     <Shell ctx={ctx} current="requests">
       <h1 className="page-title">Submit a privacy request</h1>
-      <p>These are synthetic subjects and simulation policies. Email is not accepted as proof of identity.</p>
+      <p>Select the subject and request type. Verify identity before releasing any records; email alone is insufficient.</p>
       {query.error ? <p>The request was not recorded. Check the subject and authority.</p> : null}
       <form action="/api/privacy/requests" method="post">
         <input type="hidden" name="idempotencyKey" value={`dsr${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`} />
@@ -30,7 +30,7 @@ export default async function NewPrivacyRequestPage({ searchParams }: { searchPa
         <label>Authority id <input name="authorityId" required defaultValue="auth_guardian_ama" /></label>
         <label>Jurisdiction <input name="jurisdiction" required defaultValue="SYNTHETIC_GH_DSAR" /></label>
         <input type="hidden" name="categories" value="administrative-note,third-party-note,contact-preference" />
-        <p>Verification is required before any disclosure. The simulation deadline is 30 days and is not a statutory period.</p>
+        <p>Verification is required before any disclosure. The workspace target is 30 days; applicable legal deadlines require separate review.</p>
         <button type="submit">Submit request</button>
       </form>
       <form action="/api/privacy/requests" method="post">

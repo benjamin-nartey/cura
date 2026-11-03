@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdtempSync } from "node:fs";
@@ -254,14 +255,16 @@ test("P03-F04-S49 S50 S51 and schema rollback", () => {
   const cleaned = cleanupExpiredExports(database, privacy);
   assert.ok(cleaned.cleaned >= 1);
   assert.equal((database.prepare(`SELECT access_state FROM privacy_artifacts WHERE export_id = ?`).get(queued.id) as { access_state: string }).access_state, "cleaned");
+  database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(DSAR_ROLLBACK);
   assert.equal((database.prepare(`SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1`).get() as { version: number }).version, 35);
   database.close();
   const file = path.join(mkdtempSync(path.join(tmpdir(), "curasphere-dsar-")), "chart.sqlite");
   const fresh = createDatabase(file);
+  fresh.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   fresh.exec(DSAR_ROLLBACK);
   fresh.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 43);
+  assert.equal(healthcheck(upgraded).schemaVersion, 49);
   upgraded.close();
 });

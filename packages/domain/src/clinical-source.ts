@@ -1,3 +1,4 @@
+import { codingCommandHash, codingDefinition, codingForAuthorizedSource, pinClinicalCoding, type CodingSelection } from "./clinical-coding";
 import { randomUUID } from "node:crypto";
 import { writeAudit } from "./audit";
 import { authorize, effectivePermissions } from "./authorization";
@@ -80,11 +81,11 @@ function gate(db: AppDatabase, actor: SourceActor, permission: string) {
   if (!actor.sessionId || !actor.facilityId) throw new ForbiddenError();
   const permissions = effectivePermissions(db, actor.userId, actor.organizationId, actor.facilityId).permissions;
   if (!permissions.includes(permission)) throw new ForbiddenError();
-  const user = get<{ role: string }>(db, `SELECT role FROM users WHERE id = ?`, actor.userId);
+  const user = get<{ role: string; account_status:string }>(db, `SELECT role,account_status FROM users WHERE id = ?`, actor.userId);
   const purpose = user?.role === "auditor" ? "AUDIT" : user?.role === "admin" ? "OPERATIONS" : "TREATMENT";
   const decision = authorize(
     db,
-    { principalId: actor.userId, accountActive: true },
+    { principalId: actor.userId, accountActive: user?.account_status === "active" },
     permission,
     { type: "ClinicalSource", organizationId: actor.organizationId, facilityId: actor.facilityId, sensitivity: "clinical" },
     { purpose, assurance: "directory", sessionActive: true, activeFacilityId: actor.facilityId, correlationId: actor.sessionId.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 80) },
@@ -209,10 +210,10 @@ function history(db: AppDatabase, actor: SourceActor, kind: string, id: string) 
   ).map((row) => ({ ...row, snapshot: JSON.parse(row.snapshot_json) as Record<string, unknown>, snapshot_json: undefined }));
 }
 
-export function recordCondition(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; clinicalStatus: string; verificationStatus: string; onsetDate?: string; idempotencyKey: string }) {
+export function recordCondition(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; clinicalStatus: string; verificationStatus: string; onsetDate?: string; idempotencyKey: string; coding?: CodingSelection }) {
   gate(db, actor, "clinical.condition.record");
   assertKey(input.idempotencyKey);
-  const hash = JSON.stringify(["condition", input.patientId, input.encounterId, input.code, input.clinicalStatus, input.verificationStatus, input.onsetDate ?? ""]);
+  const hash = codingCommandHash(JSON.stringify(["condition", input.patientId, input.encounterId, input.code, input.clinicalStatus, input.verificationStatus, input.onsetDate ?? ""]),input.coding,actor);
   const prior = readCommand<{ id: string; version: number; verificationStatus: string; clinicalStatus: string }>(db, actor.organizationId, input.idempotencyKey, hash);
   if (prior) return { ...prior, idempotent: true };
   const concept = CONDITIONS.find((item) => item.code === input.code);
@@ -221,6 +222,8 @@ export function recordCondition(db: AppDatabase, actor: SourceActor, input: { pa
   if (input.verificationStatus !== "unconfirmed" && input.verificationStatus !== "confirmed") throw new ValidationError("invalid", "That verification status cannot be recorded directly.");
   if (input.onsetDate && !/^\d{4}-\d{2}-\d{2}$/.test(input.onsetDate)) throw new ValidationError();
   return transaction(db, () => {
+    const again=readCommand<{ id: string; version: number; verificationStatus: string; clinicalStatus: string }>(db,actor.organizationId,input.idempotencyKey,hash);
+    if(again)return {...again,idempotent:true};
     assertPatient(db, actor, input.patientId);
     assertPractitioner(db, actor, input.practitionerId);
     assertEncounter(db, actor, input.encounterId, input.patientId, "record");
@@ -234,6 +237,7 @@ export function recordCondition(db: AppDatabase, actor: SourceActor, input: { pa
       id, actor.organizationId, actor.facilityId, input.patientId, input.encounterId, input.practitionerId, concept.code, concept.system, concept.version, concept.display, input.clinicalStatus, input.verificationStatus, input.onsetDate ?? null, now, actor.userId, actor.sessionId.slice(0, 80), now, now,
     );
     remember(db, actor, "condition", id, 1, null, input.encounterId, null, snapshot, now);
+    pinClinicalCoding(db,actor,"condition",id,codingDefinition("condition",concept),input.coding);
     writeAudit(db, sessionFor(db, actor), { action: "clinical.condition.record", resourceType: "Condition", resourceId: id, outcome: "success" });
     countMetric(db, "source.condition.recorded");
     const response = { id, version: 1, verificationStatus: input.verificationStatus, clinicalStatus: input.clinicalStatus };
@@ -288,13 +292,13 @@ export function readCondition(db: AppDatabase, actor: SourceActor, id: string) {
   gate(db, actor, "clinical.condition.read");
   const row = owned<Record<string, unknown> & { organization_id: string; facility_id: string }>(db, actor, `SELECT * FROM source_conditions WHERE id = ?`, id);
   writeAudit(db, sessionFor(db, actor), { action: "clinical.condition.read", resourceType: "Condition", resourceId: id, outcome: "success" });
-  return { ...row, history: history(db, actor, "condition", id) };
+  return { ...row, coding: codingForAuthorizedSource(db,actor.organizationId,"condition",id), history: history(db, actor, "condition", id) };
 }
 
-export function recordAllergy(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; verificationStatus: string; criticality?: string; idempotencyKey: string }) {
+export function recordAllergy(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; verificationStatus: string; criticality?: string; idempotencyKey: string; coding?: CodingSelection }) {
   gate(db, actor, "clinical.allergy.record");
   assertKey(input.idempotencyKey);
-  const hash = JSON.stringify(["allergy", input.patientId, input.encounterId, input.code, input.verificationStatus, input.criticality ?? ""]);
+  const hash = codingCommandHash(JSON.stringify(["allergy", input.patientId, input.encounterId, input.code, input.verificationStatus, input.criticality ?? ""]),input.coding,actor);
   const prior = readCommand<{ id: string; finding: string }>(db, actor.organizationId, input.idempotencyKey, hash);
   if (prior) return { ...prior, idempotent: true };
   const concept = ALLERGIES.find((item) => item.code === input.code);
@@ -303,6 +307,8 @@ export function recordAllergy(db: AppDatabase, actor: SourceActor, input: { pati
   if (concept.finding !== "documented" && input.criticality) throw new ValidationError("invalid", "Criticality applies only to a documented allergy.");
   if (input.criticality && !["low", "high", "unable-to-assess"].includes(input.criticality)) throw new ValidationError();
   return transaction(db, () => {
+    const again=readCommand<{ id: string; finding: string }>(db,actor.organizationId,input.idempotencyKey,hash);
+    if(again)return {...again,idempotent:true};
     assertPatient(db, actor, input.patientId);
     assertPractitioner(db, actor, input.practitionerId);
     assertEncounter(db, actor, input.encounterId, input.patientId, "record");
@@ -315,6 +321,7 @@ export function recordAllergy(db: AppDatabase, actor: SourceActor, input: { pati
       id, actor.organizationId, actor.facilityId, input.patientId, input.encounterId, input.practitionerId, concept.code, concept.system, concept.version, concept.display, concept.category, concept.finding, input.verificationStatus, input.criticality ?? null, now, actor.userId, actor.sessionId.slice(0, 80), now, now,
     );
     remember(db, actor, "allergy", id, 1, null, input.encounterId, null, { code: concept.code, finding: concept.finding, display: concept.display, verificationStatus: input.verificationStatus, clinicalStatus: "active", criticality: input.criticality ?? null }, now);
+    pinClinicalCoding(db,actor,"allergy",id,codingDefinition("allergy",concept),input.coding);
     writeAudit(db, sessionFor(db, actor), { action: "clinical.allergy.record", resourceType: "Allergy", resourceId: id, outcome: "success" });
     countMetric(db, "source.allergy.recorded");
     const response = { id, version: 1, finding: concept.finding, verificationStatus: input.verificationStatus };
@@ -362,7 +369,7 @@ export function readAllergy(db: AppDatabase, actor: SourceActor, id: string) {
   gate(db, actor, "clinical.allergy.read");
   const row = owned<Record<string, unknown> & { organization_id: string; facility_id: string }>(db, actor, `SELECT * FROM source_allergies WHERE id = ?`, id);
   writeAudit(db, sessionFor(db, actor), { action: "clinical.allergy.read", resourceType: "Allergy", resourceId: id, outcome: "success" });
-  return { ...row, history: history(db, actor, "allergy", id) };
+  return { ...row, coding: codingForAuthorizedSource(db,actor.organizationId,"allergy",id), history: history(db, actor, "allergy", id) };
 }
 
 function quantity(code: string, value: number) {
@@ -373,15 +380,17 @@ function quantity(code: string, value: number) {
   return concept;
 }
 
-export function recordObservation(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; valueQuantity?: number; components?: Array<{ code: string; value: number }>; unit?: string; status: string; effectiveAt: string; idempotencyKey: string }) {
+export function recordObservation(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; valueQuantity?: number; components?: Array<{ code: string; value: number }>; unit?: string; status: string; effectiveAt: string; idempotencyKey: string; coding?: CodingSelection }) {
   gate(db, actor, "clinical.observation.record");
   assertKey(input.idempotencyKey);
-  const hash = JSON.stringify(["observation", input.patientId, input.encounterId, input.code, input.valueQuantity ?? null, input.components ?? [], input.unit ?? "", input.status, input.effectiveAt]);
+  const hash = codingCommandHash(JSON.stringify(["observation", input.patientId, input.encounterId, input.code, input.valueQuantity ?? null, input.components ?? [], input.unit ?? "", input.status, input.effectiveAt]),input.coding,actor);
   const prior = readCommand<{ id: string; version: number }>(db, actor.organizationId, input.idempotencyKey, hash);
   if (prior) return { ...prior, idempotent: true };
   if (input.status !== "preliminary" && input.status !== "final") throw new ValidationError();
   if (Number.isNaN(Date.parse(input.effectiveAt))) throw new ValidationError();
   return transaction(db, () => {
+    const again=readCommand<{ id: string; version: number }>(db,actor.organizationId,input.idempotencyKey,hash);
+    if(again)return {...again,idempotent:true};
     assertPatient(db, actor, input.patientId);
     assertPractitioner(db, actor, input.practitionerId);
     assertEncounter(db, actor, input.encounterId, input.patientId, "record");
@@ -417,6 +426,7 @@ export function recordObservation(db: AppDatabase, actor: SourceActor, input: { 
       );
       remember(db, actor, "observation", id, 1, null, input.encounterId, null, { code: concept.code, display: concept.display, value: input.valueQuantity, unit: concept.unit, status: input.status, effectiveAt: input.effectiveAt, recordedAt: now }, now);
     }
+    pinClinicalCoding(db,actor,"observation",id,codingDefinition("observation",input.code===PRESSURE.code?PRESSURE:QUANTITIES.find(item=>item.code===input.code)!,UNIT_SYSTEM),input.coding);
     writeAudit(db, sessionFor(db, actor), { action: "clinical.observation.record", resourceType: "Observation", resourceId: id, outcome: "success" });
     countMetric(db, "source.observation.recorded");
     const response = { id, version: 1, status: input.status };
@@ -484,19 +494,21 @@ export function readObservation(db: AppDatabase, actor: SourceActor, id: string)
   const row = owned<{ organization_id: string; facility_id: string; value_type: string; display: string; status: string; version: number; value_quantity: number | null; unit_code: string | null; effective_at: string; recorded_at: string; recorded_by: string }>(db, actor, `SELECT * FROM source_observations WHERE id = ?`, id);
   const components = row.value_type === "component" ? all<{ code: string; display: string; value_quantity: number; unit_code: string }>(db, `SELECT code, display, value_quantity, unit_code FROM source_observation_components WHERE observation_id = ? ORDER BY code`, id) : [];
   writeAudit(db, sessionFor(db, actor), { action: "clinical.observation.read", resourceType: "Observation", resourceId: id, outcome: "success" });
-  return { ...row, components, history: history(db, actor, "observation", id) };
+  return { ...row, coding: codingForAuthorizedSource(db,actor.organizationId,"observation",id), components, history: history(db, actor, "observation", id) };
 }
 
-export function recordMedicationDraft(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; dose: number; idempotencyKey: string }) {
+export function recordMedicationDraft(db: AppDatabase, actor: SourceActor, input: { patientId: string; encounterId: string; practitionerId: string; code: string; dose: number; idempotencyKey: string; coding?: CodingSelection }) {
   gate(db, actor, "clinical.medication-order.draft");
   assertKey(input.idempotencyKey);
-  const hash = JSON.stringify(["draft", input.patientId, input.encounterId, input.code, input.dose]);
+  const hash = codingCommandHash(JSON.stringify(["draft", input.patientId, input.encounterId, input.code, input.dose]),input.coding,actor);
   const prior = readCommand<{ id: string; version: number; status: string; executable: false; transmission: "disabled"; intent: string }>(db, actor.organizationId, input.idempotencyKey, hash);
   if (prior) return { ...prior, idempotent: true };
   const concept = MEDICATIONS.find((item) => item.code === input.code);
   if (!concept) throw new ValidationError("code", "That code is not on the synthetic catalog.");
   if (!Number.isFinite(input.dose) || input.dose < concept.min || input.dose > concept.max) throw new ValidationError("range");
   return transaction(db, () => {
+    const again=readCommand<{ id: string; version: number; status: string; executable: false; transmission: "disabled"; intent: string }>(db,actor.organizationId,input.idempotencyKey,hash);
+    if(again)return {...again,idempotent:true};
     assertPatient(db, actor, input.patientId);
     assertPractitioner(db, actor, input.practitionerId);
     assertEncounter(db, actor, input.encounterId, input.patientId, "record");
@@ -509,6 +521,7 @@ export function recordMedicationDraft(db: AppDatabase, actor: SourceActor, input
       id, actor.organizationId, actor.facilityId, input.patientId, input.encounterId, input.practitionerId, concept.code, concept.system, concept.version, concept.display, input.dose, concept.unit, concept.route, concept.frequency, now, actor.userId, actor.sessionId.slice(0, 80), now, now,
     );
     remember(db, actor, "medication-order", id, 1, null, input.encounterId, null, { code: concept.code, display: concept.display, dose: input.dose, unit: concept.unit, route: concept.route, status: "draft", executable: false, transmission: "disabled" }, now);
+    pinClinicalCoding(db,actor,"medication-order",id,codingDefinition("medication-order",concept,UNIT_SYSTEM),input.coding);
     writeAudit(db, sessionFor(db, actor), { action: "clinical.medication-order.draft", resourceType: "MedicationOrder", resourceId: id, outcome: "success" });
     countMetric(db, "source.medication.drafted");
     const response = { id, version: 1, status: "draft", executable: false as const, transmission: "disabled" as const, intent: "proposal" };
@@ -580,7 +593,7 @@ export function readMedicationOrder(db: AppDatabase, actor: SourceActor, id: str
   gate(db, actor, "clinical.medication-order.read");
   const row = owned<{ organization_id: string; facility_id: string; display: string; dose_quantity: number; dose_unit: string; route: string; status: string; version: number; transmission: string; executable: number }>(db, actor, `SELECT * FROM source_medication_orders WHERE id = ?`, id);
   writeAudit(db, sessionFor(db, actor), { action: "clinical.medication-order.read", resourceType: "MedicationOrder", resourceId: id, outcome: "success" });
-  return { ...row, history: history(db, actor, "medication-order", id) };
+  return { ...row, coding: codingForAuthorizedSource(db,actor.organizationId,"medication-order",id), history: history(db, actor, "medication-order", id) };
 }
 
 export function signMedicationOrder(db: AppDatabase, actor: SourceActor, id: string) {

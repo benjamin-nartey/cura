@@ -7,7 +7,7 @@ export default async function AccountPage() {
   return (
     <Shell ctx={ctx} current="account">
       <section className="card account-card">
-        <p className="metric-label">Directory identity</p>
+        <p className="metric-label">Workspace identity</p>
         <h2>{ctx.displayName}</h2>
         <p className="lede">Name, role, facility, and purpose of use come from the directory. This page does not change them.</p>
         <dl className="account-facts">
@@ -36,6 +36,11 @@ export default async function AccountPage() {
             Sign out
           </button>
         </form>
+      </section>
+      <section className="card" style={{ marginTop: 24 }}>
+        <h2>Workspace information</h2>
+        <p>This is an isolated simulation environment containing synthetic patient and operational records. It is not connected to live clinical services.</p>
+        <p>Production clinical use, external prescriptions and orders, claims transmission, and payment collection remain disabled. Policy approval and credential verification are separate from account access.</p>
       </section>
     </Shell>
   );

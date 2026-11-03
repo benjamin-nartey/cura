@@ -15,7 +15,7 @@ export default async function EmergencyJustifyPage({ searchParams }: { searchPar
         <div>
           <p className="eyebrow">Emergency access</p>
           <h1 className="page-title">Emergency access</h1>
-          <p className="lede">Scope: one synthetic restricted record at {ctx.facilityName}. Allowed operation: read only. This activity is recorded and reviewed.</p>
+          <p className="lede">Scope: one restricted simulation record at {ctx.facilityName}. Allowed operation: read only. This activity is recorded and reviewed.</p>
         </div>
       </header>
       {query.error ? <p role="alert">The request was not accepted. Add the reason and try again.</p> : null}

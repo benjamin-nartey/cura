@@ -24,7 +24,7 @@ export default async function ReviewRegistrationPage({ searchParams }: { searchP
       <p className="lede">These candidates are not confirmed as the same person. Nothing is merged from this screen.</p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Registration waiting to be saved</h2>
+        <h2 style={{ marginTop: 0 }}>Registration waiting to be saved</h2>
         <p>
           {draft.given_name} {draft.family_name}
           {draft.preferred_name ? ` · preferred ${draft.preferred_name}` : ""}

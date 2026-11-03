@@ -23,7 +23,7 @@ export default async function RetentionOverviewPage({ searchParams }: { searchPa
       {query.error === "invalid" ? <p>The submitted values were not accepted.</p> : null}
       {query.notice === "held" ? <p>The legal hold is active. Disposal of the covered record is blocked.</p> : null}
       {query.notice === "released" ? <p>The hold is released. Records are not deleted until a new preview is executed.</p> : null}
-      {query.notice === "disposed" ? <p>The approved synthetic disposal finished. The operational record is no longer active.</p> : null}
+      {query.notice === "disposed" ? <p>The approved disposal is complete. The operational record is no longer active.</p> : null}
       <div className="list">
         <p>Active {overview.active}</p>
         <p>Archived {overview.archived}</p>
@@ -33,7 +33,7 @@ export default async function RetentionOverviewPage({ searchParams }: { searchPa
         <p>Active holds {overview.activeHolds}</p>
         <p>Jobs with failures {overview.failedJobs}</p>
       </div>
-      {overview.active === 0 && overview.disposed === 0 ? <p>No synthetic retention records are stored for this organization.</p> : null}
+      {overview.active === 0 && overview.disposed === 0 ? <p>No retention records are available for this organization.</p> : null}
       <p><a href="/privacy/retention/policies">Policy matrix</a></p>
       <p><a href="/privacy/retention/holds">Legal holds</a></p>
       <p><a href="/privacy/retention/dry-run">Retention preview</a></p>
@@ -44,7 +44,7 @@ export default async function RetentionOverviewPage({ searchParams }: { searchPa
           <input type="hidden" name="idempotencyKey" value={`rec${crypto.randomUUID().replaceAll("-", "").slice(0, 20)}`} />
           <input type="hidden" name="category" value="temporary-admin" />
           <input type="hidden" name="retentionStart" value="2026-10-01T00:00:00.000Z" />
-          <button type="submit">Create a disposable synthetic record</button>
+          <button type="submit">Create a retention test record</button>
         </form>
       ) : null}
     </Shell>

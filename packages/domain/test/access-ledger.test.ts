@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import assert from "node:assert/strict";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -52,7 +53,7 @@ function entry(organizationId: string, action: string) {
 
 test("P03-S01 a new database carries the sealed access ledger", () => {
   const database = db();
-  assert.equal(healthcheck(database).schemaVersion, 43);
+  assert.equal(healthcheck(database).schemaVersion, 49);
   const first = appendAccessLedger(database, entry(DEMO_GH.organizationId, "synthetic.read"));
   const second = appendAccessLedger(database, entry(DEMO_GH.organizationId, "ai.tool"));
   assert.equal(first.previousHash, "ledger-genesis");
@@ -135,12 +136,13 @@ test("P03-S06 ledger rollback returns to schema 32 and the next open upgrades ag
   const dir = mkdtempSync(path.join(tmpdir(), "curasphere-ledger-"));
   const file = path.join(dir, "chart.sqlite");
   const database = createDatabase(file);
+  database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(LEDGER_ROLLBACK);
   const rolled = database.prepare("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").get() as { version: number };
   assert.equal(rolled.version, 32);
   database.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 43);
+  assert.equal(healthcheck(upgraded).schemaVersion, 49);
   assert.equal(verifyAccessLedger(upgraded, DEMO_GH.organizationId).intact, true);
   upgraded.close();
 });

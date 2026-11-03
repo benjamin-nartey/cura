@@ -18,6 +18,7 @@ export default async function ObservationPage({ params }: { params: Promise<{ id
   }
   return (
     <Shell ctx={ctx} current="clinical">
+      {row?<p><a href={`/clinical/coding/observation/${id}`}>Recorded coding provenance</a></p>:null}
       <h1 className="page-title">Observation</h1>
       {failed || !row ? <p role="alert">That observation is not available.</p> : null}
       {row ? (

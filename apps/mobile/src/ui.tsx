@@ -6,13 +6,13 @@ import { color, initials, shadow } from "./theme";
 export type IconName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 
 export function Icon({ name, size = 20, tint = color.ink }: { name: IconName; size?: number; tint?: string }) {
-  return <MaterialCommunityIcons name={name} size={size} color={tint} />;
+  return <MaterialCommunityIcons accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" name={name} size={size} color={tint} />;
 }
 
 export function Card({ children, style, onPress }: { children: ReactNode; style?: StyleProp<ViewStyle>; onPress?: () => void }) {
   if (onPress) {
     return (
-      <Pressable onPress={onPress} style={({ pressed }) => [styles.card, style, pressed ? styles.pressed : null]}>
+      <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.card, style, pressed ? styles.pressed : null]}>
         {children}
       </Pressable>
     );
@@ -74,6 +74,10 @@ export function Button({
   const ink = tone === "quiet" ? color.ink : "#ffffff";
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: busy, busy }}
+      disabled={busy}
       onPress={busy ? undefined : onPress}
       style={({ pressed }) => [styles.button, { backgroundColor: fill }, tone === "quiet" ? styles.quiet : null, pressed ? styles.pressed : null]}
     >
@@ -124,32 +128,32 @@ export function Orbs({ tint = "#ffffff" }: { tint?: string }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: 24, padding: 16, ...shadow },
+  card: { backgroundColor: color.surface, borderRadius: 12, borderWidth: 1, borderColor: color.hairline, padding: 18, ...shadow },
   pressed: { opacity: 0.86, transform: [{ scale: 0.985 }] },
   badge: { alignItems: "center", justifyContent: "center" },
   avatar: { alignItems: "center", justifyContent: "center" },
-  avatarText: { fontWeight: "800" },
+  avatarText: { fontWeight: "600" },
   section: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 26, marginBottom: 12 },
-  sectionTitle: { color: color.ink, fontSize: 18, fontWeight: "800", letterSpacing: -0.3 },
+  sectionTitle: { color: color.ink, fontSize: 18, fontWeight: "600", letterSpacing: -0.3 },
   sectionAction: { color: color.primary, fontWeight: "700" },
   pill: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4, alignSelf: "flex-start" },
   pillText: { fontSize: 12, fontWeight: "700", textTransform: "capitalize" },
-  button: { height: 54, borderRadius: 18, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 18 },
+  button: { height: 54, borderRadius: 8, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 18 },
   quiet: { borderWidth: 1, borderColor: color.hairline },
-  buttonText: { fontWeight: "800", fontSize: 15 },
+  buttonText: { fontWeight: "600", fontSize: 15 },
   field: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     backgroundColor: color.surface,
-    borderRadius: 18,
+    borderRadius: 8,
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: color.hairline,
     marginBottom: 12,
   },
   fieldInput: { flex: 1, color: color.ink, paddingVertical: 14, fontSize: 15 },
-  banner: { flexDirection: "row", alignItems: "center", gap: 10, padding: 14, borderRadius: 18, marginBottom: 14 },
+  banner: { flexDirection: "row", alignItems: "center", gap: 10, padding: 14, borderRadius: 8, marginBottom: 14 },
   bannerText: { flex: 1, lineHeight: 20, fontWeight: "600" },
   empty: { alignItems: "center", gap: 10, paddingVertical: 22 },
   emptyText: { color: color.muted, textAlign: "center", lineHeight: 20 },

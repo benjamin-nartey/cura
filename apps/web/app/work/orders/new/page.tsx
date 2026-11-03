@@ -1,4 +1,5 @@
-import { effectivePermissions, getDb, listWorkCatalog, readVisitEncounter } from "@curasphere/domain";
+import { ClinicalCodePicker } from "@/components/clinical-code-picker";
+import { effectivePermissions, getDb, listWorkCatalog, getClinicalCodeChoices, getWorkCatalogCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
 import { requireSession } from "@/lib/session";
@@ -13,17 +14,16 @@ export default async function NewOrderPage({ searchParams }: { searchParams: Pro
   if (!query.patient || !encounter || encounter.patient_id !== query.patient) redirect("/work");
   if (encounter.status === "completed") redirect(`/work?patient=${query.patient}&encounter=${query.encounter}&error=source-closed`);
   const catalog = listWorkCatalog();
+  const choices=getClinicalCodeChoices(getDb(),ctx,"work-order"),catalogChoices=getWorkCatalogCodeChoices(getDb(),ctx);
   return (
     <Shell ctx={ctx} current="work">
       <h1 className="page-title">Department request</h1>
-      <p className="lede"><strong>Not a transmitted order.</strong> Saving records a request for a synthetic department. It does not produce a result or a prescription.</p>
+      <p className="lede"><strong>Not a transmitted order.</strong> Save a department request for internal coordination. It does not produce a result or a prescription.</p>
       <form className="form-grid" action="/api/work/orders" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <input type="hidden" name="practitionerId" value={encounter.practitioner_id} />
-        <label className="field">Request
-          <select name="code" required>{catalog.orders.map((item) => <option key={item.code} value={item.code}>{item.display}</option>)}</select>
-        </label>
+        <ClinicalCodePicker label="Request" choices={choices} catalogChoices={catalogChoices}/>
         <label className="field">Department
           <select name="departmentId" defaultValue="dep_gh_madina_lab" required>{catalog.departments.map((item) => <option key={item.id} value={item.id}>{item.display}</option>)}</select>
         </label>

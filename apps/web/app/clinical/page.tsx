@@ -81,9 +81,9 @@ export default async function ClinicalPage({ searchParams }: { searchParams: Pro
             </p>
           ) : null}
           <h2>Conditions</h2>
-          {conditions.length === 0 ? <p>No condition entry.</p> : <ul>{conditions.map((row) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=condition&id=${row.id}`}>History</a></li>)}</ul>}
+          {conditions.length === 0 ? <p>No condition entry.</p> : <ul>{conditions.map((row) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=condition&id=${row.id}`}>History</a> · <a href={`/clinical/coding/condition/${row.id}`}>Coding provenance</a></li>)}</ul>}
           <h2>Allergies</h2>
-          {allergies.length === 0 ? <p>No allergy information is recorded. Unknown status is not the same as no known allergies.</p> : <ul>{allergies.map((row) => <li key={row.id}>{row.display} · {row.finding} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=allergy&id=${row.id}`}>History</a></li>)}</ul>}
+          {allergies.length === 0 ? <p>No allergy information is recorded. Unknown status is not the same as no known allergies.</p> : <ul>{allergies.map((row) => <li key={row.id}>{row.display} · {row.finding} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=allergy&id=${row.id}`}>History</a> · <a href={`/clinical/coding/allergy/${row.id}`}>Coding provenance</a></li>)}</ul>}
           <h2>Vital signs and observations</h2>
           {observations.length === 0 ? <p>No observation is recorded.</p> : <ul>{observations.map((row) => <li key={row.id}><a href={`/clinical/observations/${row.id}`}>{row.display}</a> · {row.status} · version {row.version}</li>)}</ul>}
           <h2>Medication drafts</h2>

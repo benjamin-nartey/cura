@@ -137,7 +137,7 @@ export function PatientApp({ base, onExit }: { base: string; onExit: () => void 
 
   useEffect(() => {
     loadEntries();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Reload the directory when its server address changes.
   }, [base]);
 
   useEffect(() => {

@@ -1,11 +1,13 @@
 import type { SessionContext } from "@curasphere/contracts";
 import { canReadChart, canReviewAudit, effectivePermissions, getDb } from "@curasphere/domain";
+import { Sidebar } from "@/components/sidebar";
+import { Brand } from "@/components/brand";
 import { AccountMenu } from "@/components/account-menu";
 import { Icon, type IconName } from "@/components/icon";
-import { listFoundationEncounters } from "@/lib/foundation";
 import { purposeLabel, roleLabel } from "@/lib/format";
 
 type LinkId =
+  | "terminology"
   | "dashboard"
   | "facility"
   | "worklist"
@@ -42,6 +44,7 @@ type LinkId =
   | "telemetry";
 
 const LINKS: ReadonlyArray<{ href: string; id: LinkId; label: string; group: string; icon: IconName }> = [
+  { href: "/terminology", id: "terminology", label: "Terminology", group: "Reference", icon: "book" },
   { href: "/dashboard", id: "dashboard", label: "Dashboard", group: "Main", icon: "grid" },
   { href: "/tenancy", id: "tenancy", label: "Organization", group: "Main", icon: "shieldCheck" },
   { href: "/access", id: "access", label: "Access", group: "Main", icon: "shieldCheck" },
@@ -79,6 +82,7 @@ const LINKS: ReadonlyArray<{ href: string; id: LinkId; label: string; group: str
 ];
 
 const TITLES: Record<LinkId | "account", string> = {
+  terminology: "Terminology",
   dashboard: "Dashboard",
   tenancy: "Organization",
   access: "Access",
@@ -136,6 +140,7 @@ export async function Shell({
   const governed = access.roles.length > 0 || access.review.includes("not active");
   const chart = governed ? allowed.has("clinical.read") : canReadChart(ctx);
   const links = LINKS.filter((link) => {
+    if (link.id === "terminology") return allowed.has("terminology.read");
     if (link.id === "workforce") return governed && allowed.has("workforce.read");
     if (link.id === "emergency") return allowed.has("emergency.request") || allowed.has("emergency.review.read");
     if (link.id === "access" || link.id === "dashboard") return true;
@@ -164,19 +169,10 @@ export async function Shell({
     return allowed.has("clinical.read");
   });
   const groups = [...new Set(links.map((link) => link.group))];
-  let alerts = 0;
-  if (chart) {
-    const open = await listFoundationEncounters(ctx.sessionId);
-    alerts = open?.length ?? 0;
-  }
   const home = "/dashboard";
   return (
     <div className={`shell${compactMobile ? " compact-mobile" : ""}`}>
-      <aside className="side" id="workspace-navigation" tabIndex={-1}>
-        <a className="brand" href={home}>
-          <span className="mark" aria-hidden="true" />
-          CuraSphere
-        </a>
+      <Sidebar brand={<Brand href={home} light />}>
         {chart ? (
           <form className="side-search" action="/patients" method="get">
             <label className="sr" htmlFor="side-q">
@@ -202,21 +198,19 @@ export async function Shell({
         </nav>
         <a className="nav-settings" href="/account" aria-current={current === "account" ? "page" : undefined}>
           <Icon name="sliders" size={17} />
-          Settings
+          Account & workspace
         </a>
-      </aside>
+      </Sidebar>
       <div className="workspace">
         <header className="topbar">
           <h1>{title ?? TITLES[current]}</h1>
           <div className="top-actions">
-            {compactMobile ? <a className="mobile-nav-link" href="#workspace-navigation">Navigation</a> : null}
             {chart ? (
-              <a className="bell" href="/worklist" aria-label={alerts === 0 ? "No open encounters" : `${alerts} open encounters`}>
+              <a className="bell" href="/clinical" aria-label="Open clinical workspace">
                 <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
                   <path fill="none" stroke="currentColor" strokeWidth="1.8" d="M6 9a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9Z" />
                   <path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" d="M10 20a2 2 0 0 0 4 0" />
                 </svg>
-                {alerts > 0 ? <span className="bell-count">{alerts}</span> : null}
               </a>
             ) : null}
             <AccountMenu

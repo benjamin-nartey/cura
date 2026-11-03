@@ -35,14 +35,14 @@ export default async function PatientIdentityPage({
       </p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Demographics</h2>
+        <h2 style={{ marginTop: 0 }}>Demographics</h2>
         <p>Preferred name: {patient.preferred_name ?? "Not recorded"}</p>
         <p>Birth date: {patient.birth_date}</p>
         <p>Sex: {patient.sex}</p>
         <p className="mono">MRN {patient.mrn}</p>
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Identifiers</h2>
+        <h2 style={{ marginTop: 0 }}>Identifiers</h2>
         {patient.identifiers.length === 0 ? <p>No identifier is stored.</p> : null}
         <ul>
           {patient.identifiers.map((identifier) => (
@@ -53,7 +53,7 @@ export default async function PatientIdentityPage({
         </ul>
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Contacts</h2>
+        <h2 style={{ marginTop: 0 }}>Contacts</h2>
         {patient.contacts.length === 0 ? <p>No contact is stored.</p> : null}
         <ul>
           {patient.contacts.map((contact) => (
@@ -64,7 +64,7 @@ export default async function PatientIdentityPage({
         </ul>
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Facilities</h2>
+        <h2 style={{ marginTop: 0 }}>Facilities</h2>
         <ul>
           {patient.registrations.map((registration) => (
             <li key={registration.facility_id}>
@@ -74,7 +74,7 @@ export default async function PatientIdentityPage({
         </ul>
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>History</h2>
+        <h2 style={{ marginTop: 0 }}>History</h2>
         {patient.history.length === 0 ? <p>No version note is stored yet.</p> : null}
         <ul>
           {patient.history.map((entry) => (
@@ -85,7 +85,7 @@ export default async function PatientIdentityPage({
         </ul>
       </section>
       <section className="card">
-        <h2 style={{ fontSize: 20, marginTop: 0 }}>Privacy</h2>
+        <h2 style={{ marginTop: 0 }}>Privacy</h2>
         {patient.subjects.length === 0 ? (
           <p>No verified privacy-subject link is stored. Creating this record did not set a consent basis.</p>
         ) : (

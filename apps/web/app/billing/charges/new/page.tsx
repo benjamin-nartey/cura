@@ -15,8 +15,8 @@ export default async function NewChargePage({ searchParams }: { searchParams: Pr
   const catalog = listBillingCatalog(getDb(), masterActor(ctx));
   return (
     <Shell ctx={ctx} current="billing">
-      <h1 className="page-title">Create synthetic charge</h1>
-      <p className="lede"><strong>Not an invoice.</strong> Saving records a fictional charge. No payment is due.</p>
+      <h1 className="page-title">Create charge</h1>
+      <p className="lede"><strong>Not an invoice.</strong> Record a charge against the encounter. No payment is due from this screen.</p>
       <form className="form-grid" action="/api/billing/charges" method="post">
         <input type="hidden" name="submissionKey" value={randomUUID()} />
         <input type="hidden" name="patientId" value={query.patient} />

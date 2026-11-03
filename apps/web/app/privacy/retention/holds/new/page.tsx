@@ -12,7 +12,7 @@ export default async function NewLegalHoldPage({ searchParams }: { searchParams:
   return (
     <Shell ctx={ctx} current="retention">
       <h1 className="page-title">Create a legal hold</h1>
-      <p>This records a synthetic preservation request for this organization. It does not claim a real legal order.</p>
+      <p>Record a preservation request for this organization. Legal authority must be verified separately.</p>
       {query.error ? <p>The hold could not be recorded. Check the matter reference and the record id.</p> : null}
       <form action="/api/privacy/legal-holds" method="post">
         <input type="hidden" name="idempotencyKey" value={`hold${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`} />

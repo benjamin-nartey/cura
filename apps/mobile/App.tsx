@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { developmentServerUrls } from "./src/development-server";
+import { Workspace } from "./src/Workspace";
 import { ClinicApp } from "./src/ClinicApp";
 import { Landing } from "./src/Landing";
 import { PatientApp } from "./src/PatientApp";
@@ -72,6 +73,7 @@ export default function App() {
   if (landing) return <Landing onDone={enter} />;
   const address = clean(host);
   if (mode === "patient") return <PatientApp base={`http://${address}:3000`} onExit={() => setMode(null)} />;
-  if (mode === "clinic") return <ClinicApp root={`http://${address}:8081`} onExit={() => setMode(null)} />;
+  if (mode === "clinic") return <Workspace base={`http://${address}:3000`} onExit={() => setMode(null)} />;
+  if (mode === "foundation") return <ClinicApp root={`http://${address}:8081`} onExit={() => setMode(null)} />;
   return <Welcome host={host} onHost={changeHost} onChoose={setMode} />;
 }

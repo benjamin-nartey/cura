@@ -1,3 +1,4 @@
+import { CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK } from "../src/code-system-schema.ts";
 import "./fixture-clock.ts";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -38,6 +39,9 @@ import { seed } from "../src/seed.ts";
 import { DEMO_EU, DEMO_GH, seedDemoTenants } from "../src/tenancy.ts";
 
 process.env.CURASPHERE_DEV_DIRECTORY ??= "local-test";
+process.env.CURASPHERE_ENV ??= "local";
+process.env.CURASPHERE_DATA_CLASS ??= "synthetic";
+process.env.CURASPHERE_LOCAL_PHASE_OVERRIDE ??= "true";
 
 const domainRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const doctor = { userId: DEMO_GH.users.doctor, organizationId: DEMO_GH.organizationId, facilityId: DEMO_GH.facilities.accra.id, sessionId: "ses_p04f03_doctor" };
@@ -525,7 +529,7 @@ test("P04-F03-S48 a restart preserves entries and versions", () => {
   database.close();
   const reopened = createDatabase(file);
   assert.equal(get<{ version: number }>(reopened, `SELECT version FROM source_conditions WHERE id = ?`, created.id)?.version, 1);
-  assert.equal(healthcheck(reopened).schemaVersion, 43);
+  assert.equal(healthcheck(reopened).schemaVersion, 49);
   reopened.close();
 });
 
@@ -541,12 +545,13 @@ test("P04-F03-S49 a failed transaction leaves no partial history", () => {
 
 test("P04-F03-S51 migration and fixtures reproduce from a clean database", () => {
   const { database, file } = fileDb();
-  assert.equal(healthcheck(database).schemaVersion, 43);
+  assert.equal(healthcheck(database).schemaVersion, 49);
   assert.equal(get<{ id: string }>(database, `SELECT id FROM retention_policies WHERE id = 'pol_syn_gh_source'`)?.id, "pol_syn_gh_source");
+  database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(SOURCE_ROLLBACK);
   database.close();
   const reopened = createDatabase(file);
-  assert.equal(healthcheck(reopened).schemaVersion, 43);
+  assert.equal(healthcheck(reopened).schemaVersion, 49);
   assert.equal(get<{ name: string }>(reopened, `SELECT name FROM sqlite_master WHERE name = 'source_conditions'`)?.name, "source_conditions");
   reopened.close();
 });

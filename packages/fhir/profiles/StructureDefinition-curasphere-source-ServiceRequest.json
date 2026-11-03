@@ -1,0 +1,96 @@
+{
+  "resourceType": "StructureDefinition",
+  "version": "1.0.0",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-03",
+  "publisher": "CuraSphere engineering",
+  "fhirVersion": "4.0.1",
+  "abstract": false,
+  "derivation": "constraint",
+  "id": "curasphere-source-ServiceRequest",
+  "url": "https://curasphere.local/fhir/StructureDefinition/source-ServiceRequest",
+  "name": "CuraSphereSourceServiceRequest",
+  "title": "CuraSphere synthetic source ServiceRequest",
+  "description": "Local R4 source mapping profile. Not US Core, clinical approval, licensed terminology conformance, or external delivery support.",
+  "kind": "resource",
+  "type": "ServiceRequest",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/ServiceRequest",
+  "differential": {
+    "element": [
+      {
+        "id": "ServiceRequest",
+        "path": "ServiceRequest"
+      },
+      {
+        "id": "ServiceRequest.id",
+        "path": "ServiceRequest.id",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.extension",
+        "path": "ServiceRequest.extension",
+        "min": 1,
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "ServiceRequest.extension:sourceContext",
+        "path": "ServiceRequest.extension",
+        "sliceName": "sourceContext",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://curasphere.local/fhir/StructureDefinition/source-context|1.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ServiceRequest.code",
+        "path": "ServiceRequest.code",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.subject",
+        "path": "ServiceRequest.subject",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.encounter",
+        "path": "ServiceRequest.encounter",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.priority",
+        "path": "ServiceRequest.priority",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.occurrence[x]",
+        "path": "ServiceRequest.occurrence[x]",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.authoredOn",
+        "path": "ServiceRequest.authoredOn",
+        "min": 1
+      },
+      {
+        "id": "ServiceRequest.intent",
+        "path": "ServiceRequest.intent",
+        "fixedCode": "proposal"
+      }
+    ]
+  }
+}

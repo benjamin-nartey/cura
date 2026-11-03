@@ -136,7 +136,7 @@ export function ClinicApp({ root, onExit }: { root: string; onExit: () => void }
 
   useEffect(() => {
     loadDirectory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Reload the directory when its server address changes.
   }, [root]);
 
   async function loadVisits(sessionId: string, onDay: string) {

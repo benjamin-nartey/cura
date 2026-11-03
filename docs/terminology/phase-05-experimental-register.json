@@ -1,0 +1,18 @@
+{
+  "phase": "PHASE_05",
+  "mode": "LOCAL_SYNTHETIC_ENGINEERING",
+  "formalAcceptance": "NOT_GRANTED",
+  "engineeringStatus": "VERIFIED_LOCAL_SYNTHETIC",
+  "formalPhaseStatus": "BLOCKED_PENDING_PREREQUISITE_AND_QUALIFIED_REVIEWS",
+  "exitReport": "docs/terminology/PHASE_05_LOCAL_ENGINEERING_EXIT.md",
+  "stopBefore": "PHASE_06",
+  "authorization": "docs/governance/P05-PRODUCT-OWNER-AUTHORIZATION-2026-11-03.md",
+  "features": [
+    { "id": "P05-F01", "status": "ENGINEERING_VERIFIED_REVIEW_PENDING", "plan": "docs/terminology/P05-F01-plan.md", "operations": "docs/terminology/P05-F01-architecture-and-operations.md", "evidence": "docs/terminology/P05-F01-evidence.md", "reviewer": "Automated engineering checks only; independent human review pending" },
+    { "id": "P05-F02", "status": "ENGINEERING_VERIFIED_REVIEW_PENDING", "plan": "docs/terminology/P05-F02-plan.md", "operations": "docs/terminology/P05-F02-architecture-and-operations.md", "evidence": "docs/terminology/P05-F02-evidence.md", "scope": "Isolated local synthetic inspection; no clinical writes or formal acceptance", "reviewer": "Automated engineering checks and implementation inspection; qualified clinical/regulatory/licensing reviews remain ungranted" },
+    { "id": "P05-F03", "status": "ENGINEERING_VERIFIED_REVIEW_PENDING", "plan": "docs/terminology/P05-F03-plan.md", "operations": "docs/terminology/P05-F03-architecture-and-operations.md", "evidence": "docs/terminology/P05-F03-evidence.md", "scope": "Independent mapping review and isolated translation inspection; no clinical mutations", "reviewer": "Automated engineering checks and implementation inspection; qualified clinical/regulatory/licensing reviews remain ungranted" },
+    { "id": "P05-F04", "status": "ENGINEERING_VERIFIED_REVIEW_PENDING", "plan": "docs/terminology/P05-F04-plan.md", "operations": "docs/terminology/P05-F04-architecture-and-operations.md", "evidence": "docs/terminology/P05-F04-evidence.md", "scope": "Tenant defaults, active-facility overrides and immutable snapshots on existing internal department requests; drugs metadata-only", "reviewer": "Automated engineering checks and implementation inspection; qualified clinical/regulatory/licensing reviews remain ungranted" },
+    { "id": "P05-F05", "status": "ENGINEERING_VERIFIED_REVIEW_PENDING", "plan": "docs/terminology/P05-F05-plan.md", "operations": "docs/terminology/P05-F05-architecture-and-operations.md", "evidence": "docs/terminology/P05-F05-evidence.md", "scope": "Version-aware clinical pickers, immutable source coding receipts and metadata conformance; no new clinical code admission or licensed content activation", "reviewer": "Automated engineering checks and implementation inspection; qualified clinical/regulatory/licensing reviews remain ungranted" }
+  ],
+  "restrictions": ["Production clinical functionality disabled", "No licensed content imported", "No formal phase gate or human review inferred", "Original protected registers remain unchanged"]
+}

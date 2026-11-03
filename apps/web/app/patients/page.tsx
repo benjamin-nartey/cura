@@ -26,10 +26,10 @@ export default async function PatientsPage({ searchParams }: { searchParams: Pro
     <Shell ctx={ctx} current="patients">
       <p className="eyebrow">{ctx.facilityName}</p>
       <h1 className="page-title">Patients</h1>
-      <p className="lede">This directory reads the chart master record for the facility on this session.</p>
+      <p className="lede">Find and manage patient records registered at your current facility.</p>
       <form className="search" action="/patients" method="get">
         <label className="field">
-          Find on this facility record
+          Search the patient directory
           <input id="q" name="q" type="search" defaultValue={q} placeholder="Name or MRN" />
         </label>
         <button className="btn-dark" type="submit">
@@ -45,25 +45,23 @@ export default async function PatientsPage({ searchParams }: { searchParams: Pro
       ) : patients.length === 0 ? (
         <p>{q ? "No patient on this facility matches." : "No patient is registered at this facility."}</p>
       ) : (
-        <div className="list">
-          {patients.map((patient) => (
-            <a className="row" key={patient.id} href={`/patients/${patient.id}/chart`}>
-              <span className="mono">{patient.mrn}</span>
-              <span className="person">
-                {patient.given_name} {patient.family_name}
-              </span>
-              <span className="muted">
-                {patient.birth_date} · {sexLabel(patient.sex as Sex)} · {patient.registration_status}
-                {patient.open_candidates > 0 ? " · duplicate candidate" : ""}
-              </span>
-            </a>
-          ))}
+        <div className="data-table-region" role="region" aria-label="Patient directory" tabIndex={0}>
+          <table>
+            <caption className="sr">Patients registered at your current facility</caption>
+            <thead><tr><th scope="col">Patient</th><th scope="col">Medical record</th><th scope="col">Date of birth</th><th scope="col">Sex</th><th scope="col">Registration</th><th scope="col">Action</th></tr></thead>
+            <tbody>{patients.map(patient => <tr key={patient.id}>
+              <th scope="row"><span className="table-person">{patient.given_name} {patient.family_name}{patient.open_candidates > 0 ? <small>Duplicate review required</small> : null}</span></th>
+              <td className="table-id">{patient.mrn}</td><td>{patient.birth_date}</td><td>{sexLabel(patient.sex as Sex)}</td>
+              <td><span className="record-status">{patient.registration_status}</span></td>
+              <td><a href={`/patients/${patient.id}/chart`}>Open chart<span className="sr"> for {patient.given_name} {patient.family_name}, {patient.mrn}</span></a></td>
+            </tr>)}</tbody>
+          </table>
         </div>
       )}
       {patients.length === 50 ? <p className="muted">Showing the first 50 matches.</p> : null}
       {canRegisterPatient(ctx) && access.permissions.includes("patient.register") ? (
         <section className="card" style={{ marginTop: 36, maxWidth: 520 }}>
-          <h2 style={{ fontSize: 20, marginTop: 0 }}>Register a patient</h2>
+          <h2 style={{ marginTop: 0 }}>Register a patient</h2>
           <p className="muted">The server assigns the MRN and the facility. A possible duplicate is shown before the record is saved.</p>
           <form className="form-grid" action="/api/patients" method="post">
             <label className="field">
