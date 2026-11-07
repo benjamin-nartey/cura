@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
+if [[ "${CURASPHERE_LOCAL_PHASE_OVERRIDE:-}" == "true" ]]; then
+  echo "Experimental artifacts cannot be published or deployed." >&2
+  exit 1
+fi
 env_name="${1:-}"
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 if [[ "$env_name" != "dev" && "$env_name" != "staging" ]]; then

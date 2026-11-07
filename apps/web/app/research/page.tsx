@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { canReviewAudit, getDb, noteDenial, readResearch } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -13,8 +15,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
     noteDenial(getDb(), ctx, "research.read", "ResearchWorkspace", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="research">
-        <p className="eyebrow">Research</p>
-        <h1 className="page-title">Research workspaces are closed for this role.</h1>
+        <PageHeader section="Research" href="/research" icon="flask" eyebrow={<>Research</>}><h1 className="page-title">Research workspaces are closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -25,15 +26,13 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
     <Shell ctx={ctx} current="research">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Research</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">
+          <PageHeader section="Research" href="/research" icon="flask" eyebrow={<>Research</>} description={<>
             A workspace freezes the stored population counts. The ethics label is not an approval. No analysis notebook is running. An export waits for a different auditor.
-          </p>
+          </>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form action="/api/research/workspace" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/research/workspace" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <label className="field">
           Title
@@ -44,13 +43,13 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
           <input name="protocolLabel" type="text" required minLength={2} maxLength={80} />
         </label>
         <button className="btn-line" type="submit">Open workspace</button>
-      </form>
+      </form></section>
       {view.workspaces.length > 0 ? (
         <form action="/api/research/snapshot" method="post" className="form-grid" style={{ marginTop: 12 }}>
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Workspace
-            <select name="workspaceId" required>
+            <select aria-label="Workspace" name="workspaceId" required>
               {view.workspaces.map((workspace) => (
                 <option key={workspace.id} value={workspace.id}>{workspace.title}</option>
               ))}
@@ -64,7 +63,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Dataset
-            <select name="datasetId" required>
+            <select aria-label="Dataset" name="datasetId" required>
               {datasets.map((dataset) => (
                 <option key={dataset.id} value={dataset.id}>Version {dataset.version}</option>
               ))}
@@ -78,7 +77,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Waiting export
-            <select name="exportId" required>
+            <select aria-label="Waiting export" name="exportId" required>
               {pending.map((item) => (
                 <option key={item.id} value={item.id}>{item.id}</option>
               ))}
@@ -86,7 +85,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
           </label>
           <label className="field">
             Decision
-            <select name="decision" required defaultValue="approve">
+            <select aria-label="Decision" name="decision" required defaultValue="approve">
               <option value="approve">Approve</option>
               <option value="decline">Decline</option>
             </select>
@@ -98,7 +97,7 @@ export default async function ResearchPage({ searchParams }: { searchParams: Pro
         {view.workspaces.map((workspace) => (
           <section className="card wide" key={workspace.id}>
             <p className="eyebrow">{workspace.protocolLabel} · {workspace.ethicsStatus} · {workspace.purposeOfUse}</p>
-            <h2>{workspace.title}</h2>
+            <SectionHeading icon="flask"><h2>{workspace.title}</h2></SectionHeading>
             <p>{workspace.ethicsNote}</p>
             <p className="muted">Opened {formatWhen(workspace.createdAt)}</p>
             {workspace.datasets.map((dataset) => (

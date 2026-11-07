@@ -8,6 +8,40 @@ permissions:
   contents: read
 
 jobs:
+  fhir-source-profiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.fhir/packages
+            artifacts/governance-v2/fhir-validator
+          key: fhir-r4-${{ runner.os }}-${{ hashFiles('tools/fhir/validator.lock.json') }}
+      - run: node tools/fhir/install-validator.mjs
+      - run: node --test tools/fhir/validate.test.mjs
+      - run: node --import tsx --test tools/platform/fhir-source-http.test.ts tools/platform/smart-http.test.ts tools/platform/integrations-http.test.ts tools/platform/partner-receiver.test.ts tools/platform/twin-reads.test.ts
+      - run: node --import tsx --import ./packages/domain/test/dev-env.ts --test packages/domain/test/fhir-source.test.ts packages/domain/test/smart.test.ts packages/domain/test/integrations.test.ts packages/domain/test/integration-batches.test.ts
+      - run: node --import tsx tools/fhir/generate-fixtures.ts
+      - run: npm run conformance:test
+      - run: node tools/fhir/validate.mjs
+        env:
+          CURASPHERE_FHIR_VALIDATION_RUN: P06-F05-validator
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fhir-source-validation
+          path: artifacts/governance-v2/P06-F05-validator
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -17,8 +51,110 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Refuse the local experimental override
+        run: node tools/governance/sandbox.mjs --deployment
+      - name: Start Dex for the identity tests
+        working-directory: infra/local
+        run: |
+          docker compose up -d dex
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            curl -fsS http://127.0.0.1:15556/dex/.well-known/openid-configuration && exit 0
+            sleep 2
+          done
+          docker compose logs dex
+          exit 1
       - run: npm test
       - run: npm run typecheck
+      - run: npm run lint:gateway-boundary
       - run: node --test tools/platform/contract-compat.test.mjs tools/platform/signing.test.mjs tools/platform/delivery-static.test.mjs
       - run: npm audit --audit-level=critical
       - run: npm sbom --sbom-format cyclonedx
+
+  governance-v2-synthetic:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16.10
+        env:
+          POSTGRES_USER: curasphere
+          POSTGRES_PASSWORD: synthetic-ci-only
+          POSTGRES_DB: curasphere
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U curasphere"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      CURASPHERE_ENV: local
+      CURASPHERE_DEV_DIRECTORY: local-test
+      CURASPHERE_DATA_CLASS: synthetic
+      CURASPHERE_LOCAL_PHASE_OVERRIDE: 'true'
+      CURASPHERE_DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/curasphere
+      CURASPHERE_DATABASE_USER: curasphere
+      CURASPHERE_DATABASE_PASSWORD: synthetic-ci-only
+      CURASPHERE_E2E_BROWSER: chromium
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Start isolated integration dependencies
+        run: |
+          mkdir -p artifacts/governance-v2
+          docker compose -f infra/local/compose.yaml up -d dex
+          bash services/foundation/run.sh bootRun > artifacts/governance-v2/foundation.log 2>&1 &
+          for attempt in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:8081/health && curl -fsS http://127.0.0.1:15556/dex/.well-known/openid-configuration; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+      - name: Seed synthetic billing directory persona
+        env:
+          PGPASSWORD: synthetic-ci-only
+        run: psql -h 127.0.0.1 -U curasphere -d curasphere -v ON_ERROR_STOP=1 -f tools/fixtures/seed-p04-f05-directory.sql
+      - name: Verify parallel engineering scope without release authority
+        run: npm run governance:verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: governance-v2-synthetic-evidence
+          path: artifacts/governance-v2
+
+  timeline-kafka-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: docker compose -f infra/local/compose.yaml up -d --wait kafka
+      - run: npm run timeline:kafka:test
+      - if: always()
+        run: docker compose -f infra/local/compose.yaml logs kafka > kafka-recovery.log
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timeline-kafka-recovery
+          path: |
+            artifacts/governance-v2/P07-F05-kafka-outage.json
+            kafka-recovery.log
+      - if: always()
+        run: docker compose -f infra/local/compose.yaml stop kafka

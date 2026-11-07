@@ -207,7 +207,9 @@ test("P02-S12 through P02-S15 a live token is verified and bad claims or signatu
   assert.throws(() => assertIdentityClaims({ ...payload, aud: "other-client" }), /audience/);
   assert.throws(() => assertIdentityClaims(payload, Number(payload.exp) + 5), /expired/);
   const [header, body, signature] = tokens.idToken.split(".");
-  await assert.rejects(() => verifyPresentedIdToken(`${header}.${body}.${signature.slice(0, -2)}aa`), /signature/);
+  const alteredSignature = Buffer.from(signature, "base64url");
+  alteredSignature[0] ^= 1; // Change an actual signed byte, not unused base64 padding bits.
+  await assert.rejects(() => verifyPresentedIdToken(`${header}.${body}.${alteredSignature.toString("base64url")}`), /signature/);
   await assert.rejects(() => verifyPresentedIdToken(`${header}.${body}`), /not signed/);
   const none = Buffer.from(JSON.stringify({ alg: "none", kid: payload.kid })).toString("base64url");
   await assert.rejects(() => verifyPresentedIdToken(`${none}.${body}.`), /algorithm|not signed/);
@@ -296,4 +298,21 @@ test("P02-S31 and P02-S36 a Dex restart rotates keys and then accepts a new logi
   const recovered = await dexPasswordLogin("amira.solano@harborlight.invalid", "password");
   const next = await exchangeAuthorizationCode(recovered.callback, recovered);
   assert.equal((await verifyPresentedIdToken(next.idToken)).sub, next.subject);
+});
+
+test("local synthetic Dex accounts keep the configured issuer and subject", async () => {
+  const accounts = [
+    ["amira.solano@harborlight.invalid", "usr_amira"],
+    ["akosua.owusu@demo-gh.invalid", "usr_gh_nurse"],
+    ["marta.keller@demo-eu.invalid", "usr_eu_admin"],
+    ["engineer@adom.invalid", "usr_local_engineer"],
+  ] as const;
+  for (const [email, userId] of accounts) {
+    const started = await dexPasswordLogin(email, "password");
+    const tokens = await exchangeAuthorizationCode(started.callback, started);
+    assert.equal(tokens.subject, dexLocalSubject(userId));
+    const payload = await verifyPresentedIdToken(tokens.idToken);
+    assert.equal(payload.iss, LOCAL_ISSUER);
+    assert.equal(payload.sub, tokens.subject);
+  }
 });

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { canReadChart, getDb, listWorklist, noteDenial } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { listFoundationAppointments, listFoundationEncounters } from "@/lib/foundation";
@@ -10,9 +12,7 @@ export default async function WorklistPage() {
     noteDenial(getDb(), ctx, "worklist.read", "Worklist", null);
     return (
       <Shell ctx={ctx} current="worklist">
-        <p className="eyebrow">Worklist</p>
-        <h1 className="page-title">The chart is closed for this role.</h1>
-        <p className="lede">Audit review does not open the facility worklist.</p>
+        <PageHeader section="Daily worklist" href="/worklist" icon="checklist" eyebrow={<>Worklist</>} description={<>Audit review does not open the facility worklist.</>}><h1 className="page-title">The chart is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -21,12 +21,10 @@ export default async function WorklistPage() {
   const openEncounters = await listFoundationEncounters(ctx.sessionId);
   return (
     <Shell ctx={ctx} current="worklist">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">{formatDay(board.date)}</h1>
-      <p className="lede">Appointments and open encounters are read from the foundation service. Times are UTC.</p>
+      <PageHeader section="Daily worklist" href="/worklist" icon="checklist" eyebrow={<>{ctx.facilityName}</>} description={<>Appointments and open encounters are read from the foundation service. Times are UTC.</>}><h1 className="page-title">{formatDay(board.date)}</h1></PageHeader>
       <div className="split">
         <section>
-          <h2 className="section-title">Appointments</h2>
+          <SectionHeading icon="checklist"><h2 className="section-title">Appointments</h2></SectionHeading>
           {appointments === null ? (
             <p>The foundation service is not running.</p>
           ) : appointments.length === 0 ? (
@@ -49,7 +47,7 @@ export default async function WorklistPage() {
           )}
         </section>
         <section>
-          <h2 className="section-title">Open encounters</h2>
+          <SectionHeading icon="checklist"><h2 className="section-title">Open encounters</h2></SectionHeading>
           {openEncounters === null ? (
             <p>The foundation service is not running.</p>
           ) : openEncounters.length === 0 ? (

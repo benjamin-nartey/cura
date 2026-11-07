@@ -1,0 +1,313 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2",
+        "meta": {
+          "versionId": "1"
+        },
+        "active": true,
+        "identifier": [
+          {
+            "system": "urn:curasphere:mrn:org_demo_gh",
+            "value": "ACC-4401"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Mensah",
+            "given": [
+              "Kofi"
+            ]
+          }
+        ],
+        "birthDate": "1990-04-04"
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70",
+        "meta": {
+          "versionId": "2"
+        },
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "period": {
+          "start": "2026-10-19T08:00:00.000Z",
+          "end": "2026-10-19T08:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Condition/8f037be3c081466c4674ac9823a6b4e3c5bd56696b7c402e79dae7a449ccb3d8",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "8f037be3c081466c4674ac9823a6b4e3c5bd56696b7c402e79dae7a449ccb3d8",
+        "meta": {
+          "versionId": "3"
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.condition",
+              "version": "2026.10",
+              "code": "syn-follow-up",
+              "display": "Follow-up problem"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "entered-in-error"
+            }
+          ]
+        },
+        "recordedDate": "2026-10-19T08:00:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/AllergyIntolerance/0060db65f1ef3b7027f296f7ba325bc1b07f089b03e43ffff6c64d0c7d42b30d",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "0060db65f1ef3b7027f296f7ba325bc1b07f089b03e43ffff6c64d0c7d42b30d",
+        "meta": {
+          "versionId": "2"
+        },
+        "patient": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.allergy",
+              "version": "2026.10",
+              "code": "syn-unknown",
+              "display": "Allergy status unknown"
+            }
+          ]
+        },
+        "recordedDate": "2026-10-19T08:00:00.000Z",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "inactive"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+              "code": "refuted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Observation/98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
+        "meta": {
+          "versionId": "2"
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+              "version": "2026.10",
+              "code": "syn-temp",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "status": "corrected",
+        "effectiveDateTime": "2026-10-21T09:05:00.000Z",
+        "issued": "2026-10-19T08:00:00.000Z",
+        "valueQuantity": {
+          "value": 37.4,
+          "unit": "Cel",
+          "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Observation/268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
+        "meta": {
+          "versionId": "1"
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+              "version": "2026.10",
+              "code": "syn-bp",
+              "display": "Blood pressure"
+            }
+          ]
+        },
+        "status": "preliminary",
+        "effectiveDateTime": "2026-10-21T09:06:00.000Z",
+        "issued": "2026-10-19T08:00:00.000Z",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+                  "version": "2026.10",
+                  "code": "syn-dbp",
+                  "display": "Diastolic blood pressure"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 80,
+              "unit": "mm[Hg]",
+              "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+                  "version": "2026.10",
+                  "code": "syn-sbp",
+                  "display": "Systolic blood pressure"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 120,
+              "unit": "mm[Hg]",
+              "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/ServiceRequest/485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
+        "meta": {
+          "versionId": "3"
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "status": "revoked",
+        "intent": "proposal",
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.order",
+              "version": "2026.10",
+              "code": "syn-cbc",
+              "display": "Full blood count request"
+            }
+          ]
+        },
+        "priority": "routine",
+        "occurrenceDateTime": "2026-10-22",
+        "authoredOn": "2026-10-19T08:00:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/MedicationRequest/5fcb20d855bb7d0c0ff4da72c1f670141af6fe5aa4b8f214bb1fac6ef5c1cc75",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "5fcb20d855bb7d0c0ff4da72c1f670141af6fe5aa4b8f214bb1fac6ef5c1cc75",
+        "meta": {
+          "versionId": "2"
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "status": "cancelled",
+        "intent": "proposal",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.medication",
+              "version": "2026.10",
+              "code": "syn-paracetamol",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "authoredOn": "2026-10-19T08:00:00.000Z",
+        "dosageInstruction": [
+          {
+            "text": "as-recorded",
+            "route": {
+              "text": "oral"
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 250,
+                  "unit": "mg",
+                  "system": "urn:curasphere:synthetic:dose-unit",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

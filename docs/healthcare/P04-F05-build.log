@@ -1,0 +1,406 @@
+
+> curasphere@0.1.0 build
+> npm run build --workspace @curasphere/web
+
+
+> @curasphere/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.4 (Turbopack)
+✓ Running next.config.mjs took 209ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 64s
+  Running TypeScript ...
+  Finished TypeScript in 73s ...
+  Collecting page data using 7 workers ...
+(node:16872) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4108) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25736) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23120) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23728) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  Generating static pages using 7 workers (0/182) ...
+  Generating static pages using 7 workers (45/182) 
+  Generating static pages using 7 workers (90/182) 
+  Generating static pages using 7 workers (136/182) 
+✓ Generating static pages using 7 workers (182/182) in 1980ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /access
+├ ƒ /access/denied
+├ ƒ /access/diagnose
+├ ƒ /account
+├ ƒ /agents
+├ ƒ /analytics
+├ ƒ /api/access
+├ ƒ /api/agents/approval
+├ ƒ /api/agents/run
+├ ƒ /api/allergies
+├ ƒ /api/analytics/export
+├ ƒ /api/analytics/ingest
+├ ƒ /api/appointments
+├ ƒ /api/appointments/[id]
+├ ƒ /api/appointments/[id]/reschedule
+├ ƒ /api/audit/ledger
+├ ƒ /api/auth/callback
+├ ƒ /api/auth/health
+├ ƒ /api/auth/mfa
+├ ƒ /api/auth/passkey/[action]/options
+├ ƒ /api/auth/passkey/[action]/verify
+├ ƒ /api/auth/passkey/revoke
+├ ƒ /api/auth/start
+├ ƒ /api/auth/totp/confirm
+├ ƒ /api/auth/totp/enroll
+├ ƒ /api/auth/totp/revoke
+├ ƒ /api/billing/charges
+├ ƒ /api/billing/charges/[id]/adjust
+├ ƒ /api/billing/charges/[id]/finalize
+├ ƒ /api/billing/charges/[id]/review
+├ ƒ /api/billing/charges/[id]/void
+├ ƒ /api/care/explain
+├ ƒ /api/care/follow-up
+├ ƒ /api/care/gap
+├ ƒ /api/care/message
+├ ƒ /api/care/plan
+├ ƒ /api/care/plan/activate
+├ ƒ /api/care/preference
+├ ƒ /api/care/referral
+├ ƒ /api/care/referral/decision
+├ ƒ /api/care/task
+├ ƒ /api/clinical/allergies
+├ ƒ /api/clinical/conditions
+├ ƒ /api/clinical/medication-orders
+├ ƒ /api/clinical/medication-orders/[id]/amend
+├ ƒ /api/clinical/medication-orders/[id]/cancel
+├ ƒ /api/clinical/observations
+├ ƒ /api/clinical/observations/[id]/correct
+├ ƒ /api/conditions
+├ ƒ /api/consents
+├ ƒ /api/consents/[id]
+├ ƒ /api/consents/[id]/activate
+├ ƒ /api/consents/[id]/queue
+├ ƒ /api/consents/[id]/supersede
+├ ƒ /api/consents/[id]/verify
+├ ƒ /api/consents/[id]/withdraw
+├ ƒ /api/consents/dispatch
+├ ƒ /api/consents/evaluate
+├ ƒ /api/consents/list
+├ ƒ /api/copilot/ask
+├ ƒ /api/copilot/feedback
+├ ƒ /api/devices/acknowledge
+├ ƒ /api/devices/explain
+├ ƒ /api/devices/reading
+├ ƒ /api/devices/register
+├ ƒ /api/documentation/audio
+├ ƒ /api/documentation/consent
+├ ƒ /api/documentation/draft
+├ ƒ /api/documentation/text
+├ ƒ /api/emergency-access/current
+├ ƒ /api/emergency-access/eligibility
+├ ƒ /api/emergency-access/grants/[id]/revoke
+├ ƒ /api/emergency-access/history
+├ ƒ /api/emergency-access/requests
+├ ƒ /api/emergency-access/requests/[id]/activate
+├ ƒ /api/emergency-access/requests/[id]/passkey
+├ ƒ /api/emergency-access/requests/[id]/verify
+├ ƒ /api/emergency-access/reviews
+├ ƒ /api/emergency-access/reviews/[id]
+├ ƒ /api/emergency-access/reviews/[id]/assign
+├ ƒ /api/emergency-access/reviews/[id]/disposition
+├ ƒ /api/emergency-access/reviews/[id]/escalate
+├ ƒ /api/encounters
+├ ƒ /api/encounters/[id]/close
+├ ƒ /api/encounters/complete
+├ ƒ /api/enterprise/drill
+├ ƒ /api/enterprise/explain
+├ ƒ /api/enterprise/federation
+├ ƒ /api/enterprise/grant
+├ ƒ /api/enterprise/key
+├ ƒ /api/enterprise/move
+├ ƒ /api/enterprise/residency
+├ ƒ /api/evaluation/dataset
+├ ƒ /api/evaluation/promote
+├ ƒ /api/evaluation/request
+├ ƒ /api/evaluation/run
+├ ƒ /api/evaluation/sign
+├ ƒ /api/facility/bed
+├ ƒ /api/facility/equipment
+├ ƒ /api/facility/explain
+├ ƒ /api/facility/rebuild
+├ ƒ /api/facility/shift
+├ ƒ /api/fhir/export
+├ ƒ /api/fhir/r4/[type]
+├ ƒ /api/fhir/r4/[type]/[id]
+├ ƒ /api/fhir/r4/[type]/[id]/$events
+├ ƒ /api/fhir/r4/$export
+├ ƒ /api/fhir/r4/$export/[id]
+├ ƒ /api/fhir/r4/metadata
+├ ƒ /api/fhir/subscription
+├ ƒ /api/gateway/invoke
+├ ƒ /api/health
+├ ƒ /api/imaging/explain
+├ ƒ /api/imaging/release
+├ ƒ /api/imaging/report
+├ ƒ /api/imaging/study
+├ ƒ /api/lab/acknowledge
+├ ƒ /api/lab/explain
+├ ƒ /api/lab/order
+├ ƒ /api/lab/result
+├ ƒ /api/lab/specimen
+├ ƒ /api/marketplace/explain
+├ ƒ /api/marketplace/listing
+├ ƒ /api/marketplace/oauth
+├ ƒ /api/marketplace/release
+├ ƒ /api/marketplace/review
+├ ƒ /api/marketplace/sandbox
+├ ƒ /api/marketplace/share
+├ ƒ /api/marketplace/stop
+├ ƒ /api/modules/clear
+├ ƒ /api/modules/explain
+├ ƒ /api/modules/performance
+├ ƒ /api/modules/platform
+├ ƒ /api/modules/record
+├ ƒ /api/modules/study
+├ ƒ /api/modules/validation
+├ ƒ /api/observations
+├ ƒ /api/operations/explain
+├ ƒ /api/operations/inventory
+├ ƒ /api/operations/override
+├ ƒ /api/operations/rebuild
+├ ƒ /api/patient-app/ask
+├ ƒ /api/patient-app/coverage
+├ ƒ /api/patient-app/directory
+├ ƒ /api/patient-app/explain
+├ ƒ /api/patient-app/message
+├ ƒ /api/patient-app/payment
+├ ƒ /api/patient-app/record
+├ ƒ /api/patient-app/request
+├ ƒ /api/patient-app/session
+├ ƒ /api/patient-app/signout
+├ ƒ /api/patient-state
+├ ƒ /api/patients
+├ ƒ /api/patients/[id]/evidence
+├ ƒ /api/patients/[id]/state
+├ ƒ /api/patients/[id]/timeline
+├ ƒ /api/patients/confirm
+├ ƒ /api/patients/duplicates/[id]
+├ ƒ /api/population/build
+├ ƒ /api/population/jurisdiction
+├ ƒ /api/portal/ask
+├ ƒ /api/portal/coverage
+├ ƒ /api/portal/explain
+├ ƒ /api/portal/message
+├ ƒ /api/portal/payment
+├ ƒ /api/portal/question
+├ ƒ /api/portal/reply
+├ ƒ /api/portal/request
+├ ƒ /api/portal/request/decision
+├ ƒ /api/portal/session
+├ ƒ /api/portal/signout
+├ ƒ /api/practitioners
+├ ƒ /api/practitioners/[id]/affiliate
+├ ƒ /api/practitioners/[id]/link
+├ ƒ /api/privacy/alerts/[id]/acknowledge
+├ ƒ /api/privacy/alerts/[id]/escalate
+├ ƒ /api/privacy/alerts/[id]/investigate
+├ ƒ /api/privacy/alerts/[id]/resolve
+├ ƒ /api/privacy/alerts/[id]/retry
+├ ƒ /api/privacy/exports
+├ ƒ /api/privacy/exports/[id]/download
+├ ƒ /api/privacy/exports/[id]/revoke
+├ ƒ /api/privacy/exports/cleanup
+├ ƒ /api/privacy/legal-holds
+├ ƒ /api/privacy/legal-holds/[id]/activate
+├ ƒ /api/privacy/legal-holds/[id]/release
+├ ƒ /api/privacy/requests
+├ ƒ /api/privacy/requests/[id]/approve
+├ ƒ /api/privacy/requests/[id]/correct
+├ ƒ /api/privacy/requests/[id]/deny
+├ ƒ /api/privacy/requests/[id]/erase
+├ ƒ /api/privacy/requests/[id]/revoke-authority
+├ ƒ /api/privacy/requests/[id]/verify
+├ ƒ /api/privacy/retention/dry-runs
+├ ƒ /api/privacy/retention/jobs
+├ ƒ /api/privacy/retention/policies/[id]
+├ ƒ /api/privacy/retention/records
+├ ƒ /api/privacy/telemetry/canary
+├ ƒ /api/privacy/telemetry/collector
+├ ƒ /api/release-train/attempt
+├ ƒ /api/release-train/change
+├ ƒ /api/release-train/clinical
+├ ƒ /api/release-train/dossier
+├ ƒ /api/release-train/explain
+├ ƒ /api/release-train/risk
+├ ƒ /api/release-train/strategy
+├ ƒ /api/release-train/surveillance
+├ ƒ /api/release-train/trace
+├ ƒ /api/release-train/validation
+├ ƒ /api/research/decision
+├ ƒ /api/research/export
+├ ƒ /api/research/snapshot
+├ ƒ /api/research/workspace
+├ ƒ /api/revenue/claim
+├ ƒ /api/revenue/eligibility
+├ ƒ /api/revenue/explain
+├ ƒ /api/revenue/invoice
+├ ƒ /api/revenue/payment
+├ ƒ /api/revenue/plan
+├ ƒ /api/revenue/submit
+├ ƒ /api/rx/acknowledge
+├ ƒ /api/rx/activate
+├ ƒ /api/rx/administer
+├ ƒ /api/rx/dispense
+├ ƒ /api/rx/explain
+├ ƒ /api/rx/prescribe
+├ ƒ /api/session
+├ ƒ /api/session/end
+├ ƒ /api/tenancy
+├ ƒ /api/tenancy/facility
+├ ƒ /api/tenancy/organization
+├ ƒ /api/work/attachments
+├ ƒ /api/work/orders
+├ ƒ /api/work/orders/[id]
+├ ƒ /api/work/orders/[id]/cancel
+├ ƒ /api/work/orders/[id]/route
+├ ƒ /api/work/plans
+├ ƒ /api/work/plans/[id]/update
+├ ƒ /api/work/referrals
+├ ƒ /api/work/referrals/[id]/cancel
+├ ƒ /api/work/referrals/[id]/decide
+├ ƒ /api/work/tasks/[id]/assign
+├ ƒ /api/workforce
+├ ƒ /api/workforce/[id]
+├ ƒ /api/workforce/invitations
+├ ƒ /api/workforce/invitations/[id]
+├ ƒ /api/workforce/invitations/accept
+├ ƒ /appointments
+├ ƒ /appointments/[id]
+├ ƒ /appointments/[id]/reschedule
+├ ƒ /appointments/calendar
+├ ƒ /appointments/check-in
+├ ƒ /appointments/new
+├ ƒ /audit
+├ ƒ /audit/ledger
+├ ƒ /auth/enroll
+├ ƒ /auth/mfa
+├ ƒ /auth/passkey
+├ ƒ /billing
+├ ƒ /billing/charges/[id]
+├ ƒ /billing/charges/[id]/history
+├ ƒ /billing/charges/new
+├ ƒ /clinical
+├ ƒ /clinical/allergies/new
+├ ƒ /clinical/conditions/new
+├ ƒ /clinical/history
+├ ƒ /clinical/medications/[id]
+├ ƒ /clinical/medications/new
+├ ƒ /clinical/observations/[id]
+├ ƒ /clinical/observations/[id]/correct
+├ ƒ /clinical/vitals/new
+├ ƒ /consent
+├ ƒ /consent/[id]
+├ ƒ /consent/[id]/history
+├ ƒ /consent/[id]/withdraw
+├ ƒ /consent/directory
+├ ƒ /consent/inspect
+├ ƒ /consent/new
+├ ƒ /coordination
+├ ƒ /dashboard
+├ ƒ /devices
+├ ƒ /emergency
+├ ƒ /emergency/active
+├ ƒ /emergency/ended
+├ ƒ /emergency/history
+├ ƒ /emergency/justify
+├ ƒ /emergency/reviews
+├ ƒ /emergency/reviews/[id]
+├ ƒ /emergency/verify/[id]
+├ ƒ /encounters/[id]
+├ ƒ /encounters/[id]/close
+├ ƒ /enterprise
+├ ƒ /evaluation
+├ ƒ /facility
+├ ƒ /gateway
+├ ○ /icon.svg
+├ ƒ /imaging
+├ ƒ /interop
+├ ƒ /marketplace
+├ ƒ /modules
+├ ƒ /operations
+├ ƒ /patients
+├ ƒ /patients/[id]
+├ ƒ /patients/[id]/chart
+├ ƒ /patients/[id]/identity
+├ ƒ /patients/duplicates
+├ ƒ /patients/duplicates/[id]
+├ ƒ /patients/review
+├ ƒ /population
+├ ƒ /portal
+├ ƒ /portal/home
+├ ƒ /practitioners
+├ ƒ /practitioners/[id]
+├ ƒ /privacy/alerts
+├ ƒ /privacy/alerts/[id]
+├ ƒ /privacy/exports
+├ ƒ /privacy/exports/[id]
+├ ƒ /privacy/exports/monitor
+├ ƒ /privacy/requests
+├ ƒ /privacy/requests/[id]
+├ ƒ /privacy/requests/activity
+├ ƒ /privacy/requests/directory
+├ ƒ /privacy/requests/new
+├ ƒ /privacy/retention
+├ ƒ /privacy/retention/activity
+├ ƒ /privacy/retention/dry-run
+├ ƒ /privacy/retention/holds
+├ ƒ /privacy/retention/holds/[id]
+├ ƒ /privacy/retention/holds/new
+├ ƒ /privacy/retention/jobs
+├ ƒ /privacy/retention/jobs/[id]
+├ ƒ /privacy/retention/policies
+├ ƒ /privacy/retention/records/[id]
+├ ƒ /privacy/telemetry
+├ ƒ /privacy/telemetry/canary
+├ ƒ /privacy/telemetry/health
+├ ƒ /privacy/telemetry/policy
+├ ƒ /privacy/telemetry/rules
+├ ƒ /release-train
+├ ƒ /research
+├ ƒ /revenue
+├ ƒ /tenancy
+├ ƒ /work
+├ ƒ /work/history
+├ ƒ /work/orders/[id]
+├ ƒ /work/orders/new
+├ ƒ /work/plans/[id]
+├ ƒ /work/plans/new
+├ ƒ /work/referrals/[id]
+├ ƒ /work/referrals/new
+├ ƒ /workforce
+├ ƒ /workforce/[id]
+├ ƒ /workforce/[id]/access
+├ ƒ /workforce/[id]/offboard
+├ ƒ /workforce/[id]/status
+├ ƒ /workforce/[id]/transfer
+├ ƒ /workforce/accept
+├ ƒ /workforce/activity
+├ ƒ /workforce/invitations
+├ ƒ /workforce/invite
+└ ƒ /worklist
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

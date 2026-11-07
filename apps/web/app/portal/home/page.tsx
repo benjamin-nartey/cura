@@ -1,5 +1,7 @@
 import { getDb, readPortal } from "@curasphere/domain";
 import { redirect } from "next/navigation";
+import { Sidebar } from "@/components/sidebar";
+import { Brand } from "@/components/brand";
 import { Feedback } from "@/components/feedback";
 import { Icon, type IconName } from "@/components/icon";
 import { formatWhen } from "@/lib/format";
@@ -51,13 +53,7 @@ export default async function PortalHomePage({ searchParams }: { searchParams: P
 
   return (
     <div className="shell">
-      <aside className="side">
-        <div>
-          <a className="brand" href="/portal/home">
-            <span className="mark" aria-hidden="true" />
-            CuraSphere
-          </a>
-        </div>
+      <Sidebar brand={<Brand href="/portal/home" light />}>
         <div className="pt-me">
           <span className="pt-avatar" aria-hidden="true">{initials(name)}</span>
           <div>
@@ -86,8 +82,8 @@ export default async function PortalHomePage({ searchParams }: { searchParams: P
             Sign out
           </button>
         </form>
-      </aside>
-      <main className="main pt-main" id="content">
+      </Sidebar>
+      <main className="main pt-main workspace" id="content">
         <section className="pt-hero">
           <div className="pt-hero-copy">
             <p className="pt-kicker">

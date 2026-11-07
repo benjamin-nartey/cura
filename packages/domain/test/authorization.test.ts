@@ -39,6 +39,19 @@ test("P02-S37 an organization administrator can read organization settings", () 
   assert.equal(latestDecision(database, DEMO_GH.users.admin)?.decision, "allow");
 });
 
+test("P02-S144 an organization administrator cannot read billing or the security audit", () => {
+  const database = db();
+  const principal = { principalId: DEMO_GH.users.admin, accountActive: true };
+  const context = { purpose: "OPERATIONS" as const, assurance: "directory", sessionActive: true };
+  const billing = authorize(database, principal, "billing.read", { type: "Billing", organizationId: DEMO_GH.organizationId, facilityId: DEMO_GH.facilities.accra.id, ...standard }, context);
+  const audit = authorize(database, principal, "security.audit.read", { type: "Audit", organizationId: DEMO_GH.organizationId, ...standard }, context);
+  assert.equal(billing.allow, false);
+  assert.equal(audit.allow, false);
+  const access = effectivePermissions(database, DEMO_GH.users.admin, DEMO_GH.organizationId, DEMO_GH.facilities.accra.id);
+  assert.equal(access.permissions.includes("billing.read"), false);
+  assert.equal(access.permissions.includes("security.audit.read"), false);
+});
+
 test("P02-S38 a receptionist cannot administer security roles", () => {
   const database = db();
   const decision = authorize(database, { principalId: DEMO_GH.users.reception, accountActive: true }, "security.role.manage", { type: "Role", organizationId: DEMO_GH.organizationId, facilityId: DEMO_GH.facilities.eastLegon.id, ...standard }, { ...treatment, activeFacilityId: DEMO_GH.facilities.eastLegon.id });

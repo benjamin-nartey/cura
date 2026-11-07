@@ -1,0 +1,86 @@
+{
+  "resourceType": "StructureDefinition",
+  "version": "1.0.0",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-03",
+  "publisher": "CuraSphere engineering",
+  "fhirVersion": "4.0.1",
+  "abstract": false,
+  "derivation": "constraint",
+  "id": "curasphere-source-Condition",
+  "url": "https://curasphere.local/fhir/StructureDefinition/source-Condition",
+  "name": "CuraSphereSourceCondition",
+  "title": "CuraSphere synthetic source Condition",
+  "description": "Local R4 source mapping profile. Not US Core, clinical approval, licensed terminology conformance, or external delivery support.",
+  "kind": "resource",
+  "type": "Condition",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Condition",
+  "differential": {
+    "element": [
+      {
+        "id": "Condition",
+        "path": "Condition"
+      },
+      {
+        "id": "Condition.id",
+        "path": "Condition.id",
+        "min": 1
+      },
+      {
+        "id": "Condition.extension",
+        "path": "Condition.extension",
+        "min": 1,
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "Condition.extension:sourceContext",
+        "path": "Condition.extension",
+        "sliceName": "sourceContext",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://curasphere.local/fhir/StructureDefinition/source-context|1.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "Condition.code",
+        "path": "Condition.code",
+        "min": 1
+      },
+      {
+        "id": "Condition.subject",
+        "path": "Condition.subject",
+        "min": 1
+      },
+      {
+        "id": "Condition.encounter",
+        "path": "Condition.encounter",
+        "min": 1
+      },
+      {
+        "id": "Condition.verificationStatus",
+        "path": "Condition.verificationStatus",
+        "min": 1
+      },
+      {
+        "id": "Condition.recordedDate",
+        "path": "Condition.recordedDate",
+        "min": 1
+      }
+    ]
+  }
+}

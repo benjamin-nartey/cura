@@ -1,0 +1,38 @@
+{
+  "feature": "P08-F01",
+  "dataClass": "synthetic",
+  "scenarios": [
+    {
+      "id": "P08-F01-S01",
+      "oracle": "Capture actual clinical and work assertions; every fact resolves exact authorized source/version/hash"
+    },
+    {
+      "id": "P08-F01-S02",
+      "oracle": "Explicit not-captured and captured-empty permitted coverage, with no clinical reassurance or risk score"
+    },
+    {
+      "id": "P08-F01-S04",
+      "oracle": "Concurrent SQLite processes and repeated capture key yield one immutable capture; new keys create ordered versions"
+    },
+    {
+      "id": "P08-F01-S05",
+      "oracle": "Wrong actor/tenant/facility/purpose/session and revoked clinical/work history rights cannot read old captures or inspect facts"
+    },
+    {
+      "id": "P08-F01-S09",
+      "oracle": "Clinical/work dependency failure, cancellation, delayed/unverified/offline response clears facts; no capture replay"
+    },
+    {
+      "id": "P08-F01-S11",
+      "oracle": "Actual observation correction and work cancellation/referral acceptance make old capture stale; old versions remain exact and historical"
+    },
+    {
+      "id": "P08-F01-S18",
+      "oracle": "Failed member insert/DDL rolls back; schema 53 source and original rows retained; retry succeeds"
+    },
+    {
+      "id": "P08-F01-S19",
+      "oracle": "Malformed/missing member/version integrity, source bounds/quota and responsive/accessibility regressions"
+    }
+  ]
+}

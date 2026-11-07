@@ -30,7 +30,9 @@ function session(db: ReturnType<typeof createDatabase>, userId: string) {
   return ctx;
 }
 
-test("a cohort below 5 is hidden, and a released count has no person", () => {
+test("a cohort below 5 is hidden, and a released count has no person", (t) => {
+  // Operational milliseconds may equal a protected measurement; compare clinical output separately.
+  t.mock.timers.enable({ apis: ["Date"], now: new Date("2026-11-04T12:00:00.148Z") });
   const { db, ctx: amira } = signIn(FIXTURES.amira);
   const priya = session(db, FIXTURES.priya);
   assert.throws(() => readPopulation(db, amira), (error: unknown) => error instanceof ForbiddenError);
@@ -60,7 +62,8 @@ test("a cohort below 5 is hidden, and a released count has no person", () => {
   assert.equal(systolic?.total, 5);
   assert.deepEqual(systolic?.facilities, [{ facilityId: "fac_riverside", count: 5 }]);
   assert.equal(JSON.stringify(released).includes("Nora"), false);
-  assert.equal(JSON.stringify(released).includes("148"), false);
+  assert.match(released.builtAt ?? "", /\.148Z$/);
+  assert.equal(JSON.stringify({ ...released, builtAt: undefined }).includes("148"), false);
   const replayed = buildPopulation(db, priya, "pop-build-0002");
   assert.equal(replayed.version, released.version);
   recordObservation(db, session(db, FIXTURES.lea), {

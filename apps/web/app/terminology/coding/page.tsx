@@ -1,0 +1,10 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
+import { AppError, getClinicalCodeChoices, getDb, inspectCodingMappings } from "@curasphere/domain";
+import { Shell } from "@/components/shell";
+import { requireSession } from "@/lib/session";
+export default async function DefinitionPage({searchParams}:{searchParams:Promise<{kind?:string;code?:string}>}){
+ const ctx=await requireSession(),query=await searchParams;let choice;let mappings:ReturnType<typeof inspectCodingMappings>=[],error:string|null=null;
+ try{choice=getClinicalCodeChoices(getDb(),ctx,query.kind??"").find(c=>c.code===query.code);if(!choice)throw new Error();mappings=inspectCodingMappings(getDb(),ctx,choice);}catch(problem){error=problem instanceof AppError?problem.message:"This workflow definition is not available.";}
+ return <Shell ctx={ctx} current="terminology"><a href="/terminology">← Terminology registry</a><PageHeader section="Terminology" href="/terminology" icon="book"><h1 className="page-title">Workflow coding definition</h1></PageHeader>{error?<p role="alert">{error}</p>:choice?<><section className="card"><SectionHeading icon="book"><h2>{choice.display}</h2></SectionHeading><p>Code: {choice.code} · version {choice.version}</p><p style={{overflowWrap:"anywhere"}}>System: {choice.system}</p><p>Unit: {choice.unitLabel}</p><p style={{overflowWrap:"anywhere"}}>Binding revision: {choice.revision}</p><p className="muted">Existing built-in synthetic workflow definition. No licensed-standard equivalence or clinical approval is inferred.</p></section><section className="card" style={{marginTop:24}}><SectionHeading icon="book"><h2>Mapping provenance</h2></SectionHeading>{mappings.length?<ul>{mappings.map(m=><li key={m.id}><a href={`/terminology/mappings/${m.id}`}>{m.target_display}</a> · {m.equivalence} · {m.status} · {m.mapping_version}</li>)}</ul>:<p>No registered mapping exists for this exact tuple.</p>}<p className="muted">This view does not perform a clinical substitution.</p></section></>:null}</Shell>;
+}

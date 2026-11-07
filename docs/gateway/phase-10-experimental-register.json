@@ -1,0 +1,65 @@
+{
+  "phase": "10",
+  "engineeringStatus": "ENGINEERING_COMPLETE_REVIEW_PENDING",
+  "closeout": "docs/gateway/P10-closeout.md",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "Product owner explicitly authorized P10-F01 local synthetic engineering after Phase 09 closeout on 2026-11-07.",
+  "features": [
+    {
+      "id": "P10-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 59,
+      "adr": "docs/adr/ADR-0088-synthetic-gateway-provider-boundary.md",
+      "validation": "docs/gateway/P10-F01-validation.md",
+      "remaining": [
+        "Qualified architecture, safety, and privacy review",
+        "Approved live transport and credential design before hosted connectivity"
+      ]
+    },
+    {
+      "id": "P10-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 59,
+      "validation": "docs/gateway/P10-F02-validation.md",
+      "remaining": [
+        "Qualified review of scope, jurisdiction and data-class policies before real-data use"
+      ]
+    },
+    {
+      "id": "P10-F03",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 60,
+      "validation": "docs/gateway/P10-F03-validation.md",
+      "remaining": [
+        "Qualified lifecycle and evaluation review",
+        "Approval for hosted connectivity and formal release"
+      ]
+    },
+    {
+      "id": "P10-F04",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 61,
+      "validation": "docs/gateway/P10-F04-validation.md",
+      "remaining": [
+        "Qualified review of runtime resilience and budget policy",
+        "Transport-enforced cancellation and provider billing reconciliation before hosted use"
+      ]
+    },
+    {
+      "id": "P10-F05",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 62,
+      "validation": "docs/gateway/P10-F05-validation.md",
+      "remaining": [
+        "Qualified review of trace access, provenance, and human review requirements",
+        "Verification of real evidence and hosted cost records before production use"
+      ]
+    }
+  ],
+  "productionClinicalEnabled": false
+}

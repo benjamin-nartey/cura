@@ -1,0 +1,66 @@
+{
+  "phase": "09",
+  "engineeringStatus": "ENGINEERING_COMPLETE_REVIEW_PENDING",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "docs/evidence-graph/P09-LOCAL-SIMULATION-AUTHORITY-2026-11-06.md",
+  "features": [
+    {
+      "id": "P09-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 58,
+      "plan": "docs/evidence-graph/P09-F01-plan.md",
+      "adr": "docs/adr/ADR-0086-owner-scoped-immutable-typed-claims.md",
+      "remaining": [
+        "Qualified prerequisite, clinical, privacy, architecture and licensing reviews before formal acceptance or real-data release"
+      ],
+      "validation": "docs/evidence-graph/P09-F01-validation.md"
+    },
+    {
+      "id": "P09-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 59,
+      "plan": "docs/evidence-graph/P09-F02-plan.md",
+      "adr": "docs/adr/ADR-0087-owner-scoped-evidence-ingestion.md",
+      "remaining": [
+        "Qualified prerequisite, clinical, privacy, architecture and licensing reviews before formal acceptance or real-data release"
+      ],
+      "validation": "docs/evidence-graph/P09-F02-validation.md"
+    },
+    {
+      "id": "P09-F03",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 59,
+      "plan": "docs/evidence-graph/P09-F03-plan.md",
+      "validation": "docs/evidence-graph/P09-F03-plan.md",
+      "remaining": [
+        "Qualified approval of clinical sufficiency thresholds and formal release reviews"
+      ]
+    },
+    {
+      "id": "P09-F04",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 59,
+      "plan": "docs/evidence-graph/P09-F04-plan.md",
+      "validation": "docs/evidence-graph/P09-F04-plan.md",
+      "remaining": [
+        "Qualified review of read-time invalidation behavior and formal release gates"
+      ]
+    },
+    {
+      "id": "P09-F05",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 59,
+      "plan": "docs/evidence-graph/P09-F05-plan.md",
+      "validation": "docs/evidence-graph/P09-F05-plan.md",
+      "remaining": [
+        "Qualified review of disclosure controls, accessibility and formal release gates"
+      ]
+    }
+  ],
+  "productionClinicalEnabled": false
+}

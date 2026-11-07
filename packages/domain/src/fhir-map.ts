@@ -1,3 +1,4 @@
+import { legacyCapabilities } from "@curasphere/fhir";
 import { TERMINOLOGY } from "./terminology";
 import type { AppDatabase } from "./db";
 import { all, get } from "./db";
@@ -504,58 +505,4 @@ export function historyBundle(resource: FhirResource): FhirResource {
   return { resourceType: "Bundle", type: "history", entry: [{ resource }] };
 }
 
-export function capabilityStatement(): FhirResource {
-  const readSearch = (type: string) => ({
-    type,
-    interaction: [{ code: "read" }, { code: "search-type" }],
-    searchParam: [{ name: "patient", type: "reference" }],
-  });
-  return {
-    resourceType: "CapabilityStatement",
-    id: "curasphere-local",
-    status: "active",
-    date: "2026-10-08",
-    kind: "instance",
-    fhirVersion: FHIR_VERSION,
-    format: ["json"],
-    implementation: {
-      description: "Local R4 projection of one facility chart. R5 is not served. SMART on FHIR bearer tokens are not accepted.",
-    },
-    rest: [
-      {
-        mode: "server",
-        security: {
-          description: "Requests use the local directory session cookie. SMART on FHIR is not implemented.",
-        },
-        resource: [
-          {
-            type: "Patient",
-            interaction: [{ code: "read" }, { code: "search-type" }],
-            searchParam: [{ name: "name", type: "string" }],
-          },
-          {
-            type: "Observation",
-            interaction: [{ code: "read" }, { code: "search-type" }, { code: "create" }],
-            searchParam: [{ name: "patient", type: "reference" }],
-          },
-          readSearch("Condition"),
-          readSearch("AllergyIntolerance"),
-          readSearch("MedicationStatement"),
-          readSearch("Encounter"),
-          {
-            type: "Subscription",
-            interaction: [{ code: "read" }, { code: "create" }],
-          },
-        ],
-        operation: [
-          {
-            name: "export",
-            definition: "urn:curasphere:operation-export",
-            documentation:
-              "Facility-scoped NDJSON generated from source rows when the job is read. Outbound webhooks and the HL7 Bulk Data file protocol are not implemented.",
-          },
-        ],
-      },
-    ],
-  };
-}
+export function capabilityStatement(): FhirResource {return legacyCapabilities();}

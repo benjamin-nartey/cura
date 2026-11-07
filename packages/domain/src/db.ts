@@ -1,3 +1,17 @@
+import {EVIDENCE_INGESTION_SCHEMA} from "./evidence-ingestion-schema";
+import {GATEWAY_RUNTIME_SCHEMA} from "./gateway-runtime";
+import {GATEWAY_LIFECYCLE_SCHEMA} from "./gateway-lifecycle-schema";
+import { EVIDENCE_GRAPH_SCHEMA } from "./evidence-graph-schema";
+import { TWIN_REFRESH_SCHEMA } from "./twin-refresh-schema";
+import { TWIN_CONFLICT_SCHEMA } from "./twin-conflict-schema";
+import { TWIN_PROJECTION_SCHEMA } from "./twin-projection-schema";
+import { TWIN_EVIDENCE_SCHEMA } from "./twin-evidence-schema";
+import { TIMELINE_QUERY_SCHEMA } from "./timeline-query-schema";
+import { TIMELINE_PROJECTION_SCHEMA } from "./timeline-projection-schema";
+import { INTEGRATION_BATCH_SCHEMA } from "./integration-batch-schema";
+import { INTEGRATION_SCHEMA } from "./integration-schema";
+import { CODE_SYSTEM_REGISTRY_SCHEMA, TERMINOLOGY_VALIDATION_SCHEMA } from "./code-system-schema";
+import { SMART_SCHEMA } from "./smart-schema";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -21,7 +35,8 @@ CREATE TABLE users (
   organization_id TEXT NOT NULL REFERENCES organizations(id),
   facility_id TEXT REFERENCES facilities(id),
   display_name TEXT NOT NULL,
-  role TEXT NOT NULL CHECK (role IN ('clinician','nurse','auditor','admin'))
+  role TEXT NOT NULL CHECK (role IN ('clinician','nurse','auditor','admin')),
+  account_status TEXT NOT NULL DEFAULT 'active'
 );
 CREATE TABLE sessions (
   id TEXT PRIMARY KEY,
@@ -1391,6 +1406,337 @@ CREATE TABLE authorization_cache (
   assignment_version INTEGER NOT NULL,
   permissions_json TEXT NOT NULL
 );
+CREATE TABLE workforce_invitations (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  email TEXT NOT NULL,
+  role_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('pending','accepted','expired','cancelled')),
+  invited_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  accepted_at TEXT,
+  cancelled_at TEXT,
+  token_hash TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  requires_external INTEGER NOT NULL,
+  bound_user_id TEXT,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE workforce_invitation_facilities (
+  invitation_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  PRIMARY KEY (invitation_id, facility_id)
+);
+CREATE TABLE workforce_events (
+  id TEXT PRIMARY KEY,
+  actor_id TEXT NOT NULL,
+  target_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  organization_id TEXT,
+  previous_state TEXT,
+  next_state TEXT,
+  reason TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  policy_id TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE workforce_outbox (
+  id TEXT PRIMARY KEY,
+  invitation_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('captured','failed','retried')),
+  attempt INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE workforce_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE TABLE emergency_policies (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  environment TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  action TEXT NOT NULL,
+  overridable_reason TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('enabled','disabled')),
+  version INTEGER NOT NULL,
+  UNIQUE (organization_id, facility_id, environment, resource_type, action)
+);
+CREATE TABLE emergency_resources (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  summary TEXT NOT NULL
+);
+CREATE TABLE emergency_requests (
+  id TEXT PRIMARY KEY,
+  principal_id TEXT NOT NULL,
+  session_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  reason_category TEXT NOT NULL,
+  justification TEXT NOT NULL,
+  duration_seconds INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  assurance_required TEXT NOT NULL,
+  policy_id TEXT,
+  policy_version INTEGER,
+  correlation_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE emergency_challenges (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  method TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
+  attempts INTEGER NOT NULL
+);
+CREATE TABLE emergency_grants (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL UNIQUE,
+  principal_id TEXT NOT NULL,
+  session_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  revoked_at TEXT,
+  status TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  assurance_ref TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE emergency_events (
+  id TEXT PRIMARY KEY,
+  request_id TEXT,
+  grant_id TEXT,
+  actor_id TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  resource_id TEXT,
+  action TEXT,
+  outcome TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL
+);
+CREATE TABLE emergency_reviews (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  grant_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  reviewer_id TEXT,
+  status TEXT NOT NULL,
+  opened_at TEXT NOT NULL,
+  deadline_at TEXT NOT NULL,
+  reviewed_at TEXT,
+  disposition TEXT,
+  notes TEXT,
+  escalation TEXT,
+  version INTEGER NOT NULL
+);
+CREATE TABLE emergency_alerts (
+  id TEXT PRIMARY KEY,
+  event_id TEXT NOT NULL,
+  recipient_id TEXT NOT NULL,
+  channel TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('captured','failed','retried')),
+  attempt INTEGER NOT NULL,
+  failure_category TEXT,
+  created_at TEXT NOT NULL,
+  delivered_at TEXT
+);
+CREATE TABLE emergency_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE TABLE access_ledger (
+  sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+  id TEXT NOT NULL UNIQUE,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  actor_id TEXT NOT NULL,
+  subject_id TEXT,
+  action TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  resource_id TEXT,
+  purpose TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  before_hash TEXT NOT NULL,
+  after_hash TEXT NOT NULL,
+  previous_hash TEXT NOT NULL,
+  entry_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX idx_access_ledger_org ON access_ledger(organization_id, sequence);
+CREATE TRIGGER access_ledger_no_update
+BEFORE UPDATE ON access_ledger
+BEGIN
+  SELECT RAISE(ABORT, 'ledger-sealed');
+END;
+CREATE TRIGGER access_ledger_no_delete
+BEFORE DELETE ON access_ledger
+BEGIN
+  SELECT RAISE(ABORT, 'ledger-sealed');
+END;
+CREATE TABLE consent_subjects (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_type TEXT NOT NULL,
+  display_name TEXT NOT NULL
+);
+CREATE TABLE consent_policies (
+  id TEXT PRIMARY KEY,
+  purpose TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource_category TEXT NOT NULL,
+  recipient_class TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  consent_required INTEGER NOT NULL,
+  UNIQUE (action, version)
+);
+CREATE TABLE consent_authorities (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  grantor_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  evidence_ref TEXT NOT NULL,
+  verification_method TEXT NOT NULL,
+  verifier_id TEXT,
+  status TEXT NOT NULL,
+  valid_from TEXT,
+  valid_until TEXT,
+  scope TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE consent_directives (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_id TEXT NOT NULL,
+  subject_type TEXT NOT NULL,
+  category TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource_category TEXT NOT NULL,
+  recipient TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  grantor_id TEXT NOT NULL,
+  authority_id TEXT NOT NULL,
+  verification_status TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  status TEXT NOT NULL,
+  effective_at TEXT,
+  expires_at TEXT,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  correlation_id TEXT NOT NULL
+);
+CREATE TABLE consent_versions (
+  id TEXT PRIMARY KEY,
+  consent_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  snapshot_hash TEXT NOT NULL,
+  previous_hash TEXT NOT NULL,
+  change_code TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  UNIQUE (consent_id, version)
+);
+CREATE TABLE consent_withdrawals (
+  id TEXT PRIMARY KEY,
+  consent_id TEXT NOT NULL,
+  prior_version INTEGER NOT NULL,
+  requester_id TEXT NOT NULL,
+  authority_id TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  requested_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  applied_version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  UNIQUE (consent_id, idempotency_key)
+);
+CREATE TABLE consent_dispatches (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  action TEXT NOT NULL,
+  recipient TEXT NOT NULL,
+  resource_category TEXT NOT NULL,
+  status TEXT NOT NULL,
+  directive_id TEXT,
+  directive_version INTEGER,
+  reason_code TEXT,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  decided_at TEXT,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE consent_sink (
+  id TEXT PRIMARY KEY,
+  dispatch_id TEXT NOT NULL UNIQUE,
+  delivered_at TEXT NOT NULL
+);
+CREATE TABLE consent_cache (
+  cache_key TEXT PRIMARY KEY,
+  directive_version INTEGER NOT NULL,
+  result TEXT NOT NULL,
+  reason_code TEXT NOT NULL
+);
+CREATE TABLE consent_idempotency (
+  organization_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  directive_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (organization_id, idempotency_key)
+);
+CREATE TABLE consent_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX idx_consent_directive_subject ON consent_directives(organization_id, subject_id, status);
+CREATE TRIGGER consent_versions_no_update
+BEFORE UPDATE ON consent_versions
+BEGIN
+  SELECT RAISE(ABORT, 'consent-history-sealed');
+END;
+CREATE TRIGGER consent_versions_no_delete
+BEFORE DELETE ON consent_versions
+BEGIN
+  SELECT RAISE(ABORT, 'consent-history-sealed');
+END;
 `;
 
 export type AppDatabase = DatabaseSync;
@@ -1403,8 +1749,14 @@ export function createDatabase(filename: string): AppDatabase {
   }
   const db = new DatabaseSync(filename);
   db.exec("PRAGMA foreign_keys = ON");
-  migrate(db);
-  return db;
+  db.exec("PRAGMA busy_timeout = 5000");
+  try {
+    migrate(db);
+    return db;
+  } catch (error) {
+    db.close();
+    throw error;
+  }
 }
 
 export function getDb(): AppDatabase {
@@ -1430,7 +1782,16 @@ export function getDb(): AppDatabase {
   ensurePatient(globalCache.__curasphere.db);
   ensureResearchAuditor(globalCache.__curasphere.db);
   ensureBillingAdmin(globalCache.__curasphere.db);
+  ensureConsent(globalCache.__curasphere.db);
+  ensureRetention(globalCache.__curasphere.db);
+  ensureDsar(globalCache.__curasphere.db);
+  ensureTelemetry(globalCache.__curasphere.db);
   ensureAuthorization(globalCache.__curasphere.db);
+  ensureMaster(globalCache.__curasphere.db);
+  ensureSchedule(globalCache.__curasphere.db);
+  ensureSource(globalCache.__curasphere.db);
+  ensureWork(globalCache.__curasphere.db);
+  ensureBilling(globalCache.__curasphere.db);
   return globalCache.__curasphere.db;
 }
 
@@ -1469,6 +1830,15 @@ let ensureRx: (db: AppDatabase) => void = () => {};
 let ensureCoordination: (db: AppDatabase) => void = () => {};
 let ensurePatient: (db: AppDatabase) => void = () => {};
 let ensureAuthorization: (db: AppDatabase) => void = () => {};
+let ensureConsent: (db: AppDatabase) => void = () => {};
+let ensureRetention: (db: AppDatabase) => void = () => {};
+let ensureDsar: (db: AppDatabase) => void = () => {};
+let ensureTelemetry: (db: AppDatabase) => void = () => {};
+let ensureMaster: (db: AppDatabase) => void = () => {};
+let ensureSchedule: (db: AppDatabase) => void = () => {};
+let ensureSource: (db: AppDatabase) => void = () => {};
+let ensureWork: (db: AppDatabase) => void = () => {};
+let ensureBilling: (db: AppDatabase) => void = () => {};
 
 export function registerSeed(seed: (db: AppDatabase) => void) {
   seedDatabase = seed;
@@ -1510,8 +1880,109 @@ export function registerAuthorization(ensure: (db: AppDatabase) => void) {
   ensureAuthorization = ensure;
 }
 
+export function registerConsent(ensure: (db: AppDatabase) => void) {
+  ensureConsent = ensure;
+}
+
+export function registerRetention(ensure: (db: AppDatabase) => void) {
+  ensureRetention = ensure;
+}
+
+export function registerDsar(ensure: (db: AppDatabase) => void) {
+  ensureDsar = ensure;
+}
+
+export function registerTelemetry(ensure: (db: AppDatabase) => void) {
+  ensureTelemetry = ensure;
+}
+
+export function registerMaster(ensure: (db: AppDatabase) => void) {
+  ensureMaster = ensure;
+}
+
+export function registerSchedule(ensure: (db: AppDatabase) => void) {
+  ensureSchedule = ensure;
+}
+
+export function registerSource(ensure: (db: AppDatabase) => void) {
+  ensureSource = ensure;
+}
+
+export function registerWork(ensure: (db: AppDatabase) => void) {
+  ensureWork = ensure;
+}
+
+export function registerBilling(ensure: (db: AppDatabase) => void) {
+  ensureBilling = ensure;
+}
+
 function migrate(db: AppDatabase) {
-  // Identity tables are version 29. Authorization tables are version 30.
+  const exists = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'schema_migrations'").get();
+  const current = exists ? db.prepare("SELECT MAX(version) AS version FROM schema_migrations").get() as { version: number | null } : null;
+  if (current?.version === 63) return;
+  if (current?.version && current.version > 63) throw new Error("Unsupported database schema.");
+  if (!current?.version || current.version < 44) {
+    migrateLegacy(db);
+    transaction(db, () => {
+      db.exec(CODE_SYSTEM_REGISTRY_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (44)").run();
+    });
+  }
+  if (!current?.version || current.version < 45) {
+    transaction(db, () => {
+      db.exec(TERMINOLOGY_VALIDATION_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (45)").run();
+    });
+  }
+  if (!current?.version || current.version < 46) {
+    transaction(db, () => {
+      db.exec(TERMINOLOGY_MAPPING_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (46)").run();
+    });
+  }
+  if (!current?.version || current.version < 47) {
+    transaction(db, () => {
+      db.exec(FACILITY_CATALOG_SCHEMA);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (47)").run();
+    });
+  }
+  if(!current?.version || current.version<48) transaction(db, () => {
+    db.exec(CLINICAL_CODING_SCHEMA);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (48)").run();
+  });
+  if(!current?.version || current.version<49) transaction(db,()=>{db.exec(SMART_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (49)").run();});
+  if(!current?.version || current.version<50) transaction(db,()=>{db.exec(INTEGRATION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (50)").run();});
+  if(!current?.version || current.version<51)transaction(db,()=>{db.exec(INTEGRATION_BATCH_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (51)").run();});
+  if(!current?.version || current.version<52)transaction(db,()=>{db.exec(TIMELINE_PROJECTION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (52)").run();});
+  if(!current?.version || current.version<53)transaction(db,()=>{db.exec(TIMELINE_QUERY_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (53)").run();});
+  if(!current?.version || current.version<54)transaction(db,()=>{db.exec(TWIN_EVIDENCE_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (54)").run();});
+  if(!current?.version || current.version<55)transaction(db,()=>{db.exec(TWIN_PROJECTION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (55)").run();});
+  if(!current?.version || current.version<56)transaction(db,()=>{db.exec(TWIN_CONFLICT_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (56)").run();});
+  if(!current?.version || current.version<57)transaction(db,()=>{db.exec(TWIN_REFRESH_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (57)").run();});
+  if(!current?.version || current.version<58)transaction(db,()=>{db.exec(EVIDENCE_GRAPH_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (58)").run();});
+  if(!current?.version || current.version<59)transaction(db,()=>{db.exec(EVIDENCE_INGESTION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (59)").run();});
+  if(!current?.version || current.version<60)transaction(db,()=>{db.exec(GATEWAY_LIFECYCLE_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (60)").run();});
+  if (!current?.version || current.version < 61) transaction(db,()=>{db.exec(GATEWAY_RUNTIME_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (61)").run();});
+  if (!current?.version || current.version < 62) transaction(db, () => {
+    db.exec(`CREATE TABLE gateway_trace_metadata (
+      trace_id TEXT PRIMARY KEY REFERENCES gateway_attempts(id),
+      provider TEXT,
+      latency_ms INTEGER NOT NULL CHECK (latency_ms >= 0),
+      citations_json TEXT NOT NULL CHECK (json_valid(citations_json))
+    )`);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (62)").run();
+  });
+  transaction(db, () => {
+    db.exec(`CREATE TABLE agent_execution_controls (
+      organization_id TEXT PRIMARY KEY REFERENCES organizations(id),
+      stopped INTEGER NOT NULL CHECK (stopped IN (0,1))
+    )`);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (63)").run();
+  });
+}
+
+function migrateLegacy(db: AppDatabase) {
+  // Identity 29, authorization 30, workforce 31, emergency access 32, access ledger 33, consent 34, retention 35, privacy requests 36, privacy telemetry 37, master records 38, scheduling 39, clinical source 40, work coordination 41, billing 42, billing integrity 43.
   db.exec("CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY)");
   const row = db.prepare("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").get() as
     | { version: number }
@@ -1520,7 +1991,10 @@ function migrate(db: AppDatabase) {
     db.exec("BEGIN");
     try {
       db.exec(SCHEMA);
-      db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (34)").run();
+      db.exec(UPGRADE_V35);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
       db.exec("COMMIT");
     } catch (error) {
       db.exec("ROLLBACK");
@@ -1528,8 +2002,153 @@ function migrate(db: AppDatabase) {
     }
     return;
   }
-  if (row.version === 30) return;
-  if (row.version === 29 || row.version === 28 || row.version === 27 || row.version === 26) {
+  if (row.version === 43) return;
+  if (row.version === 42) {
+    transaction(db, () => applyV43(db));
+    return;
+  }
+  if (row.version === 41) {
+    db.exec("BEGIN");
+    try {
+      applyV42(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 40) {
+    db.exec("BEGIN");
+    try {
+      applyV41(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 39) {
+    db.exec("BEGIN");
+    try {
+      applyV40(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 38) {
+    db.exec("BEGIN");
+    try {
+      applyV39(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 37) {
+    db.exec("BEGIN");
+    try {
+      applyV38(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 36) {
+    db.exec("BEGIN");
+    try {
+      applyV37(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 35) {
+    db.exec("BEGIN");
+    try {
+      applyV36(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 34) {
+    db.exec("BEGIN");
+    try {
+      db.exec(UPGRADE_V35);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 33) {
+    db.exec("BEGIN");
+    try {
+      db.exec(UPGRADE_V34);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (34)").run();
+      db.exec(UPGRADE_V35);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 32) {
+    db.exec("BEGIN");
+    try {
+      db.exec(UPGRADE_V33);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (33)").run();
+      db.exec(UPGRADE_V34);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (34)").run();
+      db.exec(UPGRADE_V35);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 31) {
+    db.exec("BEGIN");
+    try {
+      db.exec(UPGRADE_V32);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (32)").run();
+      db.exec(UPGRADE_V33);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (33)").run();
+      db.exec(UPGRADE_V34);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (34)").run();
+      db.exec(UPGRADE_V35);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return;
+  }
+  if (row.version === 30 || row.version === 29 || row.version === 28 || row.version === 27 || row.version === 26) {
     db.exec("BEGIN");
     try {
       if (row.version === 26) {
@@ -1544,8 +2163,21 @@ function migrate(db: AppDatabase) {
         db.exec(UPGRADE_V29);
         db.prepare("INSERT INTO schema_migrations (version) VALUES (29)").run();
       }
-      db.exec(UPGRADE_V30);
-      db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
+      if (row.version <= 29) {
+        db.exec(UPGRADE_V30);
+        db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
+      }
+      db.exec(UPGRADE_V31);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (31)").run();
+      db.exec(UPGRADE_V32);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (32)").run();
+      db.exec(UPGRADE_V33);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (33)").run();
+      db.exec(UPGRADE_V34);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (34)").run();
+      db.exec(UPGRADE_V35);
+      db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
       db.exec("COMMIT");
     } catch (error) {
       db.exec("ROLLBACK");
@@ -1664,6 +2296,17 @@ function migrate(db: AppDatabase) {
     db.prepare("INSERT INTO schema_migrations (version) VALUES (29)").run();
     db.exec(UPGRADE_V30);
     db.prepare("INSERT INTO schema_migrations (version) VALUES (30)").run();
+    db.exec(UPGRADE_V31);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (31)").run();
+    db.exec(UPGRADE_V32);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (32)").run();
+    db.exec(UPGRADE_V33);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (33)").run();
+    db.exec(UPGRADE_V34);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (34)").run();
+    db.exec(UPGRADE_V35);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (35)").run();
+      applyV36(db);
     db.exec("COMMIT");
   } catch (error) {
     db.exec("ROLLBACK");
@@ -3001,15 +3644,1488 @@ CREATE TABLE IF NOT EXISTS authorization_cache (
 );
 `;
 
+const UPGRADE_V31 = `
+ALTER TABLE users ADD COLUMN account_status TEXT NOT NULL DEFAULT 'active';
+CREATE TABLE IF NOT EXISTS workforce_invitations (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  email TEXT NOT NULL,
+  role_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('pending','accepted','expired','cancelled')),
+  invited_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  accepted_at TEXT,
+  cancelled_at TEXT,
+  token_hash TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  requires_external INTEGER NOT NULL,
+  bound_user_id TEXT,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS workforce_invitation_facilities (
+  invitation_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  PRIMARY KEY (invitation_id, facility_id)
+);
+CREATE TABLE IF NOT EXISTS workforce_events (
+  id TEXT PRIMARY KEY,
+  actor_id TEXT NOT NULL,
+  target_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  organization_id TEXT,
+  previous_state TEXT,
+  next_state TEXT,
+  reason TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  policy_id TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS workforce_outbox (
+  id TEXT PRIMARY KEY,
+  invitation_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('captured','failed','retried')),
+  attempt INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS workforce_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+`;
+
+const UPGRADE_V32 = `
+CREATE TABLE IF NOT EXISTS emergency_policies (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  environment TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  action TEXT NOT NULL,
+  overridable_reason TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('enabled','disabled')),
+  version INTEGER NOT NULL,
+  UNIQUE (organization_id, facility_id, environment, resource_type, action)
+);
+CREATE TABLE IF NOT EXISTS emergency_resources (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  summary TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS emergency_requests (
+  id TEXT PRIMARY KEY,
+  principal_id TEXT NOT NULL,
+  session_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  reason_category TEXT NOT NULL,
+  justification TEXT NOT NULL,
+  duration_seconds INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  assurance_required TEXT NOT NULL,
+  policy_id TEXT,
+  policy_version INTEGER,
+  correlation_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS emergency_challenges (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  method TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
+  attempts INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS emergency_grants (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL UNIQUE,
+  principal_id TEXT NOT NULL,
+  session_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  revoked_at TEXT,
+  status TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  assurance_ref TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS emergency_events (
+  id TEXT PRIMARY KEY,
+  request_id TEXT,
+  grant_id TEXT,
+  actor_id TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  resource_id TEXT,
+  action TEXT,
+  outcome TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS emergency_reviews (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  grant_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  reviewer_id TEXT,
+  status TEXT NOT NULL,
+  opened_at TEXT NOT NULL,
+  deadline_at TEXT NOT NULL,
+  reviewed_at TEXT,
+  disposition TEXT,
+  notes TEXT,
+  escalation TEXT,
+  version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS emergency_alerts (
+  id TEXT PRIMARY KEY,
+  event_id TEXT NOT NULL,
+  recipient_id TEXT NOT NULL,
+  channel TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('captured','failed','retried')),
+  attempt INTEGER NOT NULL,
+  failure_category TEXT,
+  created_at TEXT NOT NULL,
+  delivered_at TEXT
+);
+CREATE TABLE IF NOT EXISTS emergency_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+`;
+
+const UPGRADE_V33 = `
+CREATE TABLE IF NOT EXISTS access_ledger (
+  sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+  id TEXT NOT NULL UNIQUE,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  actor_id TEXT NOT NULL,
+  subject_id TEXT,
+  action TEXT NOT NULL,
+  resource_type TEXT NOT NULL,
+  resource_id TEXT,
+  purpose TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  before_hash TEXT NOT NULL,
+  after_hash TEXT NOT NULL,
+  previous_hash TEXT NOT NULL,
+  entry_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_access_ledger_org ON access_ledger(organization_id, sequence);
+CREATE TRIGGER IF NOT EXISTS access_ledger_no_update
+BEFORE UPDATE ON access_ledger
+BEGIN
+  SELECT RAISE(ABORT, 'ledger-sealed');
+END;
+CREATE TRIGGER IF NOT EXISTS access_ledger_no_delete
+BEFORE DELETE ON access_ledger
+BEGIN
+  SELECT RAISE(ABORT, 'ledger-sealed');
+END;
+`;
+
+const UPGRADE_V34 = `
+CREATE TABLE IF NOT EXISTS consent_subjects (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_type TEXT NOT NULL,
+  display_name TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS consent_policies (
+  id TEXT PRIMARY KEY,
+  purpose TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource_category TEXT NOT NULL,
+  recipient_class TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  consent_required INTEGER NOT NULL,
+  UNIQUE (action, version)
+);
+CREATE TABLE IF NOT EXISTS consent_authorities (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  grantor_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  evidence_ref TEXT NOT NULL,
+  verification_method TEXT NOT NULL,
+  verifier_id TEXT,
+  status TEXT NOT NULL,
+  valid_from TEXT,
+  valid_until TEXT,
+  scope TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS consent_directives (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_id TEXT NOT NULL,
+  subject_type TEXT NOT NULL,
+  category TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource_category TEXT NOT NULL,
+  recipient TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  grantor_id TEXT NOT NULL,
+  authority_id TEXT NOT NULL,
+  verification_status TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  status TEXT NOT NULL,
+  effective_at TEXT,
+  expires_at TEXT,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  correlation_id TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS consent_versions (
+  id TEXT PRIMARY KEY,
+  consent_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  snapshot_hash TEXT NOT NULL,
+  previous_hash TEXT NOT NULL,
+  change_code TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  UNIQUE (consent_id, version)
+);
+CREATE TABLE IF NOT EXISTS consent_withdrawals (
+  id TEXT PRIMARY KEY,
+  consent_id TEXT NOT NULL,
+  prior_version INTEGER NOT NULL,
+  requester_id TEXT NOT NULL,
+  authority_id TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  requested_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  applied_version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  UNIQUE (consent_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS consent_dispatches (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  action TEXT NOT NULL,
+  recipient TEXT NOT NULL,
+  resource_category TEXT NOT NULL,
+  status TEXT NOT NULL,
+  directive_id TEXT,
+  directive_version INTEGER,
+  reason_code TEXT,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  decided_at TEXT,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS consent_sink (
+  id TEXT PRIMARY KEY,
+  dispatch_id TEXT NOT NULL UNIQUE,
+  delivered_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS consent_cache (
+  cache_key TEXT PRIMARY KEY,
+  directive_version INTEGER NOT NULL,
+  result TEXT NOT NULL,
+  reason_code TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS consent_idempotency (
+  organization_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  directive_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS consent_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_consent_directive_subject ON consent_directives(organization_id, subject_id, status);
+CREATE TRIGGER IF NOT EXISTS consent_versions_no_update
+BEFORE UPDATE ON consent_versions
+BEGIN
+  SELECT RAISE(ABORT, 'consent-history-sealed');
+END;
+CREATE TRIGGER IF NOT EXISTS consent_versions_no_delete
+BEFORE DELETE ON consent_versions
+BEGIN
+  SELECT RAISE(ABORT, 'consent-history-sealed');
+END;
+`;
+
+const UPGRADE_V35 = `
+CREATE TABLE IF NOT EXISTS retention_policies (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  jurisdiction TEXT NOT NULL,
+  category TEXT NOT NULL,
+  classification TEXT NOT NULL,
+  trigger_event TEXT NOT NULL,
+  duration INTEGER,
+  duration_unit TEXT,
+  expiry_action TEXT NOT NULL,
+  approval_state TEXT NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  effective_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS retention_policy_versions (
+  id TEXT PRIMARY KEY,
+  policy_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  snapshot_hash TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  UNIQUE (policy_id, version)
+);
+CREATE TABLE IF NOT EXISTS retention_records (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  category TEXT NOT NULL,
+  lifecycle_status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  retention_start TEXT NOT NULL,
+  payload_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS retention_tombstones (
+  resource_id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  disposed_at TEXT NOT NULL,
+  plan_id TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS retention_archives (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  resource_id TEXT NOT NULL UNIQUE,
+  checksum TEXT NOT NULL,
+  verified INTEGER NOT NULL,
+  archived_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS legal_holds (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  matter_ref TEXT NOT NULL,
+  scope_kind TEXT NOT NULL,
+  scope_ref TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  authority_ref TEXT NOT NULL,
+  issuing_actor TEXT NOT NULL,
+  status TEXT NOT NULL,
+  effective_at TEXT,
+  review_at TEXT,
+  released_at TEXT,
+  released_by TEXT,
+  release_reason TEXT,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS legal_hold_resources (
+  hold_id TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  PRIMARY KEY (hold_id, resource_id)
+);
+CREATE TABLE IF NOT EXISTS retention_dry_runs (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  requester_id TEXT NOT NULL,
+  evaluated_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  plan_hash TEXT NOT NULL,
+  eligible_count INTEGER NOT NULL,
+  held_count INTEGER NOT NULL,
+  review_count INTEGER NOT NULL,
+  missing_count INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS retention_plan_items (
+  id TEXT PRIMARY KEY,
+  dry_run_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  resource_version INTEGER NOT NULL,
+  decision TEXT NOT NULL,
+  policy_id TEXT,
+  policy_version INTEGER,
+  hold_id TEXT
+);
+CREATE TABLE IF NOT EXISTS retention_jobs (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  job_type TEXT NOT NULL,
+  dry_run_id TEXT,
+  requester_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  cursor_resource TEXT,
+  success_count INTEGER NOT NULL,
+  skip_count INTEGER NOT NULL,
+  failure_count INTEGER NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  retry_count INTEGER NOT NULL,
+  scheduled_at TEXT NOT NULL,
+  started_at TEXT,
+  finished_at TEXT,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS retention_job_items (
+  id TEXT PRIMARY KEY,
+  job_id TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  failure_reason TEXT,
+  executed_at TEXT NOT NULL,
+  UNIQUE (job_id, resource_id)
+);
+CREATE TABLE IF NOT EXISTS retention_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_retention_records_org ON retention_records(organization_id, category, lifecycle_status);
+CREATE INDEX IF NOT EXISTS idx_legal_holds_org ON legal_holds(organization_id, status);
+`;
+
+function applyV36(db: AppDatabase) {
+  db.exec(UPGRADE_V36);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (36)").run();
+  applyV37(db);
+}
+
+function applyV37(db: AppDatabase) {
+  db.exec(UPGRADE_V37);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (37)").run();
+  applyV38(db);
+}
+
+function applyV38(db: AppDatabase) {
+  const columns = db.prepare("PRAGMA table_info(patients)").all() as Array<{ name: string }>;
+  const names = new Set(columns.map((column) => column.name));
+  if (!names.has("preferred_name")) db.exec("ALTER TABLE patients ADD COLUMN preferred_name TEXT");
+  if (!names.has("registration_status")) db.exec("ALTER TABLE patients ADD COLUMN registration_status TEXT NOT NULL DEFAULT 'active'");
+  if (!names.has("registration_source")) db.exec("ALTER TABLE patients ADD COLUMN registration_source TEXT NOT NULL DEFAULT 'chart'");
+  if (!names.has("merged_into_id")) db.exec("ALTER TABLE patients ADD COLUMN merged_into_id TEXT");
+  db.exec(UPGRADE_V38);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (38)").run();
+  applyV39(db);
+}
+
+function applyV39(db: AppDatabase) {
+  const columns = db.prepare("PRAGMA table_info(appointments)").all() as Array<{ name: string }>;
+  const names = new Set(columns.map((column) => column.name));
+  const add = (name: string, sql: string) => {
+    if (!names.has(name)) db.exec(`ALTER TABLE appointments ADD COLUMN ${sql}`);
+  };
+  add("practitioner_id", "practitioner_id TEXT");
+  add("category", "category TEXT");
+  add("timezone", "timezone TEXT");
+  add("version", "version INTEGER NOT NULL DEFAULT 1");
+  add("source", "source TEXT NOT NULL DEFAULT 'legacy-chart'");
+  add("created_by", "created_by TEXT");
+  add("confirmed_by", "confirmed_by TEXT");
+  add("cancellation_reason", "cancellation_reason TEXT");
+  add("no_show_reason", "no_show_reason TEXT");
+  add("arrived_at", "arrived_at TEXT");
+  add("correlation_id", "correlation_id TEXT");
+  add("created_at", "created_at TEXT");
+  add("updated_at", "updated_at TEXT");
+  db.exec(UPGRADE_V39);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (39)").run();
+  applyV40(db);
+}
+
+const UPGRADE_V40 = `
+CREATE TABLE IF NOT EXISTS source_conditions (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  clinical_status TEXT NOT NULL,
+  verification_status TEXT NOT NULL,
+  onset_date TEXT,
+  resolution_date TEXT,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS source_allergies (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  category TEXT NOT NULL,
+  finding TEXT NOT NULL,
+  clinical_status TEXT NOT NULL,
+  verification_status TEXT NOT NULL,
+  criticality TEXT,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS source_observations (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  value_type TEXT NOT NULL,
+  value_quantity REAL,
+  unit_code TEXT,
+  unit_system TEXT NOT NULL,
+  status TEXT NOT NULL,
+  effective_at TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS source_observation_components (
+  observation_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  display TEXT NOT NULL,
+  value_quantity REAL NOT NULL,
+  unit_code TEXT NOT NULL,
+  PRIMARY KEY (observation_id, code)
+);
+CREATE TABLE IF NOT EXISTS source_medication_orders (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  dose_quantity REAL NOT NULL,
+  dose_unit TEXT NOT NULL,
+  route TEXT NOT NULL,
+  frequency TEXT NOT NULL,
+  intent TEXT NOT NULL,
+  status TEXT NOT NULL,
+  executable INTEGER NOT NULL CHECK (executable = 0),
+  transmission TEXT NOT NULL CHECK (transmission = 'disabled'),
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS source_versions (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  record_kind TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  prior_version INTEGER,
+  actor_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  encounter_id TEXT,
+  recorded_at TEXT NOT NULL,
+  amended_at TEXT,
+  reason TEXT,
+  snapshot_json TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  UNIQUE (organization_id, record_kind, record_id, version)
+);
+CREATE TRIGGER IF NOT EXISTS source_versions_no_update
+BEFORE UPDATE ON source_versions
+BEGIN
+  SELECT RAISE(ABORT, 'source version is immutable');
+END;
+CREATE TRIGGER IF NOT EXISTS source_versions_no_delete
+BEFORE DELETE ON source_versions
+BEGIN
+  SELECT RAISE(ABORT, 'source version is immutable');
+END;
+CREATE TABLE IF NOT EXISTS source_commands (
+  organization_id TEXT NOT NULL,
+  command_key TEXT NOT NULL,
+  request_hash TEXT NOT NULL,
+  response_json TEXT NOT NULL,
+  PRIMARY KEY (organization_id, command_key)
+);
+CREATE TABLE IF NOT EXISTS source_metrics (
+  name TEXT PRIMARY KEY,
+  value INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS source_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_source_conditions_patient ON source_conditions(organization_id, facility_id, patient_id);
+CREATE INDEX IF NOT EXISTS idx_source_observations_patient ON source_observations(organization_id, facility_id, patient_id);
+`;
+
+function applyV40(db: AppDatabase) {
+  db.exec(UPGRADE_V40);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (40)").run();
+  applyV41(db);
+}
+
+const UPGRADE_V41 = `
+CREATE TABLE IF NOT EXISTS work_departments (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  display TEXT NOT NULL,
+  status TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_orders (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  destination_department_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  category TEXT NOT NULL,
+  priority TEXT NOT NULL,
+  status TEXT NOT NULL,
+  due_on TEXT NOT NULL,
+  fulfillment TEXT NOT NULL CHECK (fulfillment = 'not-transmitted'),
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_plans (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  status TEXT NOT NULL,
+  owner_user_id TEXT NOT NULL,
+  due_on TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_referrals (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  from_facility_id TEXT NOT NULL,
+  to_facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  code_system TEXT NOT NULL,
+  code_system_version TEXT NOT NULL,
+  display TEXT NOT NULL,
+  status TEXT NOT NULL,
+  due_on TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_tasks (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  parent_kind TEXT NOT NULL,
+  parent_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  assignee_user_id TEXT,
+  due_on TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_versions (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  record_kind TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  prior_version INTEGER,
+  actor_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  encounter_id TEXT,
+  recorded_at TEXT NOT NULL,
+  amended_at TEXT,
+  reason TEXT,
+  snapshot_json TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  UNIQUE (organization_id, record_kind, record_id, version)
+);
+CREATE TRIGGER IF NOT EXISTS work_versions_no_update
+BEFORE UPDATE ON work_versions
+BEGIN
+  SELECT RAISE(ABORT, 'work version is immutable');
+END;
+CREATE TRIGGER IF NOT EXISTS work_versions_no_delete
+BEFORE DELETE ON work_versions
+BEGIN
+  SELECT RAISE(ABORT, 'work version is immutable');
+END;
+CREATE TABLE IF NOT EXISTS work_attachments (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  parent_kind TEXT NOT NULL,
+  parent_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  display TEXT NOT NULL,
+  media_type TEXT NOT NULL,
+  byte_length INTEGER NOT NULL,
+  content_sha256 TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_commands (
+  organization_id TEXT NOT NULL,
+  command_key TEXT NOT NULL,
+  request_hash TEXT NOT NULL,
+  response_json TEXT NOT NULL,
+  PRIMARY KEY (organization_id, command_key)
+);
+CREATE TABLE IF NOT EXISTS work_metrics (
+  name TEXT PRIMARY KEY,
+  value INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_work_orders_patient ON work_orders(organization_id, facility_id, patient_id);
+CREATE INDEX IF NOT EXISTS idx_work_tasks_facility ON work_tasks(organization_id, facility_id, status);
+`;
+
+function applyV41(db: AppDatabase) {
+  db.exec(UPGRADE_V41);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (41)").run();
+  applyV42(db);
+}
+
+const UPGRADE_V42 = `
+CREATE TABLE IF NOT EXISTS billing_catalog (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  code TEXT NOT NULL,
+  display TEXT NOT NULL,
+  category TEXT NOT NULL,
+  currency TEXT NOT NULL,
+  minor_units INTEGER NOT NULL,
+  unit_price_minor INTEGER NOT NULL,
+  effective_on TEXT NOT NULL,
+  expires_on TEXT,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS billing_charges (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  encounter_id TEXT NOT NULL,
+  source TEXT NOT NULL,
+  status TEXT NOT NULL,
+  currency TEXT NOT NULL,
+  total_minor INTEGER NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS billing_charge_items (
+  id TEXT PRIMARY KEY,
+  charge_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  catalog_id TEXT NOT NULL,
+  catalog_version INTEGER NOT NULL,
+  code TEXT NOT NULL,
+  display TEXT NOT NULL,
+  quantity INTEGER NOT NULL,
+  unit_price_minor INTEGER NOT NULL,
+  amount_minor INTEGER NOT NULL,
+  currency TEXT NOT NULL,
+  status TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS billing_adjustments (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  charge_id TEXT NOT NULL,
+  item_id TEXT NOT NULL,
+  adjustment_type TEXT NOT NULL,
+  amount_minor INTEGER NOT NULL,
+  prior_amount_minor INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  prior_version INTEGER NOT NULL,
+  resulting_version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS billing_versions (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  record_kind TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  prior_version INTEGER,
+  actor_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  encounter_id TEXT,
+  recorded_at TEXT NOT NULL,
+  amended_at TEXT,
+  reason TEXT,
+  snapshot_json TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  UNIQUE (organization_id, record_kind, record_id, version)
+);
+CREATE TRIGGER IF NOT EXISTS billing_versions_no_update
+BEFORE UPDATE ON billing_versions
+BEGIN
+  SELECT RAISE(ABORT, 'billing version is immutable');
+END;
+CREATE TRIGGER IF NOT EXISTS billing_versions_no_delete
+BEFORE DELETE ON billing_versions
+BEGIN
+  SELECT RAISE(ABORT, 'billing version is immutable');
+END;
+CREATE TABLE IF NOT EXISTS billing_commands (
+  organization_id TEXT NOT NULL,
+  command_key TEXT NOT NULL,
+  request_hash TEXT NOT NULL,
+  response_json TEXT NOT NULL,
+  PRIMARY KEY (organization_id, command_key)
+);
+CREATE TABLE IF NOT EXISTS billing_metrics (
+  name TEXT PRIMARY KEY,
+  value INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS billing_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_billing_charges_patient ON billing_charges(organization_id, facility_id, patient_id);
+CREATE INDEX IF NOT EXISTS idx_billing_charges_encounter ON billing_charges(organization_id, encounter_id);
+`;
+
+function applyV42(db: AppDatabase) {
+  db.exec(UPGRADE_V42);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (42)").run();
+  applyV43(db);
+}
+
+// Additive guards also protect databases that already received experimental schema 42.
+function applyV43(db: AppDatabase) {
+  for (const operation of ["INSERT", "UPDATE"]) {
+    db.exec(`CREATE TRIGGER IF NOT EXISTS billing_charge_integrity_${operation.toLowerCase()}
+      BEFORE ${operation} ON billing_charges BEGIN
+        SELECT CASE WHEN typeof(NEW.total_minor) != 'integer' OR NEW.total_minor < 0 OR NEW.total_minor > 100000000
+          OR NEW.currency != 'GHS' OR NEW.version < 1 OR NEW.status NOT IN ('draft','recorded','reviewed','finalized-local','voided')
+          OR NOT EXISTS (SELECT 1 FROM visit_encounters e JOIN patients p ON p.id = e.patient_id
+            WHERE e.id = NEW.encounter_id AND e.patient_id = NEW.patient_id AND e.organization_id = NEW.organization_id
+              AND e.facility_id = NEW.facility_id AND p.organization_id = NEW.organization_id)
+          THEN RAISE(ABORT, 'invalid billing charge') END;
+      END;
+      CREATE TRIGGER IF NOT EXISTS billing_item_integrity_${operation.toLowerCase()}
+      BEFORE ${operation} ON billing_charge_items BEGIN
+        SELECT CASE WHEN typeof(NEW.quantity) != 'integer' OR NEW.quantity < 1 OR NEW.quantity > 100
+          OR typeof(NEW.amount_minor) != 'integer' OR NEW.amount_minor < 0 OR NEW.amount_minor > 100000000
+          OR typeof(NEW.unit_price_minor) != 'integer' OR NEW.unit_price_minor < 0 OR NEW.version < 1
+          OR NOT EXISTS (SELECT 1 FROM billing_charges c JOIN billing_catalog k ON k.id = NEW.catalog_id
+            WHERE c.id = NEW.charge_id AND c.organization_id = NEW.organization_id AND c.currency = NEW.currency
+              AND k.organization_id = c.organization_id AND (k.facility_id IS NULL OR k.facility_id = c.facility_id))
+          THEN RAISE(ABORT, 'invalid billing item') END;
+      END;`);
+  }
+  db.exec(`CREATE TRIGGER IF NOT EXISTS billing_adjustments_no_update BEFORE UPDATE ON billing_adjustments
+    BEGIN SELECT RAISE(ABORT, 'billing adjustment is immutable'); END;
+    CREATE TRIGGER IF NOT EXISTS billing_adjustments_no_delete BEFORE DELETE ON billing_adjustments
+    BEGIN SELECT RAISE(ABORT, 'billing adjustment is immutable'); END;`);
+  db.prepare("INSERT OR IGNORE INTO schema_migrations (version) VALUES (43)").run();
+}
+
+const UPGRADE_V36 = `
+CREATE TABLE IF NOT EXISTS privacy_policies (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  request_type TEXT NOT NULL,
+  deadline_days INTEGER NOT NULL,
+  download_hours INTEGER NOT NULL,
+  large_threshold INTEGER NOT NULL,
+  approval_state TEXT NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_subjects (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  kind TEXT NOT NULL,
+  display_label TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_authorities (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  guardian_ref TEXT NOT NULL,
+  relationship TEXT NOT NULL,
+  status TEXT NOT NULL,
+  scope TEXT NOT NULL,
+  evidence_hash TEXT NOT NULL,
+  expires_at TEXT
+);
+CREATE TABLE IF NOT EXISTS privacy_records (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  third_party INTEGER NOT NULL,
+  held INTEGER NOT NULL,
+  payload TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  lifecycle_status TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_record_versions (
+  id TEXT PRIMARY KEY,
+  record_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  payload TEXT NOT NULL,
+  changed_at TEXT NOT NULL,
+  changed_by TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_requests (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  subject_id TEXT NOT NULL,
+  requester_id TEXT NOT NULL,
+  relationship TEXT NOT NULL,
+  authority_id TEXT,
+  request_type TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  policy_id TEXT,
+  policy_version INTEGER,
+  categories TEXT NOT NULL,
+  approved_categories TEXT,
+  status TEXT NOT NULL,
+  verification_state TEXT NOT NULL,
+  decision_state TEXT NOT NULL,
+  correction_field TEXT,
+  correction_value TEXT,
+  due_at TEXT,
+  version INTEGER NOT NULL,
+  correlation_id TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS privacy_verifications (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  method TEXT NOT NULL,
+  result TEXT NOT NULL,
+  verifier_id TEXT NOT NULL,
+  evidence_hash TEXT,
+  verified_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_reviews (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  reviewer_id TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  reason_code TEXT NOT NULL,
+  reviewed_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_exports (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  request_id TEXT NOT NULL,
+  requester_id TEXT NOT NULL,
+  downloader_id TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  cursor_index INTEGER NOT NULL,
+  record_count INTEGER NOT NULL,
+  byte_count INTEGER NOT NULL,
+  monitoring TEXT NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  worker_token TEXT,
+  error_code TEXT,
+  expires_at TEXT,
+  created_at TEXT NOT NULL,
+  finished_at TEXT,
+  UNIQUE (organization_id, idempotency_key)
+);
+CREATE TABLE IF NOT EXISTS privacy_export_items (
+  export_id TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  PRIMARY KEY (export_id, record_id)
+);
+CREATE TABLE IF NOT EXISTS privacy_artifacts (
+  id TEXT PRIMARY KEY,
+  export_id TEXT NOT NULL UNIQUE,
+  format TEXT NOT NULL,
+  payload TEXT NOT NULL,
+  checksum TEXT NOT NULL,
+  byte_count INTEGER NOT NULL,
+  access_state TEXT NOT NULL,
+  download_count INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  cleaned_at TEXT
+);
+CREATE TABLE IF NOT EXISTS privacy_manifests (
+  export_id TEXT PRIMARY KEY,
+  body TEXT NOT NULL,
+  checksum TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_tombstones (
+  record_id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  request_id TEXT NOT NULL,
+  disposed_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_erasure_plans (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  plan_hash TEXT NOT NULL,
+  eligible_count INTEGER NOT NULL,
+  blocked_count INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_alerts (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  export_id TEXT,
+  kind TEXT NOT NULL,
+  record_count INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_revoked_sessions (
+  session_id TEXT PRIMARY KEY,
+  revoked_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_privacy_requests_org ON privacy_requests(organization_id, status);
+CREATE INDEX IF NOT EXISTS idx_privacy_records_subject ON privacy_records(organization_id, subject_id, lifecycle_status);
+`;
+
+const UPGRADE_V37 = `
+CREATE TABLE IF NOT EXISTS privacy_telemetry_policies (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  allowed_fields TEXT NOT NULL,
+  excluded_classes TEXT NOT NULL,
+  destination TEXT NOT NULL,
+  approval_state TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_signal_rules (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  threshold INTEGER NOT NULL,
+  severity TEXT NOT NULL,
+  dedupe_seconds INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  approval_state TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_security_alerts (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  rule_id TEXT NOT NULL,
+  rule_version INTEGER NOT NULL,
+  category TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  status TEXT NOT NULL,
+  source_ref TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  investigation_note TEXT,
+  disposition TEXT,
+  version INTEGER NOT NULL,
+  detected_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (organization_id, rule_id, source_ref)
+);
+CREATE TABLE IF NOT EXISTS privacy_alert_events (
+  id TEXT PRIMARY KEY,
+  alert_id TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  result TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_telemetry_sink (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  policy_version INTEGER NOT NULL,
+  decision TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS privacy_telemetry_health (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  source TEXT NOT NULL,
+  sanitizer TEXT NOT NULL,
+  collector TEXT NOT NULL,
+  destination TEXT NOT NULL,
+  failure_category TEXT,
+  updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_privacy_security_alerts_org ON privacy_security_alerts(organization_id, status);
+`;
+
+const UPGRADE_V38 = `
+CREATE TABLE IF NOT EXISTS patient_identifiers (
+  id TEXT PRIMARY KEY,
+  patient_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT,
+  system TEXT NOT NULL,
+  value TEXT NOT NULL,
+  status TEXT NOT NULL,
+  UNIQUE (organization_id, system, value)
+);
+CREATE TABLE IF NOT EXISTS patient_contacts (
+  id TEXT PRIMARY KEY,
+  patient_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  use TEXT NOT NULL,
+  system TEXT NOT NULL,
+  value TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS patient_facility_registrations (
+  id TEXT PRIMARY KEY,
+  patient_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  UNIQUE (patient_id, facility_id)
+);
+CREATE TABLE IF NOT EXISTS patient_versions (
+  id TEXT PRIMARY KEY,
+  patient_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  author_id TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS duplicate_candidates (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  left_patient_id TEXT NOT NULL,
+  right_patient_id TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  opened_by TEXT NOT NULL,
+  decided_by TEXT,
+  UNIQUE (organization_id, left_patient_id, right_patient_id, reason)
+);
+CREATE TABLE IF NOT EXISTS patient_merges (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  survivor_id TEXT NOT NULL,
+  retired_id TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  survivor_version INTEGER NOT NULL,
+  retired_version INTEGER NOT NULL,
+  blocked_resources TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS practitioners (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  role_type TEXT NOT NULL,
+  license_number TEXT,
+  license_issuer TEXT,
+  verification_state TEXT NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  author_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS practitioner_affiliations (
+  id TEXT PRIMARY KEY,
+  practitioner_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  UNIQUE (practitioner_id, facility_id)
+);
+CREATE TABLE IF NOT EXISTS practitioner_identity_links (
+  id TEXT PRIMARY KEY,
+  practitioner_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  UNIQUE (practitioner_id),
+  UNIQUE (organization_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS patient_subject_links (
+  id TEXT PRIMARY KEY,
+  patient_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  subject_kind TEXT NOT NULL,
+  status TEXT NOT NULL,
+  UNIQUE (organization_id, subject_kind, subject_id)
+);
+CREATE TABLE IF NOT EXISTS patient_registration_drafts (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  given_name TEXT NOT NULL,
+  family_name TEXT NOT NULL,
+  preferred_name TEXT,
+  birth_date TEXT NOT NULL,
+  sex TEXT NOT NULL,
+  contact_value TEXT,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS master_commands (
+  organization_id TEXT NOT NULL,
+  command_key TEXT NOT NULL,
+  response_json TEXT NOT NULL,
+  PRIMARY KEY (organization_id, command_key)
+);
+INSERT OR IGNORE INTO patient_identifiers (id, patient_id, organization_id, facility_id, system, value, status)
+SELECT id || ':mrn', id, organization_id, facility_id, 'local-mrn', mrn, 'active' FROM patients;
+INSERT OR IGNORE INTO patient_facility_registrations (id, patient_id, organization_id, facility_id, status, version)
+SELECT id || ':fac', id, organization_id, facility_id, 'active', 1 FROM patients;
+CREATE INDEX IF NOT EXISTS idx_duplicate_candidates_org ON duplicate_candidates(organization_id, status);
+`;
+
+const UPGRADE_V39 = `
+CREATE TABLE IF NOT EXISTS scheduling_resources (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  name TEXT NOT NULL,
+  capacity INTEGER NOT NULL,
+  status TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS practitioner_availability (
+  id TEXT PRIMARY KEY,
+  practitioner_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  weekday INTEGER NOT NULL,
+  start_minute INTEGER NOT NULL,
+  end_minute INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS scheduling_reservations (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  practitioner_id TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  appointment_id TEXT NOT NULL,
+  starts_at TEXT NOT NULL,
+  ends_at TEXT NOT NULL,
+  status TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS appointment_events (
+  id TEXT PRIMARY KEY,
+  appointment_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  from_status TEXT NOT NULL,
+  to_status TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS visit_encounters (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  facility_id TEXT NOT NULL,
+  patient_id TEXT NOT NULL,
+  appointment_id TEXT NOT NULL UNIQUE,
+  practitioner_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  started_at TEXT,
+  ended_at TEXT,
+  created_by TEXT NOT NULL,
+  closed_by TEXT,
+  closure_reason TEXT,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS visit_encounter_events (
+  id TEXT PRIMARY KEY,
+  encounter_id TEXT NOT NULL,
+  organization_id TEXT NOT NULL,
+  from_status TEXT NOT NULL,
+  to_status TEXT NOT NULL,
+  actor_id TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  version INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS schedule_commands (
+  organization_id TEXT NOT NULL,
+  command_key TEXT NOT NULL,
+  response_json TEXT NOT NULL,
+  PRIMARY KEY (organization_id, command_key)
+);
+CREATE TABLE IF NOT EXISTS scheduling_notices (
+  id TEXT PRIMARY KEY,
+  organization_id TEXT NOT NULL,
+  appointment_id TEXT NOT NULL,
+  channel TEXT NOT NULL,
+  status TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS scheduling_metrics (
+  name TEXT PRIMARY KEY,
+  value INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS scheduling_controls (
+  name TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_reservations_practitioner ON scheduling_reservations(practitioner_id, status, starts_at);
+CREATE INDEX IF NOT EXISTS idx_appointments_facility ON appointments(organization_id, facility_id, starts_at);
+`;
+
+const transactionDepth = new WeakMap<AppDatabase, number>();
 export function transaction<T>(db: AppDatabase, fn: () => T): T {
-  db.exec("BEGIN IMMEDIATE");
+  const depth = transactionDepth.get(db) ?? 0;
+  const nested = db.isTransaction || depth > 0;
+  const savepoint = `command_${crypto.randomUUID().replaceAll("-", "")}`;
+  db.exec(nested ? `SAVEPOINT ${savepoint}` : "BEGIN IMMEDIATE");
+  transactionDepth.set(db,depth+1);
   try {
     const result = fn();
-    db.exec("COMMIT");
+    db.exec(nested ? `RELEASE SAVEPOINT ${savepoint}` : "COMMIT");
     return result;
   } catch (error) {
-    db.exec("ROLLBACK");
+    if(nested) { db.exec(`ROLLBACK TO SAVEPOINT ${savepoint}`); db.exec(`RELEASE SAVEPOINT ${savepoint}`); }
+    else db.exec("ROLLBACK");
     throw error;
+  } finally {
+    transactionDepth.set(db,depth);
   }
 }
 
@@ -3024,3 +5140,6 @@ export function all<T>(db: AppDatabase, sql: string, ...params: Array<string | n
 export function run(db: AppDatabase, sql: string, ...params: Array<string | number | null | Uint8Array>) {
   return db.prepare(sql).run(...params);
 }
+import { TERMINOLOGY_MAPPING_SCHEMA } from "./terminology-mapping-schema";
+import { FACILITY_CATALOG_SCHEMA } from "./facility-catalog-schema";
+import { CLINICAL_CODING_SCHEMA } from "./clinical-coding-schema";

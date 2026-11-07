@@ -1,0 +1,29 @@
+{
+  "resourceType": "OperationDefinition",
+  "id": "curasphere-local-events",
+  "url": "urn:curasphere:operation-events",
+  "version": "1.0.0",
+  "name": "CuraSphereLocalEvents",
+  "status": "draft",
+  "experimental": true,
+  "kind": "operation",
+  "date": "2026-11-04",
+  "code": "events",
+  "resource": [
+    "Subscription"
+  ],
+  "system": false,
+  "type": false,
+  "instance": true,
+  "affectsState": false,
+  "description": "GET the local Subscription notification inbox as a Bundle. Not an external callback or R5 SubscriptionTopic protocol.",
+  "parameter": [
+    {
+      "name": "return",
+      "use": "out",
+      "min": 1,
+      "max": "1",
+      "type": "Bundle"
+    }
+  ]
+}

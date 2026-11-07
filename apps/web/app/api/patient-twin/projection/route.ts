@@ -1,0 +1,5 @@
+import { AppError,getDb,readTwinProjection,rebuildTwinProjection,inspectTwinProjectionSource } from "@curasphere/domain";
+import { timelineCaller,snapshotCommand } from "@/lib/timeline-query";
+import { sourceJson,sourceFailure } from "@/lib/fhir-source";
+export async function GET(request:Request){try{const ctx=await timelineCaller(request),q=new URL(request.url).searchParams;if(!q.has('patient')||[...q.keys()].some(k=>!['patient','build','fact'].includes(k)||q.getAll(k).length!==1)||q.has('fact')&&!q.has('build'))throw new AppError('invalid','Use the documented patient-state query.');return sourceJson(q.has('fact')?inspectTwinProjectionSource(getDb(),ctx,q.get('patient')!,q.get('build')!,q.get('fact')!):readTwinProjection(getDb(),ctx,q.get('patient')!,q.has('build')?q.get('build')!:undefined));}catch(e){return sourceFailure(e);}}
+export async function POST(request:Request){try{const ctx=await timelineCaller(request),body=await snapshotCommand(request);return sourceJson(rebuildTwinProjection(getDb(),ctx,body.patient,body.commandKey));}catch(e){return sourceFailure(e);}}

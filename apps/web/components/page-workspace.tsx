@@ -1,0 +1,8 @@
+import {Children,type ReactNode} from "react";
+import {Icon,type IconName} from "./icon";
+export function PageHeader({section,href,icon="grid",eyebrow,description,children}:{section:string;href:string;icon?:IconName;eyebrow?:ReactNode;description?:ReactNode;children:ReactNode}){return <div className="page-intro"><div className="page-intro-top"><a href={href} className="page-breadcrumb"><Icon name={icon} size={15}/>{section}</a>{eyebrow&&<div className="page-scope">{eyebrow}</div>}</div><div className="page-intro-main"><span className="page-intro-icon"><Icon name={icon} size={27}/></span><div className="page-intro-copy">{children}{description&&<div className="page-description">{description}</div>}</div></div></div>;}
+export function PageActions({children}:{children:ReactNode}){return <div className="page-actions" role="group" aria-label="Page actions">{Children.toArray(children).filter(child=>typeof child!=="string"||child.replaceAll("·","").replaceAll("|","").trim().length>0)}</div>;}
+export function SectionHeading({children,icon="fileSearch"}:{children:ReactNode;icon?:IconName}){return <div className="page-section-heading"><span className="page-section-icon"><Icon name={icon} size={18}/></span><div>{children}</div></div>;}
+export function RecordFacts({children}:{children:ReactNode}){return <dl className="record-facts">{children}</dl>;}
+export function DetailFact({label,children}:{label:string;children:ReactNode}){return <div><dt>{label}</dt><dd>{children}</dd></div>;}
+export function PageEmpty({title,children,icon="fileSearch"}:{title:string;children?:ReactNode;icon?:IconName}){return <div className="page-empty"><span><Icon name={icon} size={26}/></span><strong>{title}</strong>{children&&<p>{children}</p>}</div>;}

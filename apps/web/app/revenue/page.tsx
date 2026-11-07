@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { authorize, getDb, noteDenial, readRevenue } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -21,8 +23,7 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
     noteDenial(getDb(), ctx, "revenue.read", "RevenueInvoice", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="revenue">
-        <p className="eyebrow">Revenue</p>
-        <h1 className="page-title">The ledger is closed for this role.</h1>
+        <PageHeader section="Revenue" href="/revenue" icon="wallet" eyebrow={<>Revenue</>}><h1 className="page-title">The ledger is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -31,21 +32,19 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
     <Shell ctx={ctx} current="revenue">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Revenue</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">
+          <PageHeader section="Revenue" href="/revenue" icon="wallet" eyebrow={<>Revenue</>} description={<>
             {view.invoiceNote} {view.eligibilityNote} {view.claimNote} {view.denialNote} {view.subscriptionNote} {view.aiNote}
-          </p>
+          </>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <p className="provenance">{view.reconciliation.text}</p>
       <p className="muted">{view.usageCount} ledger rows are stored. {view.subscriptionNote}</p>
-      <form action="/api/revenue/invoice" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/revenue/invoice" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <label className="field">
           Facility
-          <select name="facilityId" required>
+          <select aria-label="Facility" name="facilityId" required>
             {view.facilities.map((facility) => (
               <option key={facility.id} value={facility.id}>{facility.name}</option>
             ))}
@@ -53,7 +52,7 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
         </label>
         <label className="field">
           Account
-          <select name="patientId" required>
+          <select aria-label="Account" name="patientId" required>
             {view.accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.mrn}</option>
             ))}
@@ -68,13 +67,13 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
           <input name="amountCents" type="number" min={1} max={1000000} step={1} required />
         </label>
         <button className="btn-line" type="submit">Record amount</button>
-      </form>
+      </form></section>
       {view.invoices.length > 0 ? (
         <form action="/api/revenue/payment" method="post" className="form-grid" style={{ marginTop: 12 }}>
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Invoice
-            <select name="invoiceId" required>
+            <select aria-label="Invoice" name="invoiceId" required>
               {view.invoices.map((invoice) => (
                 <option key={invoice.id} value={invoice.id}>{invoice.amountCents} cents</option>
               ))}
@@ -87,11 +86,11 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
           <button className="btn-line" type="submit">Record payment</button>
         </form>
       ) : null}
-      <form action="/api/revenue/eligibility" method="post" className="form-grid" style={{ marginTop: 12 }}>
+      <section className="page-form card"><form action="/api/revenue/eligibility" method="post" className="form-grid" style={{ marginTop: 12 }}>
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <label className="field">
           Facility
-          <select name="facilityId" required>
+          <select aria-label="Facility" name="facilityId" required>
             {view.facilities.map((facility) => (
               <option key={facility.id} value={facility.id}>{facility.name}</option>
             ))}
@@ -99,7 +98,7 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
         </label>
         <label className="field">
           Account
-          <select name="patientId" required>
+          <select aria-label="Account" name="patientId" required>
             {view.accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.mrn}</option>
             ))}
@@ -110,13 +109,13 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
           <input name="payerLabel" type="text" required minLength={2} maxLength={80} />
         </label>
         <button className="btn-line" type="submit">Store eligibility note</button>
-      </form>
+      </form></section>
       {view.invoices.length > 0 ? (
         <form action="/api/revenue/claim" method="post" className="form-grid" style={{ marginTop: 12 }}>
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Invoice for a draft
-            <select name="invoiceId" required>
+            <select aria-label="Invoice for a draft" name="invoiceId" required>
               {view.invoices.map((invoice) => (
                 <option key={invoice.id} value={invoice.id}>{invoice.serviceLabel}</option>
               ))}
@@ -130,7 +129,7 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Draft
-            <select name="claimId" required>
+            <select aria-label="Draft" name="claimId" required>
               {view.claims.map((claim) => (
                 <option key={claim.id} value={claim.id}>{claim.status}</option>
               ))}
@@ -139,23 +138,23 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
           <button className="btn-line" type="submit">Try to submit</button>
         </form>
       ) : null}
-      <form action="/api/revenue/plan" method="post" className="form-grid" style={{ marginTop: 12 }}>
+      <section className="page-form card"><form action="/api/revenue/plan" method="post" className="form-grid" style={{ marginTop: 12 }}>
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <label className="field">
           Plan label
           <input name="planLabel" type="text" required minLength={2} maxLength={80} />
         </label>
         <button className="btn-line" type="submit">Store plan</button>
-      </form>
-      <form action="/api/revenue/explain" method="post" className="form-grid" style={{ marginTop: 12 }}>
+      </form></section>
+      <section className="page-form card"><form action="/api/revenue/explain" method="post" className="form-grid" style={{ marginTop: 12 }}>
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Ask the gateway</button>
-      </form>
+      </form></section>
       <div className="board" style={{ marginTop: 16 }}>
         {view.invoices.map((invoice) => (
           <section className="card" key={invoice.id}>
             <p className="eyebrow">{invoice.status}</p>
-            <h2>{invoice.serviceLabel}</h2>
+            <SectionHeading icon="wallet"><h2>{invoice.serviceLabel}</h2></SectionHeading>
             <p>{invoice.amountCents} cents · {invoice.patientId}</p>
             <p>{invoice.note}</p>
           </section>
@@ -163,14 +162,14 @@ export default async function RevenuePage({ searchParams }: { searchParams: Prom
         {view.claims.map((claim) => (
           <section className="card" key={claim.id}>
             <p className="eyebrow">{claim.status} · {claim.attempts} attempts</p>
-            <h2>Claim draft</h2>
+            <SectionHeading icon="wallet"><h2>Claim draft</h2></SectionHeading>
             <p>{view.claimNote}</p>
           </section>
         ))}
         {view.subscription ? (
           <section className="card">
             <p className="eyebrow">{view.subscription.status}</p>
-            <h2>{view.subscription.planLabel}</h2>
+            <SectionHeading icon="wallet"><h2>{view.subscription.planLabel}</h2></SectionHeading>
             <p>{view.subscriptionNote}</p>
           </section>
         ) : null}

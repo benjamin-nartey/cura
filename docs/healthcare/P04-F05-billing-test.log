@@ -1,0 +1,103 @@
+TAP version 13
+# (node:22684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:22684) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: P04-F05-S01 S02 S03 S05 S08 an authorized charge persists with catalog price
+ok 1 - P04-F05-S01 S02 S03 S05 S08 an authorized charge persists with catalog price
+  ---
+  duration_ms: 958.5575
+  ...
+# Subtest: P04-F05-S04 invalid encounter relationship is rejected
+ok 2 - P04-F05-S04 invalid encounter relationship is rejected
+  ---
+  duration_ms: 664.262
+  ...
+# Subtest: P04-F05-S06 S07 invalid currency quantity and amount are rejected
+ok 3 - P04-F05-S06 S07 invalid currency quantity and amount are rejected
+  ---
+  duration_ms: 586.9292
+  ...
+# Subtest: P04-F05-S09 duplicate charge request is idempotent
+ok 4 - P04-F05-S09 duplicate charge request is idempotent
+  ---
+  duration_ms: 620.9269
+  ...
+# Subtest: P04-F05-S10 concurrent duplicate submission produces one charge
+ok 5 - P04-F05-S10 concurrent duplicate submission produces one charge
+  ---
+  duration_ms: 9560.1584
+  ...
+# Subtest: P04-F05-S11 S12 S13 adjustment preserves history and rejects stale version
+ok 6 - P04-F05-S11 S12 S13 adjustment preserves history and rejects stale version
+  ---
+  duration_ms: 591.9465
+  ...
+# Subtest: P04-F05-S14 S43 S44 unauthorized adjustment and admin billing read are denied
+ok 7 - P04-F05-S14 S43 S44 unauthorized adjustment and admin billing read are denied
+  ---
+  duration_ms: 524.8794
+  ...
+# Subtest: P04-F05-S15 S16 void preserves history and rejects invalid transition
+ok 8 - P04-F05-S15 S16 void preserves history and rejects invalid transition
+  ---
+  duration_ms: 310.8998
+  ...
+# Subtest: P04-F05-S17 no payment transmission
+ok 9 - P04-F05-S17 no payment transmission
+  ---
+  duration_ms: 245.2858
+  ...
+# Subtest: P04-F05-S18 S21 S32 chart status and tenant isolation
+ok 10 - P04-F05-S18 S21 S32 chart status and tenant isolation
+  ---
+  duration_ms: 233.0295
+  ...
+# Subtest: P04-F05-S35 S36 S48 audit evidence and ledger intact
+ok 11 - P04-F05-S35 S36 S48 audit evidence and ledger intact
+  ---
+  duration_ms: 246.8202
+  ...
+# Subtest: P04-F05-S45 S46 S47 S49 outage restart migration rollback
+ok 12 - P04-F05-S45 S46 S47 S49 outage restart migration rollback
+  ---
+  duration_ms: 2833.4967
+  ...
+# Subtest: P04-F05-S41 clinical signing remains denied and closed encounter still bills
+ok 13 - P04-F05-S41 clinical signing remains denied and closed encounter still bills
+  ---
+  duration_ms: 570.7939
+  ...
+# Subtest: P04-F05-S50 chart pending work belongs only to the selected patient
+ok 14 - P04-F05-S50 chart pending work belongs only to the selected patient
+  ---
+  duration_ms: 519.0473
+  ...
+# Subtest: P04-F05-S51 cached financial mutations cannot cross facilities
+ok 15 - P04-F05-S51 cached financial mutations cannot cross facilities
+  ---
+  duration_ms: 671.0436
+  ...
+# Subtest: P04-F05-S52 catalog dates and protected environments fail closed
+ok 16 - P04-F05-S52 catalog dates and protected environments fail closed
+  ---
+  duration_ms: 434.4017
+  ...
+# Subtest: P04-F05-S53 database rejects invalid amounts, cross-tenant links and mutable adjustments
+ok 17 - P04-F05-S53 database rejects invalid amounts, cross-tenant links and mutable adjustments
+  ---
+  duration_ms: 509.7568
+  ...
+# Subtest: P04-F05-S54 failed additive migration rolls back its marker and can recover
+ok 18 - P04-F05-S54 failed additive migration rolls back its marker and can recover
+  ---
+  duration_ms: 786.1609
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29343.3141

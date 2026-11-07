@@ -1,0 +1,26 @@
+{
+  "resourceType": "OperationDefinition",
+  "id": "curasphere-local-export",
+  "url": "urn:curasphere:operation-export",
+  "version": "1.0.0",
+  "name": "CuraSphereLocalExport",
+  "status": "draft",
+  "experimental": true,
+  "kind": "operation",
+  "date": "2026-11-04",
+  "code": "export",
+  "system": true,
+  "type": false,
+  "instance": false,
+  "affectsState": true,
+  "description": "Custom legacy facility NDJSON job. POST with Idempotency-Key returns HTTP 202 OperationOutcome and Content-Location. Poll that location with the same session. This is not HL7 Bulk Data and does not authorize external transfer.",
+  "parameter": [
+    {
+      "name": "return",
+      "use": "out",
+      "min": 1,
+      "max": "1",
+      "type": "OperationOutcome"
+    }
+  ]
+}

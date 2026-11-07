@@ -1,0 +1,153 @@
+{
+  "phase": "07",
+  "engineeringStatus": "ENGINEERING_COMPLETE_REVIEW_PENDING",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "Product-owner continue after Phase 06 engineering exit; SIMULATION-IMPLEMENTATION-AUTHORITY-2026-11-03.md remains governing simulation-only scope",
+  "features": [
+    {
+      "id": "P07-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "plan": "docs/timeline/P07-F01-plan.md",
+      "architectureAndOperations": "docs/timeline/P07-F01-architecture-and-operations.md",
+      "riskControls": "docs/timeline/P07-F01-risks.md",
+      "scenarios": "docs/timeline/P07-F01-scenarios.json",
+      "adr": "docs/adr/ADR-0076-version-linked-canonical-timeline.md",
+      "schemaVersion": 51,
+      "evidence": "docs/timeline/P07-F01-evidence.md",
+      "implemented": [
+        "Versioned canonical events over existing immutable condition/allergy/observation/medication-draft source history",
+        "Independent clinical/recorded times and explicit precision/unknowns, deterministic templates, exact ledger/version/hash pointers",
+        "Authorized no-store API, reauthorized exact-version inspection and responsive chart timeline",
+        "Existing bounded R4 source picker now orders recent records; OIDC tamper test changes an actual signature byte"
+      ],
+      "verified": [
+        "505 domain tests pass; all 11 focused timeline/picker tests pass on final bounded reader",
+        "Five final source/timeline browser scenarios pass; three existing workspace regressions pass",
+        "Final optimized build, full workspace/mobile types, final domain types and lint pass",
+        "Eight conformance and 26 governance checks pass",
+        "Final live bounded-build smoke resolves all 123 persisted event summaries and an exact source version; list 1770ms observed",
+        "Schema stays 51; 28-table original primary-key/value preservation confirmed; no clinical cleanup deletes"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P07-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 52,
+      "plan": "docs/timeline/P07-F02-plan.md",
+      "evidence": "docs/timeline/P07-F02-evidence.md",
+      "architectureAndOperations": "docs/timeline/P07-F02-architecture-and-operations.md",
+      "riskControls": "docs/timeline/P07-F02-risks.md",
+      "scenarios": "docs/timeline/P07-F02-scenarios.json",
+      "adr": "docs/adr/ADR-0077-transactional-timeline-materialization.md",
+      "implemented": [
+        "Atomic source-version pointer outbox with schema-52 backfill and immutable command receipts",
+        "Bounded idempotent version-ordered consumer, durable quarantine, permission-aware atomic rebuild and exact canonical-hash read gate",
+        "Real staff status/process/rebuild/materialized preview UI and bounded executable live-identity worker"
+      ],
+      "verified": [
+        "517 domain tests pass; 23 focused canonical/projection tests pass (overlapping full suite)",
+        "Actual SIGKILL/reopen and competing SQLite processes prove atomic recovery and command replay",
+        "Six final web scenarios and four actual Metro mobile/browser/API regressions pass",
+        "Repeated source/materialized rebuild hashes match; actual Foundation-aware shipped worker executes",
+        "26 governance and eight conformance checks pass; workspace/mobile/final domain types, lint and optimized build pass",
+        "Schema 51 to 52 retains original primary keys/values across 28 tables; generated config hashes and shared screenshots restored"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P07-F03",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 53,
+      "plan": "docs/timeline/P07-F03-plan.md",
+      "evidence": "docs/timeline/P07-F03-evidence.md",
+      "architectureAndOperations": "docs/timeline/P07-F03-architecture-and-operations.md",
+      "riskControls": "docs/timeline/P07-F03-risks.md",
+      "scenarios": "docs/timeline/P07-F03-scenarios.json",
+      "adr": "docs/adr/ADR-0078-source-version-timeline-comparisons.md",
+      "implemented": [
+        "Current/history source filtering, clinical/recorded calendar bounds, encounter and stable source-pinned signed keyset pages",
+        "Immutable owner/context-bound source-version snapshots with membership integrity and idempotent bounded capture",
+        "One-record added/amended comparisons and explicit uncertain/no-prior-visit handling using authoritative closure and recorded times",
+        "Actual explorer capture/list/filter/page/compare/source inspection UI; observation correction origin protection"
+      ],
+      "verified": [
+        "533 full-domain tests pass; 16 focused F03 cases pass (overlap), including literal date precision and authorized non-owner baseline denial",
+        "Seven final web scenarios pass; extra actual capture-button test passes; four actual mobile/browser/API regressions pass",
+        "Actual new source correction 37.1 to 37.6 produces one amended v1/v2 entry; foreign-origin attempt rejected and old cursor invalidated",
+        "Existing actual Foundation-aware worker consumes two new versions, restores 125-event source-matched cache",
+        "26 governance and eight conformance checks, workspace/mobile/final domain types, lint and optimized final build pass",
+        "Schema 52 to 53 preserves original primary keys/values across 31 tables; generated config and shared screenshots restored"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P07-F04",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 53,
+      "plan": "docs/timeline/P07-F04-plan.md",
+      "evidence": "docs/timeline/P07-F04-evidence.md",
+      "architectureAndOperations": "docs/timeline/P07-F04-architecture-and-operations.md",
+      "riskControls": "docs/timeline/P07-F04-risks.md",
+      "scenarios": "docs/timeline/P07-F04-scenarios.json",
+      "adr": "docs/adr/ADR-0079-source-linked-safe-timeline-ui.md",
+      "implemented": [
+        "Shared provenance-linked cards and structured exact-source inspector across canonical, filtered, comparison and materialized views",
+        "Explicit historical/amended/missing metadata, chronological date/keyboard navigation and accessible responsive modal",
+        "Patient-scoped offline/source-uncertainty redaction, explicit reconnect refresh and metadata-only authorized source checks"
+      ],
+      "verified": [
+        "536 full-domain and six focused frontend/freshness tests pass; focused cases overlap three domain cases",
+        "12 live web scenarios and four actual Metro mobile/browser/API regressions pass; Axe and phone containment pass",
+        "Actual Foundation-aware worker consumes eight new versions and restores source-matched 133-event projection; materialized modal and restored link focus verified",
+        "26 governance and eight conformance checks pass; workspace/mobile/domain types, final scoped lint and optimized build pass",
+        "Schema remains 53; original primary keys/values preserved across 33 tables; generated configs and prior shared screenshot evidence restored"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P07-F05",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 53,
+      "plan": "docs/timeline/P07-F05-plan.md",
+      "evidence": "docs/timeline/P07-F05-evidence.md",
+      "architectureAndOperations": "docs/timeline/P07-F05-architecture-and-operations.md",
+      "riskControls": "docs/timeline/P07-F05-risks.md",
+      "scenarios": "docs/timeline/P07-F05-scenarios.json",
+      "adr": "docs/adr/ADR-0080-authorized-projection-health-and-kafka-replay.md",
+      "implemented": [
+        "Authorized source-coverage lag/missing/duplicate/cache-integrity/recording-time/dead-letter/clock health with exact cache withholding",
+        "Accessible health panel with bounded read observation and explicit reconnect recovery",
+        "Pointer-only acknowledged Kafka publication and bounded live-authority consumer; SQLite-before-offset commit and coverage-bound idempotent replay; local recovery CI job"
+      ],
+      "verified": [
+        "545 full-domain tests and nine focused health/delivery tests pass (focused overlap full suite)",
+        "16 final web scenarios and four Metro mobile/browser/API regressions pass; extra final-build alert/healthy screenshot capture passes",
+        "Actual Kafka stop/restart and database reopen survive accelerated thirty-minute clinical lag; corrected BP 120/80 to 118/78 retained; 12 duplicate deliveries yield six exact source-linked events with matching hash and healthy zero-lag projection",
+        "Actual failed application retains Kafka offset; resumed group consumes zero new messages after successful catch-up; live Foundation-aware shipped CLI publishes/consumes a real workspace source version",
+        "26 governance and eight conformance checks pass; workspace/mobile/domain/stream types, final lint and optimized complete build pass",
+        "Schema remains 53; original primary keys/values retained across 33 tables; generated config hashes and prior shared evidence restored"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    }
+  ],
+  "completedEngineeringFeatures": [
+    "P07-F01",
+    "P07-F02",
+    "P07-F03",
+    "P07-F04",
+    "P07-F05"
+  ],
+  "stopBefore": "P08-F01",
+  "engineeringExitReport": "docs/timeline/phase-07-engineering-exit-report.md"
+}

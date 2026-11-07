@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { canReadChart, getDb, listPatients, noteDenial, readDevices } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -19,8 +21,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
     noteDenial(getDb(), ctx, "device.read", "Device", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="devices">
-        <p className="eyebrow">Devices</p>
-        <h1 className="page-title">Device readings are closed for this role.</h1>
+        <PageHeader section="Devices" href="/devices" icon="heartPulse" eyebrow={<>Devices</>}><h1 className="page-title">Device readings are closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -32,19 +33,17 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
     <Shell ctx={ctx} current="devices">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Devices · {view.normalizationVersion}</p>
-          <h1 className="page-title">{ctx.facilityName}</h1>
-          <p className="lede">
+          <PageHeader section="Devices" href="/devices" icon="heartPulse" eyebrow={<>Devices · {view.normalizationVersion}</>} description={<>
             {view.connectivityNote} A reading uses the facility catalog unit. The alert budget is {view.alertBudget}. {view.aiNote}
-          </p>
+          </>}><h1 className="page-title">{ctx.facilityName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form action="/api/devices/register" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/devices/register" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <label className="field">
           Patient
-          <select name="patientId" required>
+          <select aria-label="Patient" name="patientId" required>
             {patients.map((patient) => (
               <option key={patient.id} value={patient.id}>{patient.familyName}, {patient.givenName}</option>
             ))}
@@ -52,7 +51,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
         </label>
         <label className="field">
           Kind
-          <select name="kind" required defaultValue="pulse-oximeter">
+          <select aria-label="Kind" name="kind" required defaultValue="pulse-oximeter">
             {KINDS.map((kind) => (
               <option key={kind.id} value={kind.id}>{kind.label}</option>
             ))}
@@ -63,13 +62,13 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
           <input name="label" type="text" required minLength={2} maxLength={40} />
         </label>
         <button className="btn-line" type="submit">Register device</button>
-      </form>
+      </form></section>
       {view.devices.length > 0 ? (
         <form action="/api/devices/reading" method="post" className="form-grid" style={{ marginTop: 12 }}>
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Device
-            <select name="deviceId" required>
+            <select aria-label="Device" name="deviceId" required>
               {view.devices.map((device) => (
                 <option key={device.id} value={device.id}>{device.label}</option>
               ))}
@@ -91,7 +90,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Device to explain
-            <select name="deviceId" required>
+            <select aria-label="Device to explain" name="deviceId" required>
               {view.devices.map((device) => (
                 <option key={device.id} value={device.id}>{device.label}</option>
               ))}
@@ -105,7 +104,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Open mark
-            <select name="alertId" required>
+            <select aria-label="Open mark" name="alertId" required>
               {openAlerts.map((alert) => (
                 <option key={alert.id} value={alert.id}>{alert.label}</option>
               ))}
@@ -118,7 +117,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
         {view.devices.map((device) => (
           <section className="card wide" key={device.id}>
             <p className="eyebrow">{device.kind} · {device.connectivity}</p>
-            <h2>{device.label}</h2>
+            <SectionHeading icon="heartPulse"><h2>{device.label}</h2></SectionHeading>
             <p>{device.connectivityNote}</p>
             <p className="muted">Patient {device.patientId} · registered {formatWhen(device.createdAt)}</p>
             {device.readings.map((reading) => (

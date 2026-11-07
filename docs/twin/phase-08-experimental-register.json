@@ -1,0 +1,183 @@
+{
+  "phase": "08",
+  "engineeringStatus": "ENGINEERING_COMPLETE_REVIEW_PENDING",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "Product-owner continuation after P07 closeout; P08-LOCAL-SIMULATION-AUTHORITY-2026-11-04.md and SIMULATION-IMPLEMENTATION-AUTHORITY-2026-11-03.md govern local synthetic scope",
+  "features": [
+    {
+      "id": "P08-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 54,
+      "plan": "docs/twin/P08-F01-plan.md",
+      "evidence": "docs/twin/P08-F01-evidence.md",
+      "architectureAndOperations": "docs/twin/P08-F01-architecture-and-operations.md",
+      "riskControls": "docs/twin/P08-F01-risks.md",
+      "scenarios": "docs/twin/P08-F01-scenarios.json",
+      "adr": "docs/adr/ADR-0081-versioned-twin-evidence-manifests.md",
+      "implemented": [
+        "Immutable owner/context-bound source-evidence manifests and clinical/work ledger members, without copied clinical values or source writes",
+        "Current-source freshness, exact historical inspection, independent work-history permission, patient-bound evidence and empty-portfolio availability checks",
+        "Strict authenticated no-store capture/read/inspect API and real chart-linked responsive source-evidence UI with safe offline/error/cancel behavior"
+      ],
+      "verified": [
+        "560 full-domain tests and 15 overlapping focused cases pass, including actual competing SQLite processes and failed migration/transaction recovery",
+        "12 distinct web cases pass; four Twin cases repeated on the final build pass, including exact clinical/work inspection, actual correction, role/context/origin/owner boundaries, Axe and phone layout",
+        "Four actual Metro mobile/browser/API regressions pass; earlier cold-font timeout evidence retained",
+        "Existing live Foundation-aware worker restores current 164-event matching projection after processing newly created simulation source versions; exact materialized source modal/focus pass",
+        "26 governance and eight conformance checks pass; workspace/mobile/final domain types, final lint and optimized build pass",
+        "Schema 53 to 54 preserves original primary keys/values across 33 tables; generated configuration and prior shared evidence restored"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P08-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 55,
+      "plan": "docs/twin/P08-F02-plan.md",
+      "evidence": "docs/twin/P08-F02-evidence.md",
+      "architectureAndOperations": "docs/twin/P08-F02-architecture-and-operations.md",
+      "riskControls": "docs/twin/P08-F02-risks.md",
+      "scenarios": "docs/twin/P08-F02-scenarios.json",
+      "adr": "docs/adr/ADR-0082-source-backed-deterministic-twin-state.md",
+      "implemented": [
+        "Deterministic source/status/clinical-time rules with retained structural ambiguity and exact source references",
+        "Immutable schema-55 state/command persistence, scoped idempotency, stable same-source materialization, source-reproduced freshness and append repair",
+        "Real strict read/rebuild/inspect API and responsive accessible Twin state preview without source edits or command replay"
+      ],
+      "verified": [
+        "575 domain tests and 15 overlapping focused cases pass, including source chronology/status, tampering, quotas, real process concurrency and atomic migration/receipt failure",
+        "Eight live F01/F02 browser cases and four actual mobile/browser/API regressions pass; Axe/phone containment and actual source correction/source inspection verified",
+        "Four new source versions consumed by existing live Foundation worker; current matching 168-event timeline and current Twin materialization version 3 verified",
+        "26 governance/eight conformance checks, workspace/mobile/final domain types, lint and optimized build pass",
+        "Schema 54 to 55 preserves original keys/values across 35 tables; prior shared evidence and generated configuration restored"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P08-F03",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 56,
+      "plan": "docs/twin/P08-F03-plan.md",
+      "adr": "docs/adr/ADR-0083-source-pinned-conflict-review.md",
+      "evidence": "docs/twin/P08-F03-evidence.md",
+      "architectureAndOperations": "docs/twin/P08-F03-architecture-and-operations.md",
+      "riskControls": "docs/twin/P08-F03-risks.md",
+      "scenarios": "docs/twin/P08-F03-scenarios.json",
+      "implemented": [
+        "Source-pinned deterministic conflicts and explicit uncertainty without clinical reconciliation or F02 state/hash changes",
+        "Immutable source-verification queue with source-context sharing, idempotency, quotas and no automatic clinical resolution",
+        "Strict live-authorized API and accessible responsive filtered/paginated preview, durable requests and serialized noncached GETs without queued writes"
+      ],
+      "verified": [
+        "587 domain tests and 12 overlapping focused domain cases pass; two read-scheduling cases and additional forged-reference oracle pass",
+        "All 12 final live Twin browser cases and four actual Metro/mobile/browser/API regressions pass with no retries/flakes",
+        "Axe/phone containment, actual source correction/cancellation, request persistence and one-at-a-time successful browser GETs verified",
+        "26 governance and eight conformance checks; final workspace/mobile types, full lint and optimized local build pass",
+        "23 new events processed by existing live-identity worker; current matching 191-event timeline, current Twin materialization 18 and conflict queue; exact modal/focus pass",
+        "Schema 55 to 56 preserves original keys/values across 37 tables; 12 prior artifact files and both generated configuration hashes restored"
+      ],
+      "remaining": [],
+      "qualifiedReviewsPending": [
+        "prerequisite",
+        "clinical",
+        "privacy",
+        "architecture",
+        "licensing"
+      ],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P08-F04",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 57,
+      "plan": "docs/twin/P08-F04-plan.md",
+      "adr": "docs/adr/ADR-0084-leased-source-verified-twin-refresh.md",
+      "evidence": "docs/twin/P08-F04-evidence.md",
+      "architectureAndOperations": "docs/twin/P08-F04-architecture-and-operations.md",
+      "riskControls": "docs/twin/P08-F04-risks.md",
+      "intendedUse": "docs/twin/P08-F04-intended-use.md",
+      "scenarios": "docs/twin/P08-F04-scenarios.json",
+      "implemented": [
+        "Separate per-type operational background verification budgets and immutable source/build checkpoints without changing F02 state semantics",
+        "Durable scoped jobs, receipts/events, fenced leases, explicit retry/cancel, partial-progress recovery and separately executed live-authority repair worker",
+        "Strict operations API and accessible responsive status UI with source-change redaction, bounded observation, real source links and local bounded watcher"
+      ],
+      "verified": [
+        "604 full-domain tests include 17 F04 cases; two read scheduler cases pass",
+        "All 16 final live Twin browser cases and four Metro/mobile/browser/API regressions pass; real held worker/source history, exact CLI correction propagation, Axe/phone keyboard scrolling and offline redaction verified",
+        "26 governance and eight conformance checks, full workspace/mobile types, full lint and final optimized local build pass",
+        "Current matching 206-event timeline, Twin materialization 30 and conflict state; background verification and due empty-source scheduling complete; actual bounded watcher consumes an API-enqueued request",
+        "Schema 56 to 57 preserves all original keys/values across 39 recorded tables; 15 shared evidence files and generated configuration hashes restored"
+      ],
+      "remaining": [],
+      "qualifiedReviewsPending": [
+        "prerequisite",
+        "clinical",
+        "privacy",
+        "architecture",
+        "licensing"
+      ],
+      "limitations": [
+        "Operational budgets are not clinical expiry or medical freshness policy",
+        "Production mixed-view/multi-user capacity and general service identity/scheduling are not certified; initial supplementary unverified read is retained in evidence",
+        "Local bounded watcher is restricted to its supplied live owner/patient context"
+      ],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    },
+    {
+      "id": "P08-F05",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 57,
+      "migrationRequired": false,
+      "plan": "docs/twin/P08-F05-plan.md",
+      "adr": "docs/adr/ADR-0085-source-gated-clinician-twin-inspection.md",
+      "evidence": "docs/twin/P08-F05-evidence.md",
+      "architectureAndOperations": "docs/twin/P08-F05-architecture-and-operations.md",
+      "riskControls": "docs/twin/P08-F05-risks.md",
+      "intendedUse": "docs/twin/P08-F05-intended-use.md",
+      "scenarios": "docs/twin/P08-F05-scenarios.json",
+      "implemented": [
+        "Source-reproduced read-only inspection with literal overview counts, bounded source/session-pinned search/category paging, pending work and exact current/historical ledger evidence",
+        "Shared strict no-store web/cookie and mobile/bearer API with live source gates, source-bound comparison and audit; schema57 reused without migration",
+        "Responsive accessible web clinician overview and actual React Native inspection, with retained F01-F04 Source tools and fail-closed offline/context/cancellation/late-response behavior"
+      ],
+      "verified": [
+        "616 full-domain and 12 overlapping focused cases pass, including explicit scoped success/denial audit assertions; two GET-scheduling cases pass",
+        "All 21 final Phase 08 browser cases, one strengthened native late-response case and four mobile regressions pass without retries/flakes/skips; actual correction/snapshot evidence, Axe and phone containment verified",
+        "26 governance/eight conformance checks, workspace/mobile types, final lint and optimized local build pass",
+        "Live Foundation worker processes 17 new events: current 223-event canonical/materialized timeline with matching hashes, Twin materialization 41, current conflicts/background verification and exact clinician source evidence; bounded watcher consumes API-enqueued job",
+        "Schema 57 unchanged; original primary keys/values across 43 tables preserved, 19 prior evidence files and both generated configuration hashes restored"
+      ],
+      "remaining": [],
+      "qualifiedReviewsPending": [
+        "prerequisite",
+        "clinical",
+        "privacy",
+        "architecture",
+        "licensing"
+      ],
+      "limitations": [
+        "Local browser/Expo simulation does not certify native hardware or production multi-user/mixed-view capacity",
+        "Drafts do not establish active therapy; counts do not establish clinical absence or safety, care gaps/risk remain unassessed",
+        "Formal acceptance and qualified signoffs remain pending; production clinical functions disabled"
+      ],
+      "automatedVerificationBy": "Codex; not a qualified clinical/privacy/architecture/licensing signoff"
+    }
+  ],
+  "completedEngineeringFeatures": [
+    "P08-F01",
+    "P08-F02",
+    "P08-F03",
+    "P08-F04",
+    "P08-F05"
+  ],
+  "stopBefore": "P09-F01",
+  "engineeringExitReport": "docs/twin/phase-08-engineering-exit-report.md"
+}

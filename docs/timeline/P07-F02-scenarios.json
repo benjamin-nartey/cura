@@ -1,0 +1,227 @@
+{
+  "feature": "P07-F02",
+  "dataClass": "synthetic",
+  "scenarios": [
+    {
+      "id": "P07-F02-S01",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "source commits enqueue all canonical kinds transactionally; a queue failure rolls back clinical correction",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S02",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "bounded pages materialize persisted source, replay and double rebuild retain identical hash",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S03",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "duplicate and physically reversed deliveries are version ordered and correction badges remain exact",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S04",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "poison pointer quarantines without clinical facts; rebuild preserves diagnostics and repairs from source",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S05",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "new source versions withhold stale cache until processing and source downtime advances nothing",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S06",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "tampered/missing/extra derived facts cannot be served and rebuild repairs only derived rows",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S07",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "tenant/facility/purpose/history/kind/session restrictions apply to cache reads and commands",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S08",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "failed rebuild rolls back deleted cache, queue outcomes and command receipt",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S09",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "schema 51 upgrade backfills immutable source and failed migration is atomic",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S10",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "invalid command bounds and idempotency collisions do not mutate cache",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S11",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "two actual processes serialize one idempotent command without duplicate derived events",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    },
+    {
+      "id": "P07-F02-S12",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11",
+        "S14"
+      ],
+      "preconditions": "Isolated seeded GH/EU sourceScenario with persisted four-family immutable clinical history",
+      "steps": "actual process death with an uncommitted derived row leaves queue/cache intact and replay recovers",
+      "expectedPersistence": "Source/ledger unchanged by projection commands; scoped cache/outbox/run commit atomically; invalid/revoked authority has no projection effect",
+      "expectedRecovery": "Replay/rebuild converges to the canonical hash; failed command/process death advances no partial checkpoint",
+      "testFile": "packages/domain/test/timeline-projection.test.ts"
+    }
+  ],
+  "browser": {
+    "testFile": "tools/e2e/p07-f02.spec.ts",
+    "expectedAPIStatuses": [
+      200,
+      401,
+      403,
+      404,
+      409,
+      422
+    ],
+    "oracles": [
+      "Actual bounded page and atomic rebuild match canonical hash; command-key replay is stable",
+      "Original Foundation session is resolved by actual shipped worker; stdout excludes session secret",
+      "Materialized preview withheld after test-injected status outage and restored by actual API refresh",
+      "Zero Axe violations and 390-pixel page containment"
+    ]
+  }
+}

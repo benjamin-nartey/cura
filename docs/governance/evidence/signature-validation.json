@@ -1,0 +1,12 @@
+{
+  "amendment": "docs/constitution/amendments/DEV-GOV-2026-001.md",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+  "authorizationFile": "docs/governance/development-exception-authorization.json",
+  "authorizationPresent": false,
+  "valid": false,
+  "errors": ["No signed authorization file is present."],
+  "phase02Reviews": "PENDING",
+  "exceptionStatus": "PROPOSED",
+  "phase03Development": "NOT_AUTHORIZED",
+  "activated": false
+}

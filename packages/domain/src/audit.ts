@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { SessionContext } from "@curasphere/contracts";
+import { appendAccessLedger } from "./access-ledger";
 import type { AppDatabase } from "./db";
 import { run } from "./db";
 
@@ -8,6 +9,25 @@ export function writeAudit(
   ctx: SessionContext,
   event: { action: string; resourceType: string; resourceId: string | null; outcome: "success" | "denied" | "not_found" | "conflict" },
 ) {
+  appendAccessLedger(db, {
+    organizationId: ctx.organizationId,
+    facilityId: ctx.facilityId,
+    actorId: ctx.userId,
+    subjectId: null,
+    action: event.action,
+    resourceType: event.resourceType,
+    resourceId: event.resourceId,
+    purpose: ctx.purposeOfUse,
+    outcome: event.outcome,
+    correlationId: ctx.sessionId,
+    before: null,
+    after: {
+      resourceType: event.resourceType,
+      resourceId: event.resourceId ?? "none",
+      version: "1",
+      fields: ["outcome"],
+    },
+  });
   run(
     db,
     `INSERT INTO audit_events (id, organization_id, actor_id, purpose_of_use, action, resource_type, resource_id, outcome, created_at)

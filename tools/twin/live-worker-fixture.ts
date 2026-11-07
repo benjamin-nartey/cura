@@ -1,0 +1,4 @@
+// Test-only live-service worker fixture: hold after real durable claim until stdin.
+import {getDb,claimTwinRefresh,executeTwinRefresh} from "@curasphere/domain";
+import {readFoundationSession} from "../../apps/web/lib/foundation";
+const db=getDb();try{const ctx=await readFoundationSession(process.env.CURASPHERE_TWIN_SESSION??'');if(!ctx)throw Error();const patient=process.env.CURASPHERE_TWIN_PATIENT??'',claim=claimTwinRefresh(db,ctx,patient);if(!claim)throw Error();process.stdout.write(JSON.stringify({phase:'claimed',job:claim.job.id})+'\n');await new Promise<void>(resolve=>process.stdin.once('data',()=>resolve()));const result=executeTwinRefresh(db,ctx,patient,claim.job.id,claim.token);process.stdout.write(JSON.stringify({phase:'complete',status:result.job.status})+'\n');process.stdin.pause();}catch{process.stderr.write('Live refresh fixture could not complete.\n');process.exitCode=1;}finally{db.close();}

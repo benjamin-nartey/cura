@@ -1,0 +1,109 @@
+{
+  "resourceType": "CapabilityStatement",
+  "id": "curasphere-source-app",
+  "url": "https://curasphere.local/fhir/CapabilityStatement/curasphere-source-app",
+  "version": "1.0.0",
+  "name": "CuraSphereSourceApp",
+  "title": "Current-source patient-scoped read-only app API",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-04",
+  "kind": "instance",
+  "software": {
+    "name": "CuraSphere local simulation",
+    "version": "1.0.0"
+  },
+  "implementation": {
+    "description": "Current-source patient-scoped read-only app API",
+    "url": "http://127.0.0.1:3000/api/integrations/r4/smart"
+  },
+  "fhirVersion": "4.0.1",
+  "format": [
+    "application/fhir+json"
+  ],
+  "description": "Restricted local SMART-style subset. Base R4 projections omit private source context/profile assertions. Not full SMART certification, US Core, licensed terminology or clinical approval.",
+  "rest": [
+    {
+      "mode": "server",
+      "security": {
+        "cors": true,
+        "service": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/restful-security-service",
+                "code": "OAuth"
+              }
+            ]
+          }
+        ],
+        "description": "Public client authorization code with S256 PKCE; exact patient/type read scopes; original live session/purpose/facility and current source policy. Registered-origin bearer CORS only. No cookie fallback, refresh/offline/system/user/write scopes or OIDC identity tokens."
+      },
+      "resource": [
+        {
+          "type": "Patient",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/Patient/{hashed-id}; exact patient/Patient.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        },
+        {
+          "type": "Encounter",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/Encounter/{hashed-id}; exact patient/Encounter.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        },
+        {
+          "type": "Condition",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/Condition/{hashed-id}; exact patient/Condition.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        },
+        {
+          "type": "AllergyIntolerance",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/AllergyIntolerance/{hashed-id}; exact patient/AllergyIntolerance.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        },
+        {
+          "type": "Observation",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/Observation/{hashed-id}; exact patient/Observation.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        },
+        {
+          "type": "ServiceRequest",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/ServiceRequest/{hashed-id}; exact patient/ServiceRequest.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        },
+        {
+          "type": "MedicationRequest",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ],
+          "documentation": "GET /api/integrations/r4/smart/MedicationRequest/{hashed-id}; exact patient/MedicationRequest.r grant. No search, write, history or transaction. Base R4 only; source-context profile is not asserted."
+        }
+      ]
+    }
+  ]
+}

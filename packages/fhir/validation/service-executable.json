@@ -1,0 +1,37 @@
+{
+  "resourceType": "ServiceRequest",
+  "id": "485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
+  "meta": {
+    "versionId": "1",
+    "profile": [
+      "https://curasphere.local/fhir/StructureDefinition/source-ServiceRequest|1.0.0"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
+      "valueString": "{\"facts\":{\"catalogSnapshot\":null,\"category\":\"laboratory\",\"code\":\"syn-cbc\",\"code_system\":\"curasphere.synthetic.order\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-cbc\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"catalogRevision\":null,\"catalogVersionId\":null,\"category\":\"laboratory\",\"code\":\"syn-cbc\",\"display\":\"Full blood count request\",\"kind\":\"work-order\",\"system\":\"curasphere.synthetic.order\",\"unit\":null,\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Full blood count request\",\"id\":\"83ed948f79b16d2f386a8bfac1fe80585fcd89214b38a3c55b8dda37df2517e9\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"10d0f55346fdb88f46599958b15ea0823205b6a9080ce058863046d69157905a\",\"system\":\"curasphere.synthetic.order\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"destination_department_id\":\"dep_gh_madina_lab\",\"display\":\"Full blood count request\",\"due_on\":\"2026-10-22\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"facility_id\":\"fac_gh_accra\",\"fulfillment\":\"not-transmitted\",\"id\":\"ord_c7892688357b4918\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"priority\":\"routine\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"submitted\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"ServiceRequest\"}"
+    }
+  ],
+  "subject": {
+    "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+  },
+  "encounter": {
+    "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+  },
+  "status": "draft",
+  "intent": "order",
+  "code": {
+    "coding": [
+      {
+        "system": "urn:curasphere:source-system:curasphere.synthetic.order",
+        "version": "2026.10",
+        "code": "syn-cbc",
+        "display": "Full blood count request"
+      }
+    ]
+  },
+  "priority": "routine",
+  "occurrenceDateTime": "2026-10-22",
+  "authoredOn": "2026-10-19T08:00:00.000Z"
+}

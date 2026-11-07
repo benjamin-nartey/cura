@@ -1,0 +1,7 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
+import { AppError,getDb,listIntegrationReconciliation,listIntegrationWorkspace } from "@curasphere/domain";
+import { Shell } from "@/components/shell";
+import { ReconciliationWorkspace } from "@/components/reconciliation-workspace";
+import { requireSession } from "@/lib/session";
+export default async function ReconciliationPage(){const ctx=await requireSession();try{const db=getDb(),initial=listIntegrationReconciliation(db,ctx),workspace=listIntegrationWorkspace(db,ctx);return <Shell ctx={ctx} current="interop"><a href="/interop/partners">← Partner exchange</a><PageHeader section="Interoperability" href="/interop" icon="plug" description={<>Review batch progress, resume saved work and resolve failed deliveries.</>}><h1 className="page-title">Integration reconciliation</h1></PageHeader><p>Local synthetic simulation · Explicit reviewed pages · Durable per-item outcomes</p><ReconciliationWorkspace initial={initial} subscriptions={workspace.subscriptions}/></Shell>;}catch(error){return <Shell ctx={ctx} current="interop"><PageHeader section="Interoperability" href="/interop" icon="plug"><h1 className="page-title">Integration reconciliation</h1></PageHeader><p role="alert">{error instanceof AppError?error.message:"Reconciliation is unavailable. Restore the dependency and retry."}</p><a href="/interop/reconciliation">Retry reconciliation</a></Shell>;}}

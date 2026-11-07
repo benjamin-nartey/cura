@@ -1,0 +1,15 @@
+{
+  "recordType": "proposed-decision",
+  "decisionId": "P02-R03-CLINICAL-SAFETY",
+  "role": "clinical",
+  "review": "P02-R03",
+  "exceptionId": "DEV-GOV-2026-001",
+  "amendment": "docs/constitution/amendments/DEV-GOV-2026-001.md",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8",
+  "decision": null,
+  "reviewerName": null,
+  "signedAt": null,
+  "statement": null,
+  "conditions": [],
+  "requiredQuestion": "Is the development-only emergency architecture safe and adequately restricted for development and testing? This decision is independent of any deferral of the production role matrix or the emergency duration defaults."
+}

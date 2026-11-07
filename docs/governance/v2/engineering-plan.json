@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "policy": "CURASPHERE-US-GOVERNANCE-v2",
+  "masterplan": "CuraSphere_Cursor_Pack/progress/feature-register.json",
+  "features": [
+    {
+      "id": "GOV-V2-MIGRATION",
+      "intendedUse": "Automate local synthetic engineering evidence without granting formal or clinical release authority.",
+      "capabilities": [
+        "tooling"
+      ],
+      "riskClass": "A",
+      "dependencies": [],
+      "specification": "docs/governance/CURASPHERE-US-GOVERNANCE-v2.md",
+      "paths": [
+        "tools/governance/v2",
+        "docs/governance/v2",
+        "docs/governance/CURASPHERE-US-GOVERNANCE-v2.md",
+        "eslint.config.mjs",
+        "package.json",
+        "package-lock.json",
+        ".github/workflows/ci.yml"
+      ],
+      "gates": {
+        "functionality": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "database": {
+          "notApplicable": true,
+          "reason": "Governance CLI tooling has no application database migration or user-facing browser interface; process recovery and policy safety are tested separately."
+        },
+        "typecheck": {
+          "commands": [
+            "typecheck"
+          ],
+          "proofs": {
+            "typecheck": [
+              "tsc --noEmit"
+            ]
+          }
+        },
+        "lint": {
+          "commands": [
+            "lint"
+          ],
+          "proofs": {
+            "lint": [
+              "eslint"
+            ]
+          }
+        },
+        "unit": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "integration": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "contracts": {
+          "commands": [
+            "contracts"
+          ],
+          "proofs": {
+            "contracts": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "authorization": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "tenant-isolation": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "privacy": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "security": {
+          "commands": [
+            "audit"
+          ],
+          "proofs": {
+            "audit": [
+              "total.*0"
+            ]
+          }
+        },
+        "clinical-safety": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "e2e": {
+          "notApplicable": true,
+          "reason": "Governance CLI tooling has no application database migration or user-facing browser interface; process recovery and policy safety are tested separately."
+        },
+        "accessibility": {
+          "notApplicable": true,
+          "reason": "Governance CLI tooling has no application database migration or user-facing browser interface; process recovery and policy safety are tested separately."
+        },
+        "failure-recovery": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "migration-recovery": {
+          "notApplicable": true,
+          "reason": "Governance CLI tooling has no application database migration or user-facing browser interface; process recovery and policy safety are tested separately."
+        },
+        "audit": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "observability": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "documentation": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "dependency-regression": {
+          "commands": [
+            "legacy-governance",
+            "constitution"
+          ],
+          "proofs": {
+            "legacy-governance": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ],
+            "constitution": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "P04-F05",
+      "intendedUse": "Record fictional charges and display authoritative clinical source records for synthetic visit evaluation; no live payment or clinical authorization.",
+      "capabilities": [
+        "billing-administration",
+        "clinical-record"
+      ],
+      "riskClass": "C",
+      "dependencies": [
+        "GOV-V2-MIGRATION",
+        "P04-F01",
+        "P04-F02",
+        "P04-F03",
+        "P04-F04"
+      ],
+      "specification": "CuraSphere_Cursor_Pack/phase-specs/PHASE_04_core-healthcare-domain.md",
+      "paths": [
+        "packages/domain/src/billing.ts",
+        "packages/domain/src/patient-chart.ts",
+        "packages/domain/src/experimental-healthcare.ts",
+        "packages/domain/test/billing.test.ts",
+        "apps/web/app/billing",
+        "apps/web/app/api/billing",
+        "apps/web/app/patients/[id]/chart",
+        "apps/web/lib/billing.ts",
+        "tools/e2e/p04-f05.spec.ts",
+        "packages/domain/src/db.ts",
+        "packages/domain/src/work.ts",
+        "apps/web/components/shell.tsx",
+        "apps/web/app/globals.css"
+      ],
+      "gates": {
+        "functionality": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*an authorized charge persists"
+            ]
+          }
+        },
+        "database": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "typecheck": {
+          "commands": [
+            "typecheck"
+          ],
+          "proofs": {
+            "typecheck": [
+              "tsc --noEmit"
+            ]
+          }
+        },
+        "lint": {
+          "commands": [
+            "lint"
+          ],
+          "proofs": {
+            "lint": [
+              "eslint"
+            ]
+          }
+        },
+        "unit": {
+          "commands": [
+            "domain"
+          ],
+          "proofs": {
+            "domain": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "integration": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "contracts": {
+          "commands": [
+            "contracts"
+          ],
+          "proofs": {
+            "contracts": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "authorization": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*unauthorized adjustment"
+            ]
+          }
+        },
+        "tenant-isolation": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*cached financial mutations cannot cross facilities"
+            ]
+          }
+        },
+        "privacy": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*chart pending work belongs only"
+            ]
+          }
+        },
+        "security": {
+          "commands": [
+            "audit"
+          ],
+          "proofs": {
+            "audit": [
+              "total.*0"
+            ]
+          }
+        },
+        "clinical-safety": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*protected environments fail closed"
+            ]
+          }
+        },
+        "e2e": {
+          "commands": [
+            "build",
+            "e2e"
+          ],
+          "proofs": {
+            "build": [
+              "Compiled successfully"
+            ],
+            "e2e": [
+              "2 passed"
+            ]
+          }
+        },
+        "accessibility": {
+          "commands": [
+            "build",
+            "e2e"
+          ],
+          "proofs": {
+            "build": [
+              "Compiled successfully"
+            ],
+            "e2e": [
+              "2 passed"
+            ]
+          }
+        },
+        "failure-recovery": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*outage restart migration rollback"
+            ]
+          }
+        },
+        "migration-recovery": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*failed additive migration rolls back"
+            ]
+          }
+        },
+        "audit": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*audit evidence and ledger intact"
+            ]
+          }
+        },
+        "observability": {
+          "commands": [
+            "billing"
+          ],
+          "proofs": {
+            "billing": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$",
+              "^ok [0-9]+ - .*cached financial mutations cannot cross facilities"
+            ]
+          }
+        },
+        "documentation": {
+          "commands": [
+            "v2-tests"
+          ],
+          "proofs": {
+            "v2-tests": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        },
+        "dependency-regression": {
+          "commands": [
+            "domain",
+            "legacy-governance",
+            "constitution"
+          ],
+          "proofs": {
+            "domain": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ],
+            "legacy-governance": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ],
+            "constitution": [
+              "^# fail 0\\r?$",
+              "^# skipped 0\\r?$"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "nextPhase": {
+    "id": "P05-F01",
+    "status": "PLAN_ONLY",
+    "authorizedForImplementation": false
+  }
+}

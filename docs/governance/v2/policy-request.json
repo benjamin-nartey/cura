@@ -1,0 +1,17 @@
+{
+  "id": "GOV-V2-REQUEST-2026-11-03",
+  "source": "Explicit Product Owner instruction in this chat attachment",
+  "sourceSha256": "8bebdcddd375aa9322d2635927d2c41998283631d508a330b1e581673c5bfe11",
+  "requestedPolicy": "CURASPHERE-US-GOVERNANCE-v2",
+  "formalAdoption": "PROPOSED",
+  "parallelEngineeringAuthority": "EXPLICIT_PRODUCT_OWNER_INSTRUCTION",
+  "data": "synthetic",
+  "environment": "local",
+  "authorizedFeatures": [
+    "GOV-V2-MIGRATION",
+    "P04-F05"
+  ],
+  "phase05": "PLAN_ONLY",
+  "publishPushMergeDeployAuthorization": false,
+  "signatures": []
+}

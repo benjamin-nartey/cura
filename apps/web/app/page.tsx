@@ -1,78 +1,31 @@
-import type { DirectoryEntry } from "@curasphere/contracts";
 import { redirect } from "next/navigation";
-import { Feedback } from "@/components/feedback";
-import { readFoundationDirectory } from "@/lib/foundation";
-import { roleLabel } from "@/lib/format";
-import { readFeedback } from "@/lib/messages";
+import { Brand } from "@/components/brand";
+import { Icon, type IconName } from "@/components/icon";
+import { ProductWalkthrough } from "@/components/product-walkthrough";
 import { optionalSession } from "@/lib/session";
 
-export default async function SignInPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const ctx = await optionalSession();
-  if (ctx) redirect("/dashboard");
-  const query = await searchParams;
-  const feedback = readFeedback(query);
-  const directory = await readFoundationDirectory();
-  const groups = new Map<string, DirectoryEntry[]>();
-  for (const entry of directory.entries) {
-    const list = groups.get(entry.organizationName) ?? [];
-    list.push(entry);
-    groups.set(entry.organizationName, list);
-  }
-  const error =
-    feedback.error ??
-    (directory.disabled
-      ? "Local directory sign-in is disabled."
-      : directory.unavailable
-        ? "The foundation service is not running."
-        : null);
+const capabilities: { icon: IconName; number: string; title: string; text: string }[] = [
+  { icon: "fileSearch", number: "01", title: "The whole story. In one chart.", text: "Bring source records, encounters, and clinical history into a shared view, so your team can find the context that matters." },
+  { icon: "handoff", number: "02", title: "A more connected care journey.", text: "Move from appointments to encounters, pending work, and billing with a consistent workspace across your organization." },
+  { icon: "shieldCheck", number: "03", title: "Trust, built into the workflow.", text: "Keep access tied to roles, facilities, and purpose of use, with consent and audit context close at hand." },
+];
 
-  return (
-    <main className="gate" id="content">
-      <section>
-        <p className="eyebrow">Local foundation</p>
-        <h1>The chart stays the source of truth.</h1>
-        <p className="lede">
-          Facility and purpose of use come from the directory, not from the browser. The since-last-visit note only
-          restates source events. It does not diagnose or recommend treatment.
-        </p>
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const query = await searchParams;
+  if (query.error) redirect(`/login?error=${encodeURIComponent(query.error)}`);
+  if (await optionalSession()) redirect("/dashboard");
+  return <div className="marketing">
+    <header className="marketing-nav"><Brand /><nav aria-label="Main navigation"><a href="#platform">Platform</a><a href="#approach">Our approach</a><a href="#enterprise">For enterprises</a></nav><a className="nav-signin" href="/login">Sign in <span aria-hidden="true">↗</span></a></header>
+    <main id="content">
+      <section className="marketing-hero cinematic-hero">
+        <div className="hero-copy"><p className="premium-kicker"><span /> A CONNECTED FOUNDATION FOR CARE</p><h1>Better connected.<br />More <em>human.</em></h1><p className="hero-description">One thoughtful workspace for the people, records, and workflows behind exceptional care.</p><div className="hero-actions"><a className="premium-button" href="/login">Explore the workspace <span aria-hidden="true">↗</span></a><a className="text-link" href="#platform">Discover CuraSphere <span aria-hidden="true">↓</span></a></div><div className="hero-footnote"><Icon name="shieldCheck" size={18} /><span>Built around source records. Designed around people.</span></div></div>
       </section>
-      <section className="panel card">
-        <h2>Identity provider</h2>
-        <p className="muted">Workforce sign-in uses the local identity provider. The organization still comes from the directory.</p>
-        <p>
-          <a className="btn-dark" href="/api/auth/start">
-            Sign in
-          </a>
-        </p>
-        <h2>Directory</h2>
-        <p className="muted">Development identities from the foundation service. No passwords.</p>
-        <Feedback error={error} notice={null} />
-        {directory.entries.length > 0 ? (
-          <form action="/api/session" method="post">
-            {[...groups.entries()].map(([organization, people]) => (
-              <fieldset key={organization} style={{ border: 0, margin: 0, padding: 0 }}>
-                <legend className="org-label">{organization}</legend>
-                {people.map((person) => (
-                  <label className="identity" key={person.userId}>
-                    <input type="radio" name="userId" value={person.userId} required />
-                    <strong>{person.displayName}</strong>
-                    <span className="muted">
-                      {roleLabel(person.role)}
-                      {person.facilityName ? ` · ${person.facilityName}` : ""}
-                    </span>
-                  </label>
-                ))}
-              </fieldset>
-            ))}
-            <button className="btn-dark" type="submit">
-              Continue
-            </button>
-          </form>
-        ) : null}
-        <p className="muted">
-          <a href="/portal">Open your own patient record</a>
-        </p>
-      </section>
+      <ProductWalkthrough />
+      <div className="capability-strip"><span>ONE PLATFORM. A SHARED PERSPECTIVE.</span><div><Icon name="stethoscope" /> Clinical teams</div><div><Icon name="building" /> Healthcare organizations</div><div><Icon name="users" /> People receiving care</div></div>
+      <section className="marketing-section" id="platform"><div className="section-intro"><p className="premium-kicker">THE CURASPHERE PLATFORM</p><h2>Less fragmentation.<br /><em>More perspective.</em></h2><p>Healthcare is connected. Your workspace should be, too. Bring the essential pieces together without losing sight of the person behind the record.</p></div><div className="capability-grid">{capabilities.map(item => <article className="capability-card" key={item.number}><div className="capability-card-top"><span className="capability-icon"><Icon name={item.icon} size={25} /></span><span>{item.number}</span></div><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+      <section className="approach-section" id="approach"><div className="connection-art" aria-hidden="true"><div className="connection-ring" /><div className="connection-ring inner" /><div className="connection-center"><Icon name="heartPulse" size={44} /></div>{["Clinical records", "Care coordination", "Identity & access", "Billing context"].map((label,i) => <span className={`connection-node node-${i}`} key={label}>{label}</span>)}</div><div><p className="premium-kicker">CONTEXT, WITHOUT COMPROMISE</p><h2>A shared view.<br /><em>A clear source of truth.</em></h2><p>CuraSphere brings workflows together while keeping source records authoritative and access boundaries explicit.</p><ul className="approach-list"><li><Icon name="shieldCheck" /> Role and facility scoped access</li><li><Icon name="fileSearch" /> Traceable source records and audit history</li><li><Icon name="handoff" /> Connected clinical and administrative workflows</li></ul></div></section>
+      <section className="enterprise-cta" id="enterprise"><div><p className="premium-kicker">BUILT WITH THE ENTERPRISE IN MIND</p><h2>A thoughtful foundation.<br />For your next chapter of care.</h2><p>Explore the workspace and see how the pieces fit together.</p></div><a className="premium-button light-button" href="/login">Enter CuraSphere <span aria-hidden="true">↗</span></a></section>
     </main>
-  );
+    <footer className="marketing-footer"><Brand /><p>Connected care. Human at heart.</p><a href="/portal">Patient portal ↗</a><div className="preview-disclosure"><span className="live-dot" /> Simulation environment · Synthetic records · No live clinical use.</div></footer>
+  </div>;
 }

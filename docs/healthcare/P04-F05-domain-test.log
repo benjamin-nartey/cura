@@ -1,0 +1,2099 @@
+
+> curasphere@0.1.0 test
+> npm run test --workspace @curasphere/domain
+
+
+> @curasphere/domain@0.1.0 test
+> node --import tsx --import ./test/dev-env.ts --test test/isolation.test.ts test/briefing.test.ts test/writes.test.ts test/terminology.test.ts test/fhir.test.ts test/timeline.test.ts test/patient-state.test.ts test/evidence.test.ts test/gateway.test.ts test/agents.test.ts test/copilot.test.ts test/documentation.test.ts test/lab.test.ts test/rx.test.ts test/coordination.test.ts test/patient.test.ts test/facility.test.ts test/operations.test.ts test/analytics.test.ts test/population.test.ts test/research.test.ts test/imaging.test.ts test/devices.test.ts test/revenue.test.ts test/evaluation.test.ts test/enterprise.test.ts test/marketplace.test.ts test/release.test.ts test/modules.test.ts test/implementation.test.ts test/tenancy.test.ts test/authorization.test.ts test/workforce.test.ts test/emergency.test.ts test/access-ledger.test.ts test/consent.test.ts test/retention.test.ts test/dsar.test.ts test/telemetry.test.ts test/master-records.test.ts test/scheduling.test.ts test/clinical-source.test.ts test/work.test.ts test/billing.test.ts test/oidc.test.ts --test-concurrency=1
+
+TAP version 13
+# (node:17644) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P03-S01 a new database carries the sealed access ledger
+ok 1 - P03-S01 a new database carries the sealed access ledger
+  ---
+  duration_ms: 679.2179
+  ...
+# Subtest: P03-S02 alteration is rejected and a removed seal is detectable
+ok 2 - P03-S02 alteration is rejected and a removed seal is detectable
+  ---
+  duration_ms: 411.9325
+  ...
+# Subtest: P03-S03 ledger queries respect audit privilege and tenant boundaries
+ok 3 - P03-S03 ledger queries respect audit privilege and tenant boundaries
+  ---
+  duration_ms: 619.9818
+  ...
+# Subtest: P03-S04 descriptive text and names stay out of the ledger
+ok 4 - P03-S04 descriptive text and names stay out of the ledger
+  ---
+  duration_ms: 639.6421
+  ...
+# Subtest: P03-S05 the local override does not grant audit access or production emergency access
+ok 5 - P03-S05 the local override does not grant audit access or production emergency access
+  ---
+  duration_ms: 536.7272
+  ...
+# Subtest: P03-S06 ledger rollback returns to schema 32 and the next open upgrades again
+ok 6 - P03-S06 ledger rollback returns to schema 32 and the next open upgrades again
+  ---
+  duration_ms: 1300.0477
+  ...
+# (node:16920) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a chart review parks for someone else and does not write the chart
+ok 7 - a chart review parks for someone else and does not write the chart
+  ---
+  duration_ms: 623.1733
+  ...
+# Subtest: a tool outside the manifest cannot run, and a write tool does not change the chart
+ok 8 - a tool outside the manifest cannot run, and a write tool does not change the chart
+  ---
+  duration_ms: 453.6246
+  ...
+# Subtest: a crashed run resumes from the stored approval and survives a new connection
+ok 9 - a crashed run resumes from the stored approval and survives a new connection
+  ---
+  duration_ms: 1354.515
+  ...
+# Subtest: retries stop when the attempt budget is spent or the running step times out
+ok 10 - retries stop when the attempt budget is spent or the running step times out
+  ---
+  duration_ms: 335.5533
+  ...
+# Subtest: a model tool is refused by the gateway and another organization cannot see the run
+ok 11 - a model tool is refused by the gateway and another organization cannot see the run
+  ---
+  duration_ms: 377.9595
+  ...
+# (node:10628) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an auditor ingests de-identified events, and a small cell stays suppressed
+ok 12 - an auditor ingests de-identified events, and a small cell stays suppressed
+  ---
+  duration_ms: 649.678
+  ...
+# Subtest: a metric outside the pin is refused, and a name in the text is an identifier
+ok 13 - a metric outside the pin is refused, and a name in the text is an identifier
+  ---
+  duration_ms: 507.6407
+  ...
+# (node:28444) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P02-S37 an organization administrator can read organization settings
+ok 14 - P02-S37 an organization administrator can read organization settings
+  ---
+  duration_ms: 590.9214
+  ...
+# Subtest: P02-S144 an organization administrator cannot read billing or the security audit
+ok 15 - P02-S144 an organization administrator cannot read billing or the security audit
+  ---
+  duration_ms: 579.4572
+  ...
+# Subtest: P02-S38 a receptionist cannot administer security roles
+ok 16 - P02-S38 a receptionist cannot administer security roles
+  ---
+  duration_ms: 459.863
+  ...
+# Subtest: P02-S39 a doctor can read a permitted synthetic clinical resource
+ok 17 - P02-S39 a doctor can read a permitted synthetic clinical resource
+  ---
+  duration_ms: 430.7791
+  ...
+# Subtest: P02-S40 a nurse cannot perform a privileged security action
+ok 18 - P02-S40 a nurse cannot perform a privileged security action
+  ---
+  duration_ms: 398.5943
+  ...
+# Subtest: P02-S41 a laboratory user cannot adjust billing
+ok 19 - P02-S41 a laboratory user cannot adjust billing
+  ---
+  duration_ms: 504.7548
+  ...
+# Subtest: P02-S42 a single-facility staff member cannot read another facility
+ok 20 - P02-S42 a single-facility staff member cannot read another facility
+  ---
+  duration_ms: 497.2165
+  ...
+# Subtest: P02-S43 a multi-facility nurse sees only the facility after an authorized switch
+ok 21 - P02-S43 a multi-facility nurse sees only the facility after an authorized switch
+  ---
+  duration_ms: 1089.2474
+  ...
+# Subtest: P02-S44 a Ghana user guessing a European resource gets a generic denial
+ok 22 - P02-S44 a Ghana user guessing a European resource gets a generic denial
+  ---
+  duration_ms: 743.8352
+  ...
+# Subtest: P02-S45 a forged role name does not grant authority
+ok 23 - P02-S45 a forged role name does not grant authority
+  ---
+  duration_ms: 402.7564
+  ...
+# Subtest: P02-S46 a user cannot assign a higher role to themselves
+ok 24 - P02-S46 a user cannot assign a higher role to themselves
+  ---
+  duration_ms: 408.2405
+  ...
+# Subtest: P02-S47 a revoked role stops working in the same session
+ok 25 - P02-S47 a revoked role stops working in the same session
+  ---
+  duration_ms: 413.1792
+  ...
+# Subtest: P02-S48 an explicit deny overrides a granted permission
+ok 26 - P02-S48 an explicit deny overrides a granted permission
+  ---
+  duration_ms: 454.2065
+  ...
+# Subtest: P02-S49 an unapproved purpose fails closed
+ok 27 - P02-S49 an unapproved purpose fails closed
+  ---
+  duration_ms: 697.8509
+  ...
+# Subtest: P02-S50 role administration without MFA is denied
+ok 28 - P02-S50 role administration without MFA is denied
+  ---
+  duration_ms: 463.1969
+  ...
+# Subtest: P02-S51 a confidential resource is denied without confidential authorization
+ok 29 - P02-S51 a confidential resource is denied without confidential authorization
+  ---
+  duration_ms: 386.7158
+  ...
+# Subtest: P02-S52 bulk enumeration is denied
+ok 30 - P02-S52 bulk enumeration is denied
+  ---
+  duration_ms: 450.6235
+  ...
+# Subtest: P02-S53 a forged service delegation is rejected
+ok 31 - P02-S53 a forged service delegation is rejected
+  ---
+  duration_ms: 800.9108
+  ...
+# Subtest: P02-S54 an unavailable policy store fails closed
+ok 32 - P02-S54 an unavailable policy store fails closed
+  ---
+  duration_ms: 473.4659
+  ...
+# Subtest: P02-S55 concurrent role changes conflict on version
+ok 33 - P02-S55 concurrent role changes conflict on version
+  ---
+  duration_ms: 480.1702
+  ...
+# Subtest: P02-S56 a stale permission cache cannot restore a revoked grant
+ok 34 - P02-S56 a stale permission cache cannot restore a revoked grant
+  ---
+  duration_ms: 599.7553
+  ...
+# Subtest: P02-S57 a denial records safe evidence
+ok 35 - P02-S57 a denial records safe evidence
+  ---
+  duration_ms: 537.0756
+  ...
+# Subtest: P02-S60 authorization survives a reopened database
+ok 36 - P02-S60 authorization survives a reopened database
+  ---
+  duration_ms: 1456.8844
+  ...
+# Subtest: P02-S61 an unimplemented clinical signature stays denied
+ok 37 - P02-S61 an unimplemented clinical signature stays denied
+  ---
+  duration_ms: 602.3924
+  ...
+# Subtest: P02-S62 emergency elevation is rejected
+ok 38 - P02-S62 emergency elevation is rejected
+  ---
+  duration_ms: 1033.6051
+  ...
+# Subtest: P02-F03 missing classification, relationship, integrity, and evaluation latency
+ok 39 - P02-F03 missing classification, relationship, integrity, and evaluation latency
+  ---
+  duration_ms: 669.2477
+  ...
+# (node:15524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:15524) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: P04-F05-S01 S02 S03 S05 S08 an authorized charge persists with catalog price
+ok 40 - P04-F05-S01 S02 S03 S05 S08 an authorized charge persists with catalog price
+  ---
+  duration_ms: 880.5556
+  ...
+# Subtest: P04-F05-S04 invalid encounter relationship is rejected
+ok 41 - P04-F05-S04 invalid encounter relationship is rejected
+  ---
+  duration_ms: 512.1452
+  ...
+# Subtest: P04-F05-S06 S07 invalid currency quantity and amount are rejected
+ok 42 - P04-F05-S06 S07 invalid currency quantity and amount are rejected
+  ---
+  duration_ms: 620.0014
+  ...
+# Subtest: P04-F05-S09 duplicate charge request is idempotent
+ok 43 - P04-F05-S09 duplicate charge request is idempotent
+  ---
+  duration_ms: 479.2861
+  ...
+# Subtest: P04-F05-S10 concurrent duplicate submission produces one charge
+ok 44 - P04-F05-S10 concurrent duplicate submission produces one charge
+  ---
+  duration_ms: 23931.9311
+  ...
+# Subtest: P04-F05-S11 S12 S13 adjustment preserves history and rejects stale version
+ok 45 - P04-F05-S11 S12 S13 adjustment preserves history and rejects stale version
+  ---
+  duration_ms: 767.7255
+  ...
+# Subtest: P04-F05-S14 S43 S44 unauthorized adjustment and admin billing read are denied
+ok 46 - P04-F05-S14 S43 S44 unauthorized adjustment and admin billing read are denied
+  ---
+  duration_ms: 655.3259
+  ...
+# Subtest: P04-F05-S15 S16 void preserves history and rejects invalid transition
+ok 47 - P04-F05-S15 S16 void preserves history and rejects invalid transition
+  ---
+  duration_ms: 589.7845
+  ...
+# Subtest: P04-F05-S17 no payment transmission
+ok 48 - P04-F05-S17 no payment transmission
+  ---
+  duration_ms: 561.9239
+  ...
+# Subtest: P04-F05-S18 S21 S32 chart status and tenant isolation
+ok 49 - P04-F05-S18 S21 S32 chart status and tenant isolation
+  ---
+  duration_ms: 656.9827
+  ...
+# Subtest: P04-F05-S35 S36 S48 audit evidence and ledger intact
+ok 50 - P04-F05-S35 S36 S48 audit evidence and ledger intact
+  ---
+  duration_ms: 655.281
+  ...
+# Subtest: P04-F05-S45 S46 S47 S49 outage restart migration rollback
+ok 51 - P04-F05-S45 S46 S47 S49 outage restart migration rollback
+  ---
+  duration_ms: 3075.7742
+  ...
+# Subtest: P04-F05-S41 clinical signing remains denied and closed encounter still bills
+ok 52 - P04-F05-S41 clinical signing remains denied and closed encounter still bills
+  ---
+  duration_ms: 570.9923
+  ...
+# Subtest: P04-F05-S50 chart pending work belongs only to the selected patient
+ok 53 - P04-F05-S50 chart pending work belongs only to the selected patient
+  ---
+  duration_ms: 868.2994
+  ...
+# Subtest: P04-F05-S51 cached financial mutations cannot cross facilities
+ok 54 - P04-F05-S51 cached financial mutations cannot cross facilities
+  ---
+  duration_ms: 742.9609
+  ...
+# Subtest: P04-F05-S52 catalog dates and protected environments fail closed
+ok 55 - P04-F05-S52 catalog dates and protected environments fail closed
+  ---
+  duration_ms: 695.813
+  ...
+# Subtest: P04-F05-S53 database rejects invalid amounts, cross-tenant links and mutable adjustments
+ok 56 - P04-F05-S53 database rejects invalid amounts, cross-tenant links and mutable adjustments
+  ---
+  duration_ms: 598.2703
+  ...
+# Subtest: P04-F05-S54 failed additive migration rolls back its marker and can recover
+ok 57 - P04-F05-S54 failed additive migration rolls back its marker and can recover
+  ---
+  duration_ms: 1027.6526
+  ...
+# (node:24304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: elena's briefing cites only results stored after the finished encounter
+ok 58 - elena's briefing cites only results stored after the finished encounter
+  ---
+  duration_ms: 512.5132
+  ...
+# Subtest: without a finished encounter the briefing does not replay the whole history
+ok 59 - without a finished encounter the briefing does not replay the whole history
+  ---
+  duration_ms: 586.5076
+  ...
+# (node:24144) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24144) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: P04-F03-S01 an authorized condition entry persists
+ok 60 - P04-F03-S01 an authorized condition entry persists
+  ---
+  duration_ms: 562.948
+  ...
+# Subtest: P04-F03-S02 a missing patient is rejected
+ok 61 - P04-F03-S02 a missing patient is rejected
+  ---
+  duration_ms: 462.7772
+  ...
+# Subtest: P04-F03-S03 an incorrect encounter relationship is rejected
+ok 62 - P04-F03-S03 an incorrect encounter relationship is rejected
+  ---
+  duration_ms: 735.6417
+  ...
+# Subtest: P04-F03-S04 an unconfirmed diagnosis stays unconfirmed
+ok 63 - P04-F03-S04 an unconfirmed diagnosis stays unconfirmed
+  ---
+  duration_ms: 491.2099
+  ...
+# Subtest: P04-F03-S05 an invalid clinical-status transition is rejected
+ok 64 - P04-F03-S05 an invalid clinical-status transition is rejected
+  ---
+  duration_ms: 931.6734
+  ...
+# Subtest: P04-F03-S06 entered-in-error preserves condition history
+ok 65 - P04-F03-S06 entered-in-error preserves condition history
+  ---
+  duration_ms: 967.0658
+  ...
+# Subtest: P04-F03-S07 a repeated condition submission is idempotent
+ok 66 - P04-F03-S07 a repeated condition submission is idempotent
+  ---
+  duration_ms: 696.4802
+  ...
+# Subtest: P04-F03-S08 an authorized allergy entry persists
+ok 67 - P04-F03-S08 an authorized allergy entry persists
+  ---
+  duration_ms: 677.938
+  ...
+# Subtest: P04-F03-S09 unknown allergy information is not no known allergy
+ok 68 - P04-F03-S09 unknown allergy information is not no known allergy
+  ---
+  duration_ms: 605.6017
+  ...
+# Subtest: P04-F03-S10 an unsupported allergy code is rejected
+ok 69 - P04-F03-S10 an unsupported allergy code is rejected
+  ---
+  duration_ms: 587.6769
+  ...
+# Subtest: P04-F03-S11 an allergy status change preserves versions
+ok 70 - P04-F03-S11 an allergy status change preserves versions
+  ---
+  duration_ms: 643.4952
+  ...
+# Subtest: P04-F03-S12 an unauthorized allergy modification fails
+ok 71 - P04-F03-S12 an unauthorized allergy modification fails
+  ---
+  duration_ms: 527.6496
+  ...
+# Subtest: P04-F03-S13 an entered-in-error allergy stays visible
+ok 72 - P04-F03-S13 an entered-in-error allergy stays visible
+  ---
+  duration_ms: 860.3733
+  ...
+# Subtest: P04-F03-S14 a valid temperature observation persists
+ok 73 - P04-F03-S14 a valid temperature observation persists
+  ---
+  duration_ms: 706.8491
+  ...
+# Subtest: P04-F03-S15 structured blood pressure components persist
+ok 74 - P04-F03-S15 structured blood pressure components persist
+  ---
+  duration_ms: 584.1145
+  ...
+# Subtest: P04-F03-S16 an invalid unit is rejected
+ok 75 - P04-F03-S16 an invalid unit is rejected
+  ---
+  duration_ms: 635.8439
+  ...
+# Subtest: P04-F03-S17 an invalid value type is rejected
+ok 76 - P04-F03-S17 an invalid value type is rejected
+  ---
+  duration_ms: 711.2593
+  ...
+# Subtest: P04-F03-S18 effective time and recording time stay distinct
+ok 77 - P04-F03-S18 effective time and recording time stay distinct
+  ---
+  duration_ms: 469.8013
+  ...
+# Subtest: P04-F03-S19 a corrected observation preserves the original value
+ok 78 - P04-F03-S19 a corrected observation preserves the original value
+  ---
+  duration_ms: 797.0858
+  ...
+# Subtest: P04-F03-S20 and S50 a stale correction from another process is rejected
+ok 79 - P04-F03-S20 and S50 a stale correction from another process is rejected
+  ---
+  duration_ms: 8494.2269
+  ...
+# Subtest: P04-F03-S21 a finalized observation cannot be overwritten
+ok 80 - P04-F03-S21 a finalized observation cannot be overwritten
+  ---
+  duration_ms: 449.9855
+  ...
+# Subtest: P04-F03-S22 a duplicate observation request is idempotent
+ok 81 - P04-F03-S22 a duplicate observation request is idempotent
+  ---
+  duration_ms: 547.5267
+  ...
+# Subtest: P04-F03-S23 and S24 a medication draft is stored and not executable
+ok 82 - P04-F03-S23 and S24 a medication draft is stored and not executable
+  ---
+  duration_ms: 562.1883
+  ...
+# Subtest: P04-F03-S25 unauthorized signing is refused
+ok 83 - P04-F03-S25 unauthorized signing is refused
+  ---
+  duration_ms: 572.9306
+  ...
+# Subtest: P04-F03-S26 pharmacy transmission stays disabled
+ok 84 - P04-F03-S26 pharmacy transmission stays disabled
+  ---
+  duration_ms: 687.3787
+  ...
+# Subtest: P04-F03-S27 an invalid medication code or dose fails
+ok 85 - P04-F03-S27 an invalid medication code or dose fails
+  ---
+  duration_ms: 560.9663
+  ...
+# Subtest: P04-F03-S28 a draft amendment preserves history
+ok 86 - P04-F03-S28 a draft amendment preserves history
+  ---
+  duration_ms: 644.5964
+  ...
+# Subtest: P04-F03-S29 a duplicate draft submission is idempotent
+ok 87 - P04-F03-S29 a duplicate draft submission is idempotent
+  ---
+  duration_ms: 659.32
+  ...
+# Subtest: P04-F03-S30 an invalid cancellation transition is rejected
+ok 88 - P04-F03-S30 an invalid cancellation transition is rejected
+  ---
+  duration_ms: 503.7461
+  ...
+# Subtest: P04-F03-S31 and S32 and S33 authorship history and immutability hold
+ok 89 - P04-F03-S31 and S32 and S33 authorship history and immutability hold
+  ---
+  duration_ms: 441.5917
+  ...
+# Subtest: P04-F03-S34 a closed encounter rejects ordinary recording
+ok 90 - P04-F03-S34 a closed encounter rejects ordinary recording
+  ---
+  duration_ms: 509.5852
+  ...
+# Subtest: P04-F03-S35 an authorized amendment succeeds on a closed encounter
+ok 91 - P04-F03-S35 an authorized amendment succeeds on a closed encounter
+  ---
+  duration_ms: 884.9796
+  ...
+# Subtest: P04-F03-S36 an unauthorized amendment fails
+ok 92 - P04-F03-S36 an unauthorized amendment fails
+  ---
+  duration_ms: 511.3857
+  ...
+# Subtest: P04-F03-S37 a patient merge does not erase source provenance
+ok 93 - P04-F03-S37 a patient merge does not erase source provenance
+  ---
+  duration_ms: 637.3488
+  ...
+# Subtest: P04-F03-S38 cross-tenant clinical access is denied
+ok 94 - P04-F03-S38 cross-tenant clinical access is denied
+  ---
+  duration_ms: 1090.6467
+  ...
+# Subtest: P04-F03-S39 cross-facility clinical access is denied
+ok 95 - P04-F03-S39 cross-facility clinical access is denied
+  ---
+  duration_ms: 590.8375
+  ...
+# Subtest: P04-F03-S40 a caller cannot choose another organization
+ok 96 - P04-F03-S40 a caller cannot choose another organization
+  ---
+  duration_ms: 840.9879
+  ...
+# Subtest: P04-F03-S41 a revoked clinician loses write privileges
+ok 97 - P04-F03-S41 a revoked clinician loses write privileges
+  ---
+  duration_ms: 541.321
+  ...
+# Subtest: P04-F03-S42 an organization administrator cannot author clinical entries
+ok 98 - P04-F03-S42 an organization administrator cannot author clinical entries
+  ---
+  duration_ms: 471.8579
+  ...
+# Subtest: P04-F03-S43 and S52 source access produces a verifiable audit chain
+ok 99 - P04-F03-S43 and S52 source access produces a verifiable audit chain
+  ---
+  duration_ms: 437.4303
+  ...
+# Subtest: P04-F03-S44 clinical values stay out of telemetry
+ok 100 - P04-F03-S44 clinical values stay out of telemetry
+  ---
+  duration_ms: 461.42
+  ...
+# Subtest: P04-F03-S45 withdrawn consent stays withdrawn
+ok 101 - P04-F03-S45 withdrawn consent stays withdrawn
+  ---
+  duration_ms: 457.0951
+  ...
+# Subtest: P04-F03-S46 source entry does not call an AI service
+ok 102 - P04-F03-S46 source entry does not call an AI service
+  ---
+  duration_ms: 39.6946
+  ...
+# Subtest: P04-F03-S47 a database outage fails safely
+ok 103 - P04-F03-S47 a database outage fails safely
+  ---
+  duration_ms: 399.0253
+  ...
+# Subtest: P04-F03-S48 a restart preserves entries and versions
+ok 104 - P04-F03-S48 a restart preserves entries and versions
+  ---
+  duration_ms: 1541.3353
+  ...
+# Subtest: P04-F03-S49 a failed transaction leaves no partial history
+ok 105 - P04-F03-S49 a failed transaction leaves no partial history
+  ---
+  duration_ms: 571.4375
+  ...
+# Subtest: P04-F03-S51 migration and fixtures reproduce from a clean database
+ok 106 - P04-F03-S51 migration and fixtures reproduce from a clean database
+  ---
+  duration_ms: 1349.1369
+  ...
+# (node:488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P03-F02-S01 an authorized actor records a synthetic consent directive
+ok 107 - P03-F02-S01 an authorized actor records a synthetic consent directive
+  ---
+  duration_ms: 703.3035
+  ...
+# Subtest: P03-F02-S02 an incomplete consent cannot authorize processing
+ok 108 - P03-F02-S02 an incomplete consent cannot authorize processing
+  ---
+  duration_ms: 602.6262
+  ...
+# Subtest: P03-F02-S03 unverified authority cannot activate consent
+ok 109 - P03-F02-S03 unverified authority cannot activate consent
+  ---
+  duration_ms: 593.3712
+  ...
+# Subtest: P03-F02-S04 a verified representative can support activation
+ok 110 - P03-F02-S04 a verified representative can support activation
+  ---
+  duration_ms: 672.9533
+  ...
+# Subtest: P03-F02-S05 a forged representative claim fails
+ok 111 - P03-F02-S05 a forged representative claim fails
+  ---
+  duration_ms: 784.149
+  ...
+# Subtest: P03-F02-S06 invalid effective dates are rejected
+ok 112 - P03-F02-S06 invalid effective dates are rejected
+  ---
+  duration_ms: 772.2183
+  ...
+# Subtest: P03-F02-S07 through S11 activation is purpose and recipient specific
+ok 113 - P03-F02-S07 through S11 activation is purpose and recipient specific
+  ---
+  duration_ms: 458.5207
+  ...
+# Subtest: P03-F02-S08 a permitted reminder can be queued and dispatched locally
+ok 114 - P03-F02-S08 a permitted reminder can be queued and dispatched locally
+  ---
+  duration_ms: 452.093
+  ...
+# Subtest: P03-F02-S12 and S13 cross-organization and cross-facility reuse is denied
+ok 115 - P03-F02-S12 and S13 cross-organization and cross-facility reuse is denied
+  ---
+  duration_ms: 426.6039
+  ...
+# Subtest: P03-F02-S14 and S15 missing or expired consent fails closed
+ok 116 - P03-F02-S14 and S15 missing or expired consent fails closed
+  ---
+  duration_ms: 427.0992
+  ...
+# Subtest: P03-F02-S16 consent does not override an RBAC denial
+ok 117 - P03-F02-S16 consent does not override an RBAC denial
+  ---
+  duration_ms: 414.2386
+  ...
+# Subtest: P03-F02-S17 through S22 withdrawal blocks new sharing, communication, and research
+ok 118 - P03-F02-S17 through S22 withdrawal blocks new sharing, communication, and research
+  ---
+  duration_ms: 440.5093
+  ...
+# Subtest: P03-F02-S23 a stale version conflicts
+ok 119 - P03-F02-S23 a stale version conflicts
+  ---
+  duration_ms: 429.3373
+  ...
+# Subtest: P03-F02-S24 a stale cache cannot reauthorize a withdrawn consent
+ok 120 - P03-F02-S24 a stale cache cannot reauthorize a withdrawn consent
+  ---
+  duration_ms: 522.4741
+  ...
+# Subtest: P03-F02-S25 history stays sealed and attributable
+ok 121 - P03-F02-S25 history stays sealed and attributable
+  ---
+  duration_ms: 533.9757
+  ...
+# Subtest: P03-F02-S26 and S27 unauthorized staff and tampered subjects are denied
+ok 122 - P03-F02-S26 and S27 unauthorized staff and tampered subjects are denied
+  ---
+  duration_ms: 788.6461
+  ...
+# Subtest: P03-F02-S28 a consent store outage blocks required processing
+ok 123 - P03-F02-S28 a consent store outage blocks required processing
+  ---
+  duration_ms: 514.0162
+  ...
+# Subtest: P03-F02-S29 withdrawal survives a restart
+ok 124 - P03-F02-S29 withdrawal survives a restart
+  ---
+  duration_ms: 1642.1537
+  ...
+# Subtest: P03-F02-S30 and S31 the ledger records consent changes without the subject name
+ok 125 - P03-F02-S30 and S31 the ledger records consent changes without the subject name
+  ---
+  duration_ms: 426.6588
+  ...
+# Subtest: P03-F02-S32 production mode blocks consent-dependent dispatch
+ok 126 - P03-F02-S32 production mode blocks consent-dependent dispatch
+  ---
+  duration_ms: 496.2239
+  ...
+# Subtest: P03-F02 schema rollback returns to version 33 and the next open upgrades
+ok 127 - P03-F02 schema rollback returns to version 33 and the next open upgrades
+  ---
+  duration_ms: 922.8621
+  ...
+# (node:22428) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: consent, locale, and a refused model decide whether a template is stored
+ok 128 - consent, locale, and a refused model decide whether a template is stored
+  ---
+  duration_ms: 534.6669
+  ...
+# Subtest: referrals stay inside the organization, and gaps cite a stored source
+ok 129 - referrals stay inside the organization, and gaps cite a stored source
+  ---
+  duration_ms: 799.9224
+  ...
+# (node:10208) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a fully supported chart is released and an invalidated claim blocks it
+ok 130 - a fully supported chart is released and an invalidated claim blocks it
+  ---
+  duration_ms: 537.3465
+  ...
+# Subtest: a question is answered only from supported claims
+ok 131 - a question is answered only from supported claims
+  ---
+  duration_ms: 639.7622
+  ...
+# Subtest: another organization cannot read the copilot
+ok 132 - another organization cannot read the copilot
+  ---
+  duration_ms: 1568.0576
+  ...
+# (node:17700) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a typed reading keeps provenance, and a duplicate or older time does not open another alert
+ok 133 - a typed reading keeps provenance, and a duplicate or older time does not open another alert
+  ---
+  duration_ms: 577.6952
+  ...
+# Subtest: the alert budget escalates instead of opening another mark
+ok 134 - the alert budget escalates instead of opening another mark
+  ---
+  duration_ms: 491.7798
+  ...
+# Subtest: a device reading stays on the sqlite timeline and the patient record until an observation is stored
+ok 135 - a device reading stays on the sqlite timeline and the patient record until an observation is stored
+  ---
+  duration_ms: 469.7659
+  ...
+# (node:27152) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a typed note stays a draft until the clinician accepts it, and it is never signed
+ok 136 - a typed note stays a draft until the clinician accepts it, and it is never signed
+  ---
+  duration_ms: 902.5761
+  ...
+# Subtest: audio is not transcribed, and retention controls whether the bytes are kept
+ok 137 - audio is not transcribed, and retention controls whether the bytes are kept
+  ---
+  duration_ms: 559.3261
+  ...
+# Subtest: another organization cannot read or capture the draft
+ok 138 - another organization cannot read or capture the draft
+  ---
+  duration_ms: 1547.8243
+  ...
+# (node:24104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P03-F04-S01 S02 S06 S07 and S26 request creation boundaries
+ok 139 - P03-F04-S01 S02 S06 S07 and S26 request creation boundaries
+  ---
+  duration_ms: 898.1644
+  ...
+# Subtest: P03-F04-S03 S04 S05 S09 S10 S11 and S12 verification and approval
+ok 140 - P03-F04-S03 S04 S05 S09 S10 S11 and S12 verification and approval
+  ---
+  duration_ms: 666.865
+  ...
+# Subtest: P03-F04-S08 S13 S14 S15 S16 S45 and S46 isolation and denial
+ok 141 - P03-F04-S08 S13 S14 S15 S16 S45 and S46 isolation and denial
+  ---
+  duration_ms: 712.1432
+  ...
+# Subtest: P03-F04-S17 S18 S19 S20 S21 S22 S23 S24 and S34 scoped export delivery
+ok 142 - P03-F04-S17 S18 S19 S20 S21 S22 S23 S24 and S34 scoped export delivery
+  ---
+  duration_ms: 790.4378
+  ...
+# Subtest: P03-F04-S25 S27 S28 S29 S30 S31 S32 S33 and S35 bulk monitoring and recovery
+ok 143 - P03-F04-S25 S27 S28 S29 S30 S31 S32 S33 and S35 bulk monitoring and recovery
+  ---
+  duration_ms: 20693.9692
+  ...
+# Subtest: P03-F04-S36 S37 S38 S39 S40 S41 S42 S43 and S44 correction erasure and consent
+ok 144 - P03-F04-S36 S37 S38 S39 S40 S41 S42 S43 and S44 correction erasure and consent
+  ---
+  duration_ms: 589.9934
+  ...
+# Subtest: P03-F04-S49 S50 S51 and schema rollback
+ok 145 - P03-F04-S49 S50 S51 and schema rollback
+  ---
+  duration_ms: 2072.1281
+  ...
+# (node:15212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P02-S99 an eligible clinician can start an emergency request
+ok 146 - P02-S99 an eligible clinician can start an emergency request
+  ---
+  duration_ms: 1013.9985
+  ...
+# Subtest: P02-S100 a receptionist cannot request emergency elevation
+ok 147 - P02-S100 a receptionist cannot request emergency elevation
+  ---
+  duration_ms: 770.4574
+  ...
+# Subtest: P02-S101 a suspended workforce user cannot request emergency access
+ok 148 - P02-S101 a suspended workforce user cannot request emergency access
+  ---
+  duration_ms: 682.8904
+  ...
+# Subtest: P02-S102 an expired session cannot request emergency access
+ok 149 - P02-S102 an expired session cannot request emergency access
+  ---
+  duration_ms: 679.5799
+  ...
+# Subtest: P02-S103 a request without justification is rejected
+ok 150 - P02-S103 a request without justification is rejected
+  ---
+  duration_ms: 623.7697
+  ...
+# Subtest: P02-S104 an unapproved resource scope is rejected
+ok 151 - P02-S104 an unapproved resource scope is rejected
+  ---
+  duration_ms: 731.113
+  ...
+# Subtest: P02-S105 a valid TOTP step-up authorizes the request without a grant
+ok 152 - P02-S105 a valid TOTP step-up authorizes the request without a grant
+  ---
+  duration_ms: 646.5649
+  ...
+# Subtest: P02-S106 an invalid TOTP challenge fails
+ok 153 - P02-S106 an invalid TOTP challenge fails
+  ---
+  duration_ms: 650.4687
+  ...
+# Subtest: P02-S107 a valid passkey step-up authorizes the request
+ok 154 - P02-S107 a valid passkey step-up authorizes the request
+  ---
+  duration_ms: 769.4569
+  ...
+# Subtest: P02-S108 a replayed or expired step-up cannot activate a grant
+ok 155 - P02-S108 a replayed or expired step-up cannot activate a grant
+  ---
+  duration_ms: 460.2725
+  ...
+# Subtest: P02-S109 a grant permits only the exact synthetic read
+ok 156 - P02-S109 a grant permits only the exact synthetic read
+  ---
+  duration_ms: 420.5637
+  ...
+# Subtest: P02-S110 an emergency grant cannot authorize prescribing or signing
+ok 157 - P02-S110 an emergency grant cannot authorize prescribing or signing
+  ---
+  duration_ms: 507.3815
+  ...
+# Subtest: P02-S111 cross-tenant emergency access is rejected
+ok 158 - P02-S111 cross-tenant emergency access is rejected
+  ---
+  duration_ms: 439.5564
+  ...
+# Subtest: P02-S112 unauthorized cross-facility access is rejected
+ok 159 - P02-S112 unauthorized cross-facility access is rejected
+  ---
+  duration_ms: 478.3809
+  ...
+# Subtest: P02-S113 a forged emergency flag is ignored
+ok 160 - P02-S113 a forged emergency flag is ignored
+  ---
+  duration_ms: 448.3752
+  ...
+# Subtest: P02-S114 a hard deny overrides attempted emergency elevation
+ok 161 - P02-S114 a hard deny overrides attempted emergency elevation
+  ---
+  duration_ms: 437.3543
+  ...
+# Subtest: P02-S115 a disabled emergency policy prevents grant issuance
+ok 162 - P02-S115 a disabled emergency policy prevents grant issuance
+  ---
+  duration_ms: 780.6968
+  ...
+# Subtest: P02-S116 ordinary permissions stay unchanged
+ok 163 - P02-S116 ordinary permissions stay unchanged
+  ---
+  duration_ms: 575.9515
+  ...
+# Subtest: P02-S117 activating the same request twice returns one grant
+ok 164 - P02-S117 activating the same request twice returns one grant
+  ---
+  duration_ms: 782.7192
+  ...
+# Subtest: P02-S118 an active grant does not permit bulk export
+ok 165 - P02-S118 an active grant does not permit bulk export
+  ---
+  duration_ms: 818.9451
+  ...
+# Subtest: P02-S119 an expired grant stops access
+ok 166 - P02-S119 an expired grant stops access
+  ---
+  duration_ms: 623.0505
+  ...
+# Subtest: P02-S120 revocation removes access immediately
+ok 167 - P02-S120 revocation removes access immediately
+  ---
+  duration_ms: 386.5035
+  ...
+# Subtest: P02-S121 a revoked membership invalidates emergency access
+ok 168 - P02-S121 a revoked membership invalidates emergency access
+  ---
+  duration_ms: 477.0723
+  ...
+# Subtest: P02-S122 logout invalidates the session-bound grant
+ok 169 - P02-S122 logout invalidates the session-bound grant
+  ---
+  duration_ms: 354.823
+  ...
+# Subtest: P02-S123 a facility change cannot carry the emergency scope
+ok 170 - P02-S123 a facility change cannot carry the emergency scope
+  ---
+  duration_ms: 365.1755
+  ...
+# Subtest: P02-S124 a revoked grant stays revoked after another read
+ok 171 - P02-S124 a revoked grant stays revoked after another read
+  ---
+  duration_ms: 363.0983
+  ...
+# Subtest: P02-S125 the expiry boundary is server time
+ok 172 - P02-S125 the expiry boundary is server time
+  ---
+  duration_ms: 402.2138
+  ...
+# Subtest: P02-S126 a grant creates review and alert evidence
+ok 173 - P02-S126 a grant creates review and alert evidence
+  ---
+  duration_ms: 364.5102
+  ...
+# Subtest: P02-S127 each protected read records evidence
+ok 174 - P02-S127 each protected read records evidence
+  ---
+  duration_ms: 438.5531
+  ...
+# Subtest: P02-S128 the reviewer alert is captured in the local sandbox
+ok 175 - P02-S128 the reviewer alert is captured in the local sandbox
+  ---
+  duration_ms: 371.8732
+  ...
+# Subtest: P02-S129 a sandbox outage is visible and can be retried
+ok 176 - P02-S129 a sandbox outage is visible and can be retried
+  ---
+  duration_ms: 473.0924
+  ...
+# Subtest: P02-S130 the requester cannot review their own emergency access
+ok 177 - P02-S130 the requester cannot review their own emergency access
+  ---
+  duration_ms: 483.3691
+  ...
+# Subtest: P02-S131 an independent reviewer can record a disposition
+ok 178 - P02-S131 an independent reviewer can record a disposition
+  ---
+  duration_ms: 391.0835
+  ...
+# Subtest: P02-S132 escalation preserves the original history
+ok 179 - P02-S132 escalation preserves the original history
+  ---
+  duration_ms: 402.9023
+  ...
+# Subtest: P02-S133 another tenant cannot view the review
+ok 180 - P02-S133 another tenant cannot view the review
+  ---
+  duration_ms: 586.7647
+  ...
+# Subtest: P02-S134 missing reviewer coverage blocks the grant
+ok 181 - P02-S134 missing reviewer coverage blocks the grant
+  ---
+  duration_ms: 542.4676
+  ...
+# Subtest: P02-S135 a failed commit does not leave an active grant
+ok 182 - P02-S135 a failed commit does not leave an active grant
+  ---
+  duration_ms: 604.9189
+  ...
+# Subtest: P02-S136 a policy dependency failure does not authorize access
+ok 183 - P02-S136 a policy dependency failure does not authorize access
+  ---
+  duration_ms: 622.5889
+  ...
+# Subtest: P02-S137 step-up fails closed when no authenticator is enrolled
+ok 184 - P02-S137 step-up fails closed when no authenticator is enrolled
+  ---
+  duration_ms: 386.33
+  ...
+# Subtest: P02-S138 revocation during a protected read is denied
+ok 185 - P02-S138 revocation during a protected read is denied
+  ---
+  duration_ms: 507.3562
+  ...
+# Subtest: P02-S139 ended access clears protected content
+ok 186 - P02-S139 ended access clears protected content
+  ---
+  duration_ms: 1.5005
+  ...
+# Subtest: P02-S140 events do not store the free-text justification
+ok 187 - P02-S140 events do not store the free-text justification
+  ---
+  duration_ms: 461.2516
+  ...
+# Subtest: P02-S141 the synthetic record is isolated from a clinical chart
+ok 188 - P02-S141 the synthetic record is isolated from a clinical chart
+  ---
+  duration_ms: 633.9686
+  ...
+# Subtest: P02-S142 production mode cannot activate emergency access
+ok 189 - P02-S142 production mode cannot activate emergency access
+  ---
+  duration_ms: 371.9497
+  ...
+# Subtest: P02-S143 staging mode cannot activate emergency access
+ok 190 - P02-S143 staging mode cannot activate emergency access
+  ---
+  duration_ms: 368.6435
+  ...
+# Subtest: a reviewer can be assigned without receiving the synthetic record
+ok 191 - a reviewer can be assigned without receiving the synthetic record
+  ---
+  duration_ms: 367.3136
+  ...
+# (node:19048) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the local pin stays in place, and a failover is not run
+ok 192 - the local pin stays in place, and a failover is not run
+  ---
+  duration_ms: 572.9235
+  ...
+# (node:9612) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a refusal suite can be signed as a hold, and the model stays disabled
+ok 193 - a refusal suite can be signed as a hold, and the model stays disabled
+  ---
+  duration_ms: 773.6149
+  ...
+# (node:4108) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a rebuild files a supported claim for each derived line
+ok 194 - a rebuild files a supported claim for each derived line
+  ---
+  duration_ms: 666.2272
+  ...
+# Subtest: a claim without a citation is refused
+ok 195 - a claim without a citation is refused
+  ---
+  duration_ms: 1.4788
+  ...
+# Subtest: a changed source invalidates the claim that cited it
+ok 196 - a changed source invalidates the claim that cited it
+  ---
+  duration_ms: 375.2129
+  ...
+# Subtest: another facility and an auditor cannot read the claims
+ok 197 - another facility and an auditor cannot read the claims
+  ---
+  duration_ms: 1082.7676
+  ...
+# (node:24288) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: facility signals cite source rows, show the SLA, and follow a later lab event
+ok 198 - facility signals cite source rows, show the SLA, and follow a later lab event
+  ---
+  duration_ms: 631.6875
+  ...
+# Subtest: bed, shift, and equipment writes stay on the facility and replay
+ok 199 - bed, shift, and equipment writes stay on the facility and replay
+  ---
+  duration_ms: 447.6349
+  ...
+# (node:26932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a created observation round-trips with the facility pin
+ok 200 - a created observation round-trips with the facility pin
+  ---
+  duration_ms: 462.0121
+  ...
+# Subtest: the capability statement is R4 and does not advertise SMART
+ok 201 - the capability statement is R4 and does not advertise SMART
+  ---
+  duration_ms: 1.0326
+  ...
+# Subtest: seeded chart resources keep their code-system versions
+ok 202 - seeded chart resources keep their code-system versions
+  ---
+  duration_ms: 423.5223
+  ...
+# Subtest: another facility and an auditor cannot read the resource
+ok 203 - another facility and an auditor cannot read the resource
+  ---
+  duration_ms: 1672.3322
+  ...
+# Subtest: a mismatched unit, an unknown code, and a remote inbox are rejected
+ok 204 - a mismatched unit, an unknown code, and a remote inbox are rejected
+  ---
+  duration_ms: 656.2927
+  ...
+# Subtest: a local subscription receives the observation that was stored
+ok 205 - a local subscription receives the observation that was stored
+  ---
+  duration_ms: 366.8622
+  ...
+# Subtest: facility export contains that facility and no other
+ok 206 - facility export contains that facility and no other
+  ---
+  duration_ms: 761.565
+  ...
+# (node:17252) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a clinical prompt is refused and no adapter is called
+ok 207 - a clinical prompt is refused and no adapter is called
+  ---
+  duration_ms: 422.7583
+  ...
+# Subtest: quota, outage, and schema failure store no generated text
+ok 208 - quota, outage, and schema failure store no generated text
+  ---
+  duration_ms: 307.8931
+  ...
+# Subtest: attempts stay inside the organization
+ok 209 - attempts stay inside the organization
+  ---
+  duration_ms: 314.1672
+  ...
+# (node:16844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a study stores metadata, and a large object is refused
+ok 210 - a study stores metadata, and a large object is refused
+  ---
+  duration_ms: 558.8894
+  ...
+# Subtest: a typed report stays linked, and the release drops identifiers
+ok 211 - a typed report stays linked, and the release drops identifiers
+  ---
+  duration_ms: 553.8015
+  ...
+# (node:22684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# PASS  phase 00 constitution
+# PASS  phase 01 repository
+# PASS  phase 02 identity and tenancy
+# PASS  phase 03 audit
+# PASS  phase 04 chart writes
+# PASS  phase 05 terminology
+# PASS  phase 06 FHIR R4
+# PASS  phase 07 timeline
+# PASS  phase 08 patient state
+# PASS  phase 09 evidence
+# PASS  phase 10 model gateway
+# PASS  phase 11 agent runtime
+# PASS  phase 12 clinical copilot
+# PASS  phase 13 documentation
+# PASS  phase 14 curalab
+# PASS  phase 15 curarx
+# PASS  phase 16 care coordination
+# PASS  phase 17 patient record
+# PASS  phase 18 facility twin
+# PASS  phase 19 operations intelligence
+# PASS  phase 20 analytics lakehouse
+# PASS  phase 21 population intelligence
+# PASS  phase 22 curaresearch
+# PASS  phase 23 imaging dicom foundation
+# PASS  phase 24 devices remote monitoring
+# PASS  phase 25 revenue claims insurance
+# PASS  phase 26 ai evaluation mlops governance
+# PASS  phase 27 enterprise multi-region
+# PASS  phase 28 marketplace extension platform
+# PASS  phase 29 regulated clinical ai release train
+# PASS  phase 30 advanced medical ai modules
+# --- 31 passed, 0 failed ---
+# Subtest: each implementation passes before the next one is accepted
+ok 212 - each implementation passes before the next one is accepted
+  ---
+  duration_ms: 12558.848
+  ...
+# (node:5836) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a riverside clinician cannot read another organization or another facility
+ok 213 - a riverside clinician cannot read another organization or another facility
+  ---
+  duration_ms: 415.0363
+  ...
+# Subtest: east annex and northwind see only their own facility
+ok 214 - east annex and northwind see only their own facility
+  ---
+  duration_ms: 647.9226
+  ...
+# Subtest: an auditor cannot open the chart
+ok 215 - an auditor cannot open the chart
+  ---
+  duration_ms: 376.7464
+  ...
+# (node:18292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a supplied order id is stored once
+ok 216 - a supplied order id is stored once
+  ---
+  duration_ms: 416.6289
+  ...
+# Subtest: a critical potassium result keeps its pin, and a model reply cannot clear it
+ok 217 - a critical potassium result keeps its pin, and a model reply cannot clear it
+  ---
+  duration_ms: 699.9816
+  ...
+# Subtest: ranges, catalog, and facility bounds stay on the server
+ok 218 - ranges, catalog, and facility bounds stay on the server
+  ---
+  duration_ms: 1402.9822
+  ...
+# (node:25200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a listing stays in the directory, and an extension is not installed
+ok 219 - a listing stays in the directory, and an extension is not installed
+  ---
+  duration_ms: 448.2603
+  ...
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P04-F01-S01 through S07 registration validation authorization and idempotency
+ok 220 - P04-F01-S01 through S07 registration validation authorization and idempotency
+  ---
+  duration_ms: 2596.7496
+  ...
+# Subtest: P04-F01-S08 through S15 duplicate matching stays a candidate
+ok 221 - P04-F01-S08 through S15 duplicate matching stays a candidate
+  ---
+  duration_ms: 1577.788
+  ...
+# Subtest: P04-F01-S16 through S24 controlled merge is human authorized and reversible on failure
+ok 222 - P04-F01-S16 through S24 controlled merge is human authorized and reversible on failure
+  ---
+  duration_ms: 1918.5227
+  ...
+# Subtest: P04-F01-S25 through S32 practitioners stay distinct from workforce access
+ok 223 - P04-F01-S25 through S32 practitioners stay distinct from workforce access
+  ---
+  duration_ms: 1633.9391
+  ...
+# Subtest: P04-F01-S33 through S40 privacy isolation concurrency and recovery
+ok 224 - P04-F01-S33 through S40 privacy isolation concurrency and recovery
+  ---
+  duration_ms: 4046.4935
+  ...
+# Subtest: P04-F01-S41 the directory fixture refuses production
+ok 225 - P04-F01-S41 the directory fixture refuses production
+  ---
+  duration_ms: 1922.7006
+  ...
+# (node:12504) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: each module keeps its own card, and none is cleared
+ok 226 - each module keeps its own card, and none is cleared
+  ---
+  duration_ms: 660.4019
+  ...
+# (node:12172) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P02-S10 a workforce password login at Dex opens only the linked account
+ok 227 - P02-S10 a workforce password login at Dex opens only the linked account
+  ---
+  duration_ms: 3897.7017
+  ...
+# Subtest: P02-S11 an incorrect Dex password does not return a code
+ok 228 - P02-S11 an incorrect Dex password does not return a code
+  ---
+  duration_ms: 900.4598
+  ...
+# Subtest: P02-S16 a tampered callback state is rejected
+ok 229 - P02-S16 a tampered callback state is rejected
+  ---
+  duration_ms: 713.1087
+  ...
+# Subtest: P02-S17 and P02-S18 a replayed code and a bad verifier are rejected
+ok 230 - P02-S17 and P02-S18 a replayed code and a bad verifier are rejected
+  ---
+  duration_ms: 1715.8561
+  ...
+# Subtest: P02-S19 and P02-S20 a new login rotates the session and a revoked session stays closed
+ok 231 - P02-S19 and P02-S20 a new login rotates the session and a revoked session stays closed
+  ---
+  duration_ms: 392.5107
+  ...
+# Subtest: P02-S24 and P02-S25 login does not grant another organization, and the nurse keeps two facilities
+ok 232 - P02-S24 and P02-S25 login does not grant another organization, and the nurse keeps two facilities
+  ---
+  duration_ms: 455.7507
+  ...
+# Subtest: P02-S26 and P02-S27 TOTP enrollment, a good code, a bad code, and lockout
+ok 233 - P02-S26 and P02-S27 TOTP enrollment, a good code, a bad code, and lockout
+  ---
+  duration_ms: 503.7964
+  ...
+# Subtest: P02-S29 and P02-S30 refresh rotation rejects the previous token
+ok 234 - P02-S29 and P02-S30 refresh rotation rejects the previous token
+  ---
+  duration_ms: 5512.4691
+  ...
+# Subtest: P02-S32 deactivating membership closes the bound session
+ok 235 - P02-S32 deactivating membership closes the bound session
+  ---
+  duration_ms: 577.5027
+  ...
+# Subtest: P02-S34 an unexpected return address and a consumed transaction are rejected
+ok 236 - P02-S34 an unexpected return address and a consumed transaction are rejected
+  ---
+  duration_ms: 585.0446
+  ...
+# Subtest: P02-S35 authentication events do not store the refresh token
+ok 237 - P02-S35 authentication events do not store the refresh token
+  ---
+  duration_ms: 1218.4402
+  ...
+# Subtest: P02-S12 through P02-S15 a live token is verified and bad claims or signatures are rejected
+ok 238 - P02-S12 through P02-S15 a live token is verified and bad claims or signatures are rejected
+  ---
+  duration_ms: 841.0141
+  ...
+# Subtest: P02-S21 an idle or absolute expiry closes the bound session
+ok 239 - P02-S21 an idle or absolute expiry closes the bound session
+  ---
+  duration_ms: 439.8351
+  ...
+# Subtest: P02-S22 discovery fails closed when the issuer is refused
+ok 240 - P02-S22 discovery fails closed when the issuer is refused
+  ---
+  duration_ms: 0.7016
+  ...
+# Subtest: P02-S23 an authorization transaction survives a reopened database
+ok 241 - P02-S23 an authorization transaction survives a reopened database
+  ---
+  duration_ms: 27229.9983
+  ...
+# Subtest: P02-S28 a passkey response without a stored challenge is rejected
+ok 242 - P02-S28 a passkey response without a stored challenge is rejected
+  ---
+  duration_ms: 219.5201
+  ...
+# Subtest: P02-S31 and P02-S36 a Dex restart rotates keys and then accepts a new login
+ok 243 - P02-S31 and P02-S36 a Dex restart rotates keys and then accepts a new login
+  ---
+  duration_ms: 13207.5371
+  ...
+# Subtest: local synthetic Dex accounts keep the configured issuer and subject
+ok 244 - local synthetic Dex accounts keep the configured issuer and subject
+  ---
+  duration_ms: 647.5593
+  ...
+# (node:22248) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: operations sentences list factors and confidence, and a hold leaves the sentence
+ok 245 - operations sentences list factors and confidence, and a hold leaves the sentence
+  ---
+  duration_ms: 506.284
+  ...
+# Subtest: a later stored row changes the measured delta, and a model sentence is ignored
+ok 246 - a later stored row changes the measured delta, and a model sentence is ignored
+  ---
+  duration_ms: 432.7252
+  ...
+# (node:27560) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a rebuild matches the source rows and a second rebuild keeps the version
+ok 247 - a rebuild matches the source rows and a second rebuild keeps the version
+  ---
+  duration_ms: 495.6461
+  ...
+# Subtest: a new source row marks the build stale and the next rebuild cites it
+ok 248 - a new source row marks the build stale and the next rebuild cites it
+  ---
+  duration_ms: 689.6896
+  ...
+# Subtest: two results at the same time stay listed as a conflict
+ok 249 - two results at the same time stay listed as a conflict
+  ---
+  duration_ms: 504.9274
+  ...
+# Subtest: an open encounter without a result is pending work
+ok 250 - an open encounter without a result is pending work
+  ---
+  duration_ms: 374.6189
+  ...
+# Subtest: another facility and an auditor cannot read the materialization
+ok 251 - another facility and an auditor cannot read the materialization
+  ---
+  duration_ms: 1277.5377
+  ...
+# (node:23244) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a patient sees only their own record, and urgent text stays on the pinned instruction
+ok 252 - a patient sees only their own record, and urgent text stays on the pinned instruction
+  ---
+  duration_ms: 718.2916
+  ...
+# Subtest: a request is not a booking, a recorded amount is not a charge, and replays stay local
+ok 253 - a request is not a booking, a recorded amount is not a charge, and replays stay local
+  ---
+  duration_ms: 507.9091
+  ...
+# (node:1852) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a cohort below 5 is hidden, and a released count has no person
+ok 254 - a cohort below 5 is hidden, and a released count has no person
+  ---
+  duration_ms: 513.3343
+  ...
+# Subtest: a jurisdiction tag outside the pin is refused
+ok 255 - a jurisdiction tag outside the pin is refused
+  ---
+  duration_ms: 404.0729
+  ...
+# (node:4052) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a release attempt stays not-released, and the refusal gate stays disabled
+ok 256 - a release attempt stays not-released, and the refusal gate stays disabled
+  ---
+  duration_ms: 555.3478
+  ...
+# (node:13616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a dataset version stays frozen, and the requester cannot approve the export
+ok 257 - a dataset version stays frozen, and the requester cannot approve the export
+  ---
+  duration_ms: 1347.4073
+  ...
+# (node:11400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P03-F03-S01 S06 S07 and S08 policy resolution expiry and invalid periods
+ok 258 - P03-F03-S01 S06 S07 and S08 policy resolution expiry and invalid periods
+  ---
+  duration_ms: 547.3925
+  ...
+# Subtest: P03-F03-S02 S03 and S04 missing conflict and jurisdiction isolation
+ok 259 - P03-F03-S02 S03 and S04 missing conflict and jurisdiction isolation
+  ---
+  duration_ms: 509.0951
+  ...
+# Subtest: P03-F03-S05 S12 S18 S22 S23 and S24 preview changes block disposal
+ok 260 - P03-F03-S05 S12 S18 S22 S23 and S24 preview changes block disposal
+  ---
+  duration_ms: 456.5762
+  ...
+# Subtest: P03-F03-S09 through S17 legal holds block and preserve history
+ok 261 - P03-F03-S09 through S17 legal holds block and preserve history
+  ---
+  duration_ms: 530.4477
+  ...
+# Subtest: P03-F03-S13 a hold created during processing blocks the remaining record
+ok 262 - P03-F03-S13 a hold created during processing blocks the remaining record
+  ---
+  duration_ms: 490.9925
+  ...
+# Subtest: P03-F03-S19 S20 and S21 archive success failure and idempotence
+ok 263 - P03-F03-S19 S20 and S21 archive success failure and idempotence
+  ---
+  duration_ms: 391.8773
+  ...
+# Subtest: P03-F03-S25 S26 and S27 disposal is idempotent and resumable
+ok 264 - P03-F03-S25 S26 and S27 disposal is idempotent and resumable
+  ---
+  duration_ms: 433.0768
+  ...
+# Subtest: P03-F03-S28 S32 S39 and S40 outage ledger and restore protections
+ok 265 - P03-F03-S28 S32 S39 and S40 outage ledger and restore protections
+  ---
+  duration_ms: 386.1417
+  ...
+# Subtest: P03-F03-S29 S30 S31 and S33 consent and audit evidence stay protected
+ok 266 - P03-F03-S29 S30 S31 and S33 consent and audit evidence stay protected
+  ---
+  duration_ms: 350.7297
+  ...
+# Subtest: P03-F03 schema rollback returns to version 34 and the next open upgrades
+ok 267 - P03-F03 schema rollback returns to version 34 and the next open upgrades
+  ---
+  duration_ms: 21443.5786
+  ...
+# (node:14588) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the ledger reconciles, and a model cannot change it
+ok 268 - the ledger reconciles, and a model cannot change it
+  ---
+  duration_ms: 350.6359
+  ...
+# (node:23784) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a high-risk allergy warning blocks the chart until it is acknowledged
+ok 269 - a high-risk allergy warning blocks the chart until it is acknowledged
+  ---
+  duration_ms: 705.3015
+  ...
+# Subtest: duplicate therapy, interactions, and facility bounds stay on the server
+ok 270 - duplicate therapy, interactions, and facility bounds stay on the server
+  ---
+  duration_ms: 1069.9417
+  ...
+# (node:6956) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:6956) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: P04-F02-S01 an authorized appointment request succeeds
+ok 271 - P04-F02-S01 an authorized appointment request succeeds
+  ---
+  duration_ms: 461.1862
+  ...
+# Subtest: P04-F02-S02 an invalid time interval is rejected
+ok 272 - P04-F02-S02 an invalid time interval is rejected
+  ---
+  duration_ms: 409.6096
+  ...
+# Subtest: P04-F02-S03 a nonexistent patient is rejected
+ok 273 - P04-F02-S03 a nonexistent patient is rejected
+  ---
+  duration_ms: 386.2319
+  ...
+# Subtest: P04-F02-S04 a retired patient reference is rejected
+ok 274 - P04-F02-S04 a retired patient reference is rejected
+  ---
+  duration_ms: 370.6177
+  ...
+# Subtest: P04-F02-S05 an invalid practitioner affiliation is rejected
+ok 275 - P04-F02-S05 an invalid practitioner affiliation is rejected
+  ---
+  duration_ms: 381.1801
+  ...
+# Subtest: P04-F02-S06 an inactive practitioner cannot be booked
+ok 276 - P04-F02-S06 an inactive practitioner cannot be booked
+  ---
+  duration_ms: 386.5237
+  ...
+# Subtest: P04-F02-S07 a requested appointment is confirmed
+ok 277 - P04-F02-S07 a requested appointment is confirmed
+  ---
+  duration_ms: 494.292
+  ...
+# Subtest: P04-F02-S08 appointment arrival is recorded
+ok 278 - P04-F02-S08 appointment arrival is recorded
+  ---
+  duration_ms: 462.6489
+  ...
+# Subtest: P04-F02-S09 cancellation releases capacity
+ok 279 - P04-F02-S09 cancellation releases capacity
+  ---
+  duration_ms: 326.8258
+  ...
+# Subtest: P04-F02-S10 a no-show is recorded after the window
+ok 280 - P04-F02-S10 a no-show is recorded after the window
+  ---
+  duration_ms: 377.4189
+  ...
+# Subtest: P04-F02-S11 a no-show cannot overwrite a recorded arrival
+ok 281 - P04-F02-S11 a no-show cannot overwrite a recorded arrival
+  ---
+  duration_ms: 371.4329
+  ...
+# Subtest: P04-F02-S12 an invalid state transition is rejected
+ok 282 - P04-F02-S12 an invalid state transition is rejected
+  ---
+  duration_ms: 411.6972
+  ...
+# Subtest: P04-F02-S13 a duplicate booking submission is idempotent
+ok 283 - P04-F02-S13 a duplicate booking submission is idempotent
+  ---
+  duration_ms: 356.9883
+  ...
+# Subtest: P04-F02-S14 and S44 two processes cannot overbook one exclusive slot
+ok 284 - P04-F02-S14 and S44 two processes cannot overbook one exclusive slot
+  ---
+  duration_ms: 23664.6709
+  ...
+# Subtest: P04-F02-S15 overlapping intervals are rejected
+ok 285 - P04-F02-S15 overlapping intervals are rejected
+  ---
+  duration_ms: 556.026
+  ...
+# Subtest: P04-F02-S16 an authorized reschedule succeeds
+ok 286 - P04-F02-S16 an authorized reschedule succeeds
+  ---
+  duration_ms: 379.3524
+  ...
+# Subtest: P04-F02-S17 a failed reschedule preserves the original reservation
+ok 287 - P04-F02-S17 a failed reschedule preserves the original reservation
+  ---
+  duration_ms: 365.5292
+  ...
+# Subtest: P04-F02-S18 a stale appointment version is rejected
+ok 288 - P04-F02-S18 a stale appointment version is rejected
+  ---
+  duration_ms: 363.0374
+  ...
+# Subtest: P04-F02-S19 an authorized clinician starts an encounter
+ok 289 - P04-F02-S19 an authorized clinician starts an encounter
+  ---
+  duration_ms: 277.4484
+  ...
+# Subtest: P04-F02-S20 a receptionist cannot start an encounter
+ok 290 - P04-F02-S20 a receptionist cannot start an encounter
+  ---
+  duration_ms: 258.4377
+  ...
+# Subtest: P04-F02-S21 a duplicate encounter start is idempotent
+ok 291 - P04-F02-S21 a duplicate encounter start is idempotent
+  ---
+  duration_ms: 248.4834
+  ...
+# Subtest: P04-F02-S22 the encounter references the authoritative patient
+ok 292 - P04-F02-S22 the encounter references the authoritative patient
+  ---
+  duration_ms: 350.9439
+  ...
+# Subtest: P04-F02-S23 an unaffiliated practitioner cannot host the encounter
+ok 293 - P04-F02-S23 an unaffiliated practitioner cannot host the encounter
+  ---
+  duration_ms: 372.6183
+  ...
+# Subtest: P04-F02-S24 an encounter closes from a valid state
+ok 294 - P04-F02-S24 an encounter closes from a valid state
+  ---
+  duration_ms: 400.5291
+  ...
+# Subtest: P04-F02-S25 an invalid close transition is rejected
+ok 295 - P04-F02-S25 an invalid close transition is rejected
+  ---
+  duration_ms: 376.1696
+  ...
+# Subtest: P04-F02-S26 encounter status history stays reconstructable
+ok 296 - P04-F02-S26 encounter status history stays reconstructable
+  ---
+  duration_ms: 384.5294
+  ...
+# Subtest: P04-F02-S27 concurrent encounter starts create one encounter
+ok 297 - P04-F02-S27 concurrent encounter starts create one encounter
+  ---
+  duration_ms: 3629.5504
+  ...
+# Subtest: P04-F02-S28 a closed encounter cannot be reopened
+ok 298 - P04-F02-S28 a closed encounter cannot be reopened
+  ---
+  duration_ms: 453.7979
+  ...
+# Subtest: P04-F02-S29 cross-tenant appointment access is denied
+ok 299 - P04-F02-S29 cross-tenant appointment access is denied
+  ---
+  duration_ms: 474.2572
+  ...
+# Subtest: P04-F02-S30 cross-facility scheduling access is denied
+ok 300 - P04-F02-S30 cross-facility scheduling access is denied
+  ---
+  duration_ms: 374.7253
+  ...
+# Subtest: P04-F02-S31 a caller cannot choose another organization
+ok 301 - P04-F02-S31 a caller cannot choose another organization
+  ---
+  duration_ms: 372.8978
+  ...
+# Subtest: P04-F02-S32 a revoked workforce membership loses scheduling access
+ok 302 - P04-F02-S32 a revoked workforce membership loses scheduling access
+  ---
+  duration_ms: 344.4529
+  ...
+# Subtest: P04-F02-S33 unapproved clinical privileges stay denied
+ok 303 - P04-F02-S33 unapproved clinical privileges stay denied
+  ---
+  duration_ms: 340.7016
+  ...
+# Subtest: P04-F02-S34 an unauthorized user cannot read encounter history
+ok 304 - P04-F02-S34 an unauthorized user cannot read encounter history
+  ---
+  duration_ms: 314.5922
+  ...
+# Subtest: P04-F02-S35 appointment communication respects withdrawn consent
+ok 305 - P04-F02-S35 appointment communication respects withdrawn consent
+  ---
+  duration_ms: 359.3831
+  ...
+# Subtest: P04-F02-S36 status changes produce protected audit evidence
+ok 306 - P04-F02-S36 status changes produce protected audit evidence
+  ---
+  duration_ms: 469.542
+  ...
+# Subtest: P04-F02-S37 sensitive appointment fields do not pass telemetry
+ok 307 - P04-F02-S37 sensitive appointment fields do not pass telemetry
+  ---
+  duration_ms: 3.7689
+  ...
+# Subtest: P04-F02-S38 a scheduling outage fails safely
+ok 308 - P04-F02-S38 a scheduling outage fails safely
+  ---
+  duration_ms: 401.03
+  ...
+# Subtest: P04-F02-S39 a restart preserves appointment state
+ok 309 - P04-F02-S39 a restart preserves appointment state
+  ---
+  duration_ms: 2302.0247
+  ...
+# Subtest: P04-F02-S40 concurrent cancellation and arrival stay consistent
+ok 310 - P04-F02-S40 concurrent cancellation and arrival stay consistent
+  ---
+  duration_ms: 2722.693
+  ...
+# Subtest: P04-F02-S41 timezone conversion preserves the intended local time
+ok 311 - P04-F02-S41 timezone conversion preserves the intended local time
+  ---
+  duration_ms: 804.8266
+  ...
+# Subtest: P04-F02-S42 migration and fixtures reproduce from a clean database
+ok 312 - P04-F02-S42 migration and fixtures reproduce from a clean database
+  ---
+  duration_ms: 451.4139
+  ...
+# Subtest: P04-F02-S43 a failed operation leaves no orphaned reservation
+ok 313 - P04-F02-S43 a failed operation leaves no orphaned reservation
+  ---
+  duration_ms: 725.0321
+  ...
+# Subtest: scheduling rollback returns to the previous schema and can migrate again
+ok 314 - scheduling rollback returns to the previous schema and can migrate again
+  ---
+  duration_ms: 2064.8731
+  ...
+# Subtest: a conflict offers another slot for the same practitioner
+ok 315 - a conflict offers another slot for the same practitioner
+  ---
+  duration_ms: 568.8275
+  ...
+# (node:27400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P03-F05-S01 through S12 canaries stay out of sanitized telemetry
+ok 316 - P03-F05-S01 through S12 canaries stay out of sanitized telemetry
+  ---
+  duration_ms: 4593.4116
+  ...
+# Subtest: P03-F05-S13 through S20 safe telemetry shape, metrics labels, and failure
+ok 317 - P03-F05-S13 through S20 safe telemetry shape, metrics labels, and failure
+  ---
+  duration_ms: 309.818
+  ...
+# Subtest: P03-F05-S21 through S30 signals, dedupe, and versioned rules
+ok 318 - P03-F05-S21 through S30 signals, dedupe, and versioned rules
+  ---
+  duration_ms: 287.1005
+  ...
+# Subtest: P03-F05-S31 through S46 alert access and lifecycle
+ok 319 - P03-F05-S31 through S46 alert access and lifecycle
+  ---
+  duration_ms: 20912.5123
+  ...
+# Subtest: P03-F05-S47 through S52 prior controls stay in force
+ok 320 - P03-F05-S47 through S52 prior controls stay in force
+  ---
+  duration_ms: 490.1341
+  ...
+# (node:21832) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P02-S01 a Ghana administrator sees only DEMO_GH facilities
+ok 321 - P02-S01 a Ghana administrator sees only DEMO_GH facilities
+  ---
+  duration_ms: 446.8485
+  ...
+# Subtest: P02-S02 a user with no active membership sees an empty directory
+ok 322 - P02-S02 a user with no active membership sees an empty directory
+  ---
+  duration_ms: 244.1422
+  ...
+# Subtest: P02-S03 a blank facility id is rejected
+ok 323 - P02-S03 a blank facility id is rejected
+  ---
+  duration_ms: 346.4031
+  ...
+# Subtest: P02-S04 guessing the other tenant returns no metadata
+ok 324 - P02-S04 guessing the other tenant returns no metadata
+  ---
+  duration_ms: 492.5908
+  ...
+# Subtest: P02-S05 a tampered organization header is ignored and denied
+ok 325 - P02-S05 a tampered organization header is ignored and denied
+  ---
+  duration_ms: 287.4597
+  ...
+# Subtest: P02-S06 the same facility switch is idempotent and a stale version conflicts
+ok 326 - P02-S06 the same facility switch is idempotent and a stale version conflicts
+  ---
+  duration_ms: 326.8774
+  ...
+# Subtest: P02-S07 a directory outage fails closed and then recovers
+ok 327 - P02-S07 a directory outage fails closed and then recovers
+  ---
+  duration_ms: 314.3572
+  ...
+# Subtest: P02-S08 a disabled organization cannot stay active
+ok 328 - P02-S08 a disabled organization cannot stay active
+  ---
+  duration_ms: 312.0648
+  ...
+# Subtest: P02-S09 context survives a reopened database file
+ok 329 - P02-S09 context survives a reopened database file
+  ---
+  duration_ms: 22377.2103
+  ...
+# (node:22908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a result stores the pinned code system and the facility binding
+ok 330 - a result stores the pinned code system and the facility binding
+  ---
+  duration_ms: 344.5778
+  ...
+# Subtest: unknown codes and codes outside the facility catalog fail
+ok 331 - unknown codes and codes outside the facility catalog fail
+  ---
+  duration_ms: 435.1788
+  ...
+# (node:20164) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the timeline projection is stable and every change cites a source row
+ok 332 - the timeline projection is stable and every change cites a source row
+  ---
+  duration_ms: 220.1579
+  ...
+# Subtest: a results filter keeps observations and drops other source rows
+ok 333 - a results filter keeps observations and drops other source rows
+  ---
+  duration_ms: 130.319
+  ...
+# Subtest: another facility and an auditor cannot read the timeline
+ok 334 - another facility and an auditor cannot read the timeline
+  ---
+  duration_ms: 273.2877
+  ...
+# (node:15424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:15424) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: P04-F04-S01 an authorized order persists once
+ok 335 - P04-F04-S01 an authorized order persists once
+  ---
+  duration_ms: 221.1074
+  ...
+# Subtest: P04-F04-S02 a repeated submission with another body is rejected
+ok 336 - P04-F04-S02 a repeated submission with another body is rejected
+  ---
+  duration_ms: 173.2081
+  ...
+# Subtest: P04-F04-S03 concurrent submissions create one logical order
+ok 337 - P04-F04-S03 concurrent submissions create one logical order
+  ---
+  duration_ms: 20447.4789
+  ...
+# Subtest: P04-F04-S04 a missing patient and a bad encounter are rejected
+ok 338 - P04-F04-S04 a missing patient and a bad encounter are rejected
+  ---
+  duration_ms: 490.0984
+  ...
+# Subtest: P04-F04-S05 a closed encounter rejects a new order and keeps cancellation available
+ok 339 - P04-F04-S05 a closed encounter rejects a new order and keeps cancellation available
+  ---
+  duration_ms: 405.9555
+  ...
+# Subtest: P04-F04-S06 an invalid transition and a stale route are rejected
+ok 340 - P04-F04-S06 an invalid transition and a stale route are rejected
+  ---
+  duration_ms: 432.9789
+  ...
+# Subtest: P04-F04-S07 pending work is visible only to the authorized facilities
+ok 341 - P04-F04-S07 pending work is visible only to the authorized facilities
+  ---
+  duration_ms: 282.8846
+  ...
+# Subtest: P04-F04-S08 a destination assignee can take the open task
+ok 342 - P04-F04-S08 a destination assignee can take the open task
+  ---
+  duration_ms: 303.1268
+  ...
+# Subtest: P04-F04-S09 a care plan keeps its owner and due date
+ok 343 - P04-F04-S09 a care plan keeps its owner and due date
+  ---
+  duration_ms: 279.3209
+  ...
+# Subtest: P04-F04-S10 a referral is decided only at the destination
+ok 344 - P04-F04-S10 a referral is decided only at the destination
+  ---
+  duration_ms: 411.2847
+  ...
+# Subtest: P04-F04-S11 an attachment stores metadata and transmission stays denied
+ok 345 - P04-F04-S11 an attachment stores metadata and transmission stays denied
+  ---
+  duration_ms: 378.2048
+  ...
+# Subtest: P04-F04-S12 unauthorized and cross-tenant access is denied
+ok 346 - P04-F04-S12 unauthorized and cross-tenant access is denied
+  ---
+  duration_ms: 408.0485
+  ...
+# Subtest: P04-F04-S13 an auditor can read pending work and cannot submit
+ok 347 - P04-F04-S13 an auditor can read pending work and cannot submit
+  ---
+  duration_ms: 432.9329
+  ...
+# Subtest: P04-F04-S14 consent withdrawal stays withdrawn and no AI service is used
+ok 348 - P04-F04-S14 consent withdrawal stays withdrawn and no AI service is used
+  ---
+  duration_ms: 427.8742
+  ...
+# Subtest: P04-F04-S15 a dependency outage and a failed transaction leave no partial order
+ok 349 - P04-F04-S15 a dependency outage and a failed transaction leave no partial order
+  ---
+  duration_ms: 435.8507
+  ...
+# Subtest: P04-F04-S16 restart and rollback preserve the schema head
+ok 350 - P04-F04-S16 restart and rollback preserve the schema head
+  ---
+  duration_ms: 2572.4932
+  ...
+# Subtest: P04-F04-S17 a merged patient keeps the original order attribution
+ok 351 - P04-F04-S17 a merged patient keeps the original order attribution
+  ---
+  duration_ms: 470.7466
+  ...
+# (node:9000) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P02-S63 an organization administrator opens the workforce directory
+ok 352 - P02-S63 an organization administrator opens the workforce directory
+  ---
+  duration_ms: 110.2537
+  ...
+# Subtest: P02-S64 a facility administrator sees only permitted staff
+ok 353 - P02-S64 a facility administrator sees only permitted staff
+  ---
+  duration_ms: 99.0786
+  ...
+# Subtest: P02-S65 a receptionist cannot open workforce administration
+ok 354 - P02-S65 a receptionist cannot open workforce administration
+  ---
+  duration_ms: 102.4726
+  ...
+# Subtest: P02-S66 an administrator invites a nurse
+ok 355 - P02-S66 an administrator invites a nurse
+  ---
+  duration_ms: 96.8723
+  ...
+# Subtest: P02-S67 a linked identity accepts a valid invitation
+ok 356 - P02-S67 a linked identity accepts a valid invitation
+  ---
+  duration_ms: 101.5454
+  ...
+# Subtest: P02-S68 acceptance without identity binding is rejected
+ok 357 - P02-S68 acceptance without identity binding is rejected
+  ---
+  duration_ms: 105.5864
+  ...
+# Subtest: P02-S69 an expired invitation is rejected
+ok 358 - P02-S69 an expired invitation is rejected
+  ---
+  duration_ms: 105.6716
+  ...
+# Subtest: P02-S70 a cancelled invitation is rejected
+ok 359 - P02-S70 a cancelled invitation is rejected
+  ---
+  duration_ms: 108.2699
+  ...
+# Subtest: P02-S71 an invitation cannot be redeemed twice
+ok 360 - P02-S71 an invitation cannot be redeemed twice
+  ---
+  duration_ms: 113.4842
+  ...
+# Subtest: P02-S72 duplicate invitation keys do not create two invitations
+ok 361 - P02-S72 duplicate invitation keys do not create two invitations
+  ---
+  duration_ms: 114.1412
+  ...
+# Subtest: P02-S73 an administrator resends a pending invitation
+ok 362 - P02-S73 an administrator resends a pending invitation
+  ---
+  duration_ms: 118.2441
+  ...
+# Subtest: P02-S74 an existing user receives another facility membership
+ok 363 - P02-S74 an existing user receives another facility membership
+  ---
+  duration_ms: 128.3885
+  ...
+# Subtest: P02-S75 the same email does not merge two external identities
+ok 364 - P02-S75 the same email does not merge two external identities
+  ---
+  duration_ms: 190.0232
+  ...
+# Subtest: P02-S76 an administrator assigns an authorized role
+ok 365 - P02-S76 an administrator assigns an authorized role
+  ---
+  duration_ms: 105.3079
+  ...
+# Subtest: P02-S77 a facility administrator cannot assign an organization administrator
+ok 366 - P02-S77 a facility administrator cannot assign an organization administrator
+  ---
+  duration_ms: 104.6744
+  ...
+# Subtest: P02-S78 a staff member cannot promote themselves
+ok 367 - P02-S78 a staff member cannot promote themselves
+  ---
+  duration_ms: 113.6497
+  ...
+# Subtest: P02-S79 a revoked role stops in the active session
+ok 368 - P02-S79 a revoked role stops in the active session
+  ---
+  duration_ms: 111.4551
+  ...
+# Subtest: P02-S80 a nurse transfers between facilities
+ok 369 - P02-S80 a nurse transfers between facilities
+  ---
+  duration_ms: 105.7077
+  ...
+# Subtest: P02-S81 transferred staff cannot use the former facility
+ok 370 - P02-S81 transferred staff cannot use the former facility
+  ---
+  duration_ms: 109.8813
+  ...
+# Subtest: P02-S82 another facility membership survives a scoped transfer
+ok 371 - P02-S82 another facility membership survives a scoped transfer
+  ---
+  duration_ms: 104.7284
+  ...
+# Subtest: P02-S83 suspension in one organization leaves the other membership
+ok 372 - P02-S83 suspension in one organization leaves the other membership
+  ---
+  duration_ms: 104.8724
+  ...
+# Subtest: P02-S84 a suspended membership cannot use the protected action
+ok 373 - P02-S84 a suspended membership cannot use the protected action
+  ---
+  duration_ms: 108.4656
+  ...
+# Subtest: P02-S85 an eligible membership can be reactivated
+ok 374 - P02-S85 an eligible membership can be reactivated
+  ---
+  duration_ms: 113.6349
+  ...
+# Subtest: P02-S86 offboarding revokes that organization's access
+ok 375 - P02-S86 offboarding revokes that organization's access
+  ---
+  duration_ms: 128.2033
+  ...
+# Subtest: P02-S87 and P02-S88 another tenant or forged facility is hidden
+ok 376 - P02-S87 and P02-S88 another tenant or forged facility is hidden
+  ---
+  duration_ms: 121.3787
+  ...
+# Subtest: P02-S89 concurrent membership updates conflict
+ok 377 - P02-S89 concurrent membership updates conflict
+  ---
+  duration_ms: 112.8038
+  ...
+# Subtest: P02-S90 invitation acceptance fails closed when the identity provider is down
+ok 378 - P02-S90 invitation acceptance fails closed when the identity provider is down
+  ---
+  duration_ms: 108.8347
+  ...
+# Subtest: P02-S91 a failed invitation notice can be sent again
+ok 379 - P02-S91 a failed invitation notice can be sent again
+  ---
+  duration_ms: 110.1668
+  ...
+# Subtest: P02-S92 stale permissions do not survive role removal
+ok 380 - P02-S92 stale permissions do not survive role removal
+  ---
+  duration_ms: 115.4862
+  ...
+# Subtest: P02-S94 administrative actions record evidence without the invitation secret
+ok 381 - P02-S94 administrative actions record evidence without the invitation secret
+  ---
+  duration_ms: 114.1237
+  ...
+# Subtest: P02-S95 a pending invitation survives a reopened database
+ok 382 - P02-S95 a pending invitation survives a reopened database
+  ---
+  duration_ms: 15263.8621
+  ...
+# Subtest: P02-S96 the last organization administrator cannot be removed
+ok 383 - P02-S96 the last organization administrator cannot be removed
+  ---
+  duration_ms: 624.0234
+  ...
+# Subtest: P02-S98 a failed transfer leaves the original membership
+ok 384 - P02-S98 a failed transfer leaves the original membership
+  ---
+  duration_ms: 442.4003
+  ...
+# (node:7596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration is idempotent, facility-scoped, and ignores a forged organization
+ok 385 - registration is idempotent, facility-scoped, and ignores a forged organization
+  ---
+  duration_ms: 149.8683
+  ...
+# Subtest: the same idempotency key can be used in another organization
+ok 386 - the same idempotency key can be used in another organization
+  ---
+  duration_ms: 190.2353
+  ...
+# Subtest: a nurse may record a result but may not register a patient
+ok 387 - a nurse may record a result but may not register a patient
+  ---
+  duration_ms: 323.0477
+  ...
+# Subtest: finishing an encounter conflicts on a stale version and blocks a second open encounter
+ok 388 - finishing an encounter conflicts on a stale version and blocks a second open encounter
+  ---
+  duration_ms: 165.0978
+  ...
+# Subtest: observation codes and entry bounds are enforced, and the client cannot set the flag
+ok 389 - observation codes and entry bounds are enforced, and the client cannot set the flag
+  ---
+  duration_ms: 149.7535
+  ...
+# Subtest: the worklist for 8 Oct 2026 is the riverside book
+ok 390 - the worklist for 8 Oct 2026 is the riverside book
+  ---
+  duration_ms: 176.3954
+  ...
+# Subtest: the development directory is refused in production mode
+ok 391 - the development directory is refused in production mode
+  ---
+  duration_ms: 226.3697
+  ...
+1..391
+# tests 391
+# suites 0
+# pass 391
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 206434.9246

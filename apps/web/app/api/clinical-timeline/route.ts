@@ -1,0 +1,4 @@
+import { AppError,getDb,readCanonicalTimeline } from "@curasphere/domain";
+import { terminologyCaller } from "@/lib/terminology-registry";
+import { sourceOrigin,sourceJson,sourceFailure } from "@/lib/fhir-source";
+export async function GET(request:Request){try{if(!sourceOrigin(request))throw new AppError("forbidden","Use the same workspace origin.");const ctx=await terminologyCaller();if(!ctx)throw new AppError("signin","Sign in to read the clinical timeline.");const query=new URL(request.url).searchParams;if([...query.keys()].some(k=>!["patient","event"].includes(k)||query.getAll(k).length!==1)||!query.has("patient"))throw new AppError("invalid","Select one patient and optionally one event.");return sourceJson(readCanonicalTimeline(getDb(),ctx,query.get("patient")!,query.get("event")??undefined));}catch(error){return sourceFailure(error);}}

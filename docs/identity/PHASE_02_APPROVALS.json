@@ -1,0 +1,91 @@
+{
+  "format_version": 1,
+  "phase": 2,
+  "notes": "Decisions stay PENDING until an authorized person records them. Do not insert a generated name or timestamp. The product owner cannot sign architecture, security, or clinical reviews. The constitution does not authorize one person to sign more than one of those roles. A clinical deferral of P02-R04 or P02-R05 is valid only when that reviewer writes it, and it does not enable production clinical break-glass.",
+  "reviews": [
+    {
+      "review_id": "P02-R01",
+      "category": "architecture",
+      "artifact": "docs/adr/ADR-0061-phase-02-architecture-review.md",
+      "artifact_sha256": "e54f07855b35ee2c3646f82e5324a4b084207ff1e76ffc50b8c80b17f5acba7f",
+      "reviewer_role": "architecture reviewer",
+      "reviewer_name": null,
+      "scope": "Phase 02 tenancy, authentication, authorization, workforce, and synthetic emergency access.",
+      "decision": "PENDING",
+      "evidence": ["docs/identity/PHASE_02_ARCHITECTURE_REVIEW.md", "docs/identity/PHASE_02_TRACEABILITY.md"],
+      "decided_at": null,
+      "conditions": [],
+      "outstanding_actions": ["Record ACCEPT, REQUEST CHANGES, or REJECT."]
+    },
+    {
+      "review_id": "P02-R02",
+      "category": "security",
+      "artifact": "docs/identity/PHASE_02_SECURITY_REVIEW.md",
+      "artifact_sha256": "731a16b532e5efb3f6181af6c6d31f2082032a90b11ca7869ed533c3ef6ed567",
+      "reviewer_role": "security reviewer",
+      "reviewer_name": null,
+      "scope": "Phase 02 security controls and carried Phase 01 findings SEC-01 through SEC-07.",
+      "decision": "PENDING",
+      "evidence": ["docs/identity/PHASE_02_SECURITY_REVIEW.md", "docs/platform/PHASE_01_COMPLETION.md"],
+      "decided_at": null,
+      "conditions": [],
+      "outstanding_actions": ["Record ACCEPT, REQUEST CHANGES, or REJECT."]
+    },
+    {
+      "review_id": "P02-R03",
+      "category": "clinical-safety",
+      "artifact": "docs/identity/PHASE_02_CLINICAL_GOVERNANCE.md",
+      "artifact_sha256": "03a32d43b3264e39b2f132440315b019315f7b86e7242cba49546a198ff03a5b",
+      "reviewer_role": "clinical reviewer",
+      "reviewer_name": null,
+      "scope": "Development-only safety boundary. Separate from production role and emergency policy.",
+      "decision": "PENDING",
+      "evidence": ["docs/identity/PHASE_02_CLINICAL_GOVERNANCE.md"],
+      "decided_at": null,
+      "conditions": [],
+      "outstanding_actions": ["Record ACCEPT, REQUEST CHANGES, or REJECT."]
+    },
+    {
+      "review_id": "P02-R04",
+      "category": "clinical-role-matrix",
+      "artifact": "docs/identity/PHASE_02_ROLE_MATRIX.md",
+      "artifact_sha256": "b581e72f5347fa2c125cb9b4b0cc3447e219c879deec8a32cd11905c65f073e9",
+      "reviewer_role": "clinical reviewer",
+      "reviewer_name": null,
+      "scope": "Proposed role permissions. Includes the option to defer production approval.",
+      "decision": "PENDING",
+      "evidence": ["docs/identity/PHASE_02_ROLE_MATRIX.md", "docs/identity/P02-F04-privilege-correction.md"],
+      "decided_at": null,
+      "conditions": [],
+      "outstanding_actions": ["Approve, defer, request changes, or reject. A deferral must be written by the reviewer."]
+    },
+    {
+      "review_id": "P02-R05",
+      "category": "emergency-intended-use",
+      "artifact": "docs/identity/PHASE_02_EMERGENCY_INTENDED_USE.md",
+      "artifact_sha256": "1e1c1abb2a85d14e84254f8521a7808562b4994d6539f49422f7dda6e9f7eb5e",
+      "reviewer_role": "clinical reviewer",
+      "reviewer_name": null,
+      "scope": "Emergency eligibility, synthetic scope, and the unapproved 5 minute and 15 minute engineering defaults.",
+      "decision": "PENDING",
+      "evidence": ["docs/identity/PHASE_02_EMERGENCY_INTENDED_USE.md", "docs/adr/ADR-0060-emergency-access.md"],
+      "decided_at": null,
+      "conditions": [],
+      "outstanding_actions": ["Approve production values, defer, request changes, or reject."]
+    },
+    {
+      "review_id": "P02-R06",
+      "category": "product-owner",
+      "artifact": "docs/identity/PHASE_02_COMPLETION.md",
+      "artifact_sha256": "8a5520abe40c3011bf0a817958cb8d90198ab9fc8e77c1a5c0c02c98bd0e25ea",
+      "reviewer_role": "product owner",
+      "reviewer_name": null,
+      "scope": "Phase 02 acceptance after required reviews. Charter approval of charter-2026.10 does not sign this phase.",
+      "decision": "PENDING",
+      "evidence": ["docs/identity/PHASE_02_COMPLETION.md"],
+      "decided_at": null,
+      "conditions": [],
+      "outstanding_actions": ["Record ACCEPT, REQUEST CHANGES, or REJECT after the required reviews."]
+    }
+  ]
+}

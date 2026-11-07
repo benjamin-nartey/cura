@@ -1,0 +1,36 @@
+{
+  "id": "DEV-GOV-2026-001",
+  "policy": "CURASPHERE-DEV-GOVERNANCE-v1",
+  "amendment": "docs/constitution/amendments/DEV-GOV-2026-001.md",
+  "status": "PROPOSED",
+  "developmentMode": "DEVELOPMENT_ONLY",
+  "developmentModeActive": false,
+  "statuses": {
+    "engineeringAcceptance": "ENGINEERING_ACCEPTED",
+    "automatedAssessment": "AUTOMATED_EVIDENCE_WITH_FAILURES",
+    "developmentException": "PROPOSED",
+    "governanceApproval": "PENDING",
+    "productionAuthorization": "NOT_AUTHORIZED"
+  },
+  "phase02": "IN_PROGRESS",
+  "phase03Development": "NOT_AUTHORIZED",
+  "phase03FeatureStarted": null,
+  "scope": "Phase 03 engineering against synthetic data only, after this exception is signed.",
+  "effectivePeriod": null,
+  "riskOwnerRole": "product owner",
+  "riskOwnerName": null,
+  "reviewTrigger": "A signature, a rejection, or the next independent review. None is recorded.",
+  "activatedAt": null,
+  "approverName": null,
+  "requiredDecision": "Accepting this exception needs a constitution decision with distinct architecture, security, and clinical signatures, plus a product-owner statement that authorizes only this development exception. The product owner cannot sign the three reviewer roles. This file must stay PROPOSED until that record exists.",
+  "preservedRestrictions": [
+    "Production clinical break-glass remains disabled.",
+    "Staging clinical break-glass remains disabled.",
+    "Clinical roles remain unapproved for real clinical use.",
+    "Emergency elevation cannot open a patient clinical record.",
+    "Phase 02 reviews P02-R01 through P02-R06 remain pending.",
+    "No regulatory or clinical authorization is implied."
+  ],
+  "lastAutomatedRun": "2026-10-14T13:37:15.248Z",
+  "amendmentSha256": "b0cb7581996daf6f212991086e4cc58772cf76a80d5075c23dec60aa84ea27c8"
+}

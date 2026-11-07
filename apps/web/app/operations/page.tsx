@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { canReadChart, getDb, noteDenial, readOperations } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -13,8 +15,7 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
     noteDenial(getDb(), ctx, "operations.read", "OperationsState", ctx.facilityId);
     return (
       <Shell ctx={ctx} current="operations">
-        <p className="eyebrow">Operations</p>
-        <h1 className="page-title">The operations comparison is closed for this role.</h1>
+        <PageHeader section="Operations" href="/operations" icon="activity" eyebrow={<>Operations</>}><h1 className="page-title">The operations comparison is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -23,11 +24,9 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
     <Shell ctx={ctx} current="operations">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Operations</p>
-          <h1 className="page-title">{ctx.facilityName}</h1>
-          <p className="lede">
-            Each sentence compares stored rows and shows its factors and confidence. A hold keeps that sentence. This page does not forecast, staff, or direct care.
-          </p>
+          <PageHeader section="Operations" href="/operations" icon="activity" eyebrow={<>Operations</>} description={<>
+            Review operational indicators with their source factors and confidence. Holding an indicator preserves it for review; it does not change staffing or care assignments.
+          </>}><h1 className="page-title">{ctx.facilityName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
@@ -36,10 +35,10 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
         {view.stale ? " · source rows changed after this build" : ""}
         {view.eventsPending ? " · an event is waiting" : ""}
       </p>
-      <form action="/api/operations/rebuild" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/operations/rebuild" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
-        <button className="btn-line" type="submit">Rebuild from stored rows</button>
-      </form>
+        <button className="btn-line" type="submit">Refresh overview</button>
+      </form></section>
       {view.state ? (
         <section className="card wide" style={{ marginTop: 16 }}>
           <p className="eyebrow">Measured change · {view.state.kpi.version}</p>
@@ -60,7 +59,7 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
         ))}
         <section className="card">
           <p className="eyebrow">On-hand count</p>
-          <p className="muted">A stored count is not a forecast of later use.</p>
+          <p className="muted">Current inventory balance. Future demand is not estimated.</p>
           <form action="/api/operations/inventory" method="post" className="form-grid">
             <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
             <label className="field">
@@ -81,7 +80,7 @@ export default async function OperationsPage({ searchParams }: { searchParams: P
             <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
             <label className="field">
               Comparison
-              <select name="kind" required defaultValue="staffing">
+              <select aria-label="Comparison" name="kind" required defaultValue="staffing">
                 <option value="wait">Wait</option>
                 <option value="capacity">Capacity</option>
                 <option value="inventory">Inventory</option>

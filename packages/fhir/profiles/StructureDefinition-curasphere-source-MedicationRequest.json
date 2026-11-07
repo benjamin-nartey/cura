@@ -1,0 +1,91 @@
+{
+  "resourceType": "StructureDefinition",
+  "version": "1.0.0",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-03",
+  "publisher": "CuraSphere engineering",
+  "fhirVersion": "4.0.1",
+  "abstract": false,
+  "derivation": "constraint",
+  "id": "curasphere-source-MedicationRequest",
+  "url": "https://curasphere.local/fhir/StructureDefinition/source-MedicationRequest",
+  "name": "CuraSphereSourceMedicationRequest",
+  "title": "CuraSphere synthetic source MedicationRequest",
+  "description": "Local R4 source mapping profile. Not US Core, clinical approval, licensed terminology conformance, or external delivery support.",
+  "kind": "resource",
+  "type": "MedicationRequest",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/MedicationRequest",
+  "differential": {
+    "element": [
+      {
+        "id": "MedicationRequest",
+        "path": "MedicationRequest"
+      },
+      {
+        "id": "MedicationRequest.id",
+        "path": "MedicationRequest.id",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.extension",
+        "path": "MedicationRequest.extension",
+        "min": 1,
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "MedicationRequest.extension:sourceContext",
+        "path": "MedicationRequest.extension",
+        "sliceName": "sourceContext",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://curasphere.local/fhir/StructureDefinition/source-context|1.0.0"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest.medication[x]",
+        "path": "MedicationRequest.medication[x]",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.subject",
+        "path": "MedicationRequest.subject",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.encounter",
+        "path": "MedicationRequest.encounter",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.authoredOn",
+        "path": "MedicationRequest.authoredOn",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction",
+        "path": "MedicationRequest.dosageInstruction",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.intent",
+        "path": "MedicationRequest.intent",
+        "fixedCode": "proposal"
+      }
+    ]
+  }
+}

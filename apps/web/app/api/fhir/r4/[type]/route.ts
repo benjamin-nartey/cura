@@ -1,3 +1,4 @@
+import { r4Negotiation } from "@/lib/r4-negotiation";
 import { createFhirObservation, createFhirSubscription, getDb, prepareFhirObservation, searchFhir } from "@curasphere/domain";
 import { recordFoundationObservation } from "@/lib/foundation";
 import { fhirFailure, fhirResponse, idempotencyKey } from "@/lib/fhir-response";
@@ -30,6 +31,7 @@ function signInRequired() {
 }
 
 export async function GET(request: Request, context: { params: Promise<{ type: string }> }) {
+  const negotiation=r4Negotiation(request,false);if(negotiation)return negotiation;
   const ctx = await currentSession();
   if (!ctx) return signInRequired();
   const { type } = await context.params;
@@ -46,6 +48,7 @@ export async function GET(request: Request, context: { params: Promise<{ type: s
 }
 
 export async function POST(request: Request, context: { params: Promise<{ type: string }> }) {
+  const negotiation=r4Negotiation(request,true);if(negotiation)return negotiation;
   const ctx = await currentSession();
   if (!ctx) return signInRequired();
   const { type } = await context.params;

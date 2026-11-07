@@ -1,0 +1,36 @@
+{
+  "feature": "P04-F05",
+  "contractVersion": 1,
+  "synthetic": true,
+  "environment": "test",
+  "scenarios": [
+    {
+      "id": "P04-F05-E2E-01",
+      "preconditions": ["isolated chart fixture", "local foundation directory", "nurse, doctor and billing officer sessions"],
+      "steps": ["book follow-up", "confirm and arrive", "start encounter", "record synthetic blood pressure 138/86 mm[Hg]", "read unified chart", "close visit", "record charge", "retry submission", "review and finalize locally"],
+      "expectedApiStatuses": [303],
+      "expectedUiStates": ["in-progress", "source values and units", "clinician amounts hidden", "completed", "ordinary clinical recording closed", "GHS 150.00", "finalized-local"],
+      "expectedAuditEntries": ["clinical.observation.record", "billing.charge.create", "billing.charge.review"],
+      "expectedPersistence": "One logical charge for a retried form; authoritative observation and closed encounter persist without an AI call.",
+      "securityNegativeCase": "Doctor cannot open financial charge screen; billing officer cannot open clinical entry screen.",
+      "recoveryOutcome": "Retry returns the same charge URL.",
+      "testFilename": "tools/e2e/p04-f05.spec.ts"
+    },
+    {
+      "id": "P04-F05-E2E-02",
+      "preconditions": ["GH doctor", "second synthetic patient with no findings", "EU patient with the same name"],
+      "steps": ["open empty GH chart", "request EU chart"],
+      "expectedUiStates": ["unknown allergy status distinguished from no known allergies", "no pending work", "foreign chart unavailable"],
+      "securityNegativeCase": "No foreign patient findings or financial amounts are returned.",
+      "testFilename": "tools/e2e/p04-f05.spec.ts"
+    },
+    {
+      "id": "P04-F05-S50-S54",
+      "preconditions": ["fixed fixture clock", "fresh synthetic database"],
+      "steps": ["query another patient's pending work", "replay another facility's financial command", "expire catalog", "try protected environment", "tamper with source amounts and adjustment", "fail and recover schema upgrade"],
+      "expectedPersistence": "No cross-patient queue entries; no cross-facility replay; expired prices and protected environments denied; invalid financial rows rejected; failed upgrade has no schema marker 43 and recovers after prerequisite repair.",
+      "recoveryOutcome": "Rollback and reopening the same synthetic file preserves patients and encounters and reapplies schemas 42/43.",
+      "testFilename": "packages/domain/test/billing.test.ts"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
+import { AppError, getDb, readControlledValueSet } from "@curasphere/domain";
+import { Shell } from "@/components/shell";
+import { requireSession } from "@/lib/session";
+export default async function ValueSetPage({params}:{params:Promise<{id:string}>}) {
+  const ctx=await requireSession();const {id}=await params;let set;
+  try{set=readControlledValueSet(getDb(),ctx,id);}catch(error){return <Shell ctx={ctx} current="terminology"><PageHeader section="Terminology" href="/terminology" icon="book"><h1 className="page-title">Value set unavailable</h1></PageHeader><p role="alert">{error instanceof AppError?error.message:"The value set could not be read."}</p><a href="/terminology/validation">Return to validation</a></Shell>;}
+  return <Shell ctx={ctx} current="terminology"><a href="/terminology/validation">← Terminology validation</a><PageHeader section="Terminology" href="/terminology" icon="book" description={<>Version {set.version} · {set.member_count} pinned members</>}><h1 className="page-title">{set.name}</h1></PageHeader><section className="card"><SectionHeading icon="book"><h2>Manifest provenance</h2></SectionHeading><p style={{overflowWrap:"anywhere"}}>SHA-256: {set.manifest_sha256}</p><p className="muted">Immutable registration · {set.created_at}. Membership does not override a release’s effective interval or content restrictions.</p><div className="data-table-region" role="region" aria-label="Pinned value-set members" tabIndex={0}><table><thead><tr><th scope="col">System / version</th><th scope="col">Code</th><th scope="col">Description</th><th scope="col">Provenance</th></tr></thead><tbody>{set.members.map(member=><tr key={`${member.system}:${member.version}:${member.code}`}><td style={{overflowWrap:"anywhere"}}>{member.system}<br/>{member.version}</td><th scope="row">{member.code}</th><td>{member.display}</td><td><a href={`/terminology/${member.releaseId}`}>Release<span className="sr"> {member.code}</span></a></td></tr>)}</tbody></table></div></section></Shell>;
+}

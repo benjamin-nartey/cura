@@ -1,0 +1,49 @@
+{
+  "id": "DEV-GOV-2026-001-RISKS",
+  "evaluatedAt": "2026-10-14T13:29:13Z",
+  "note": "Engineering recommendations. No risk in this file is accepted by a security reviewer.",
+  "risks": [
+    {
+      "id": "R-IMG-DEBIAN",
+      "status": "open",
+      "severity": "high",
+      "summary": "After the runtime change, Trivy 0.76.0 still reports 44 high Debian findings with no fixed version. apt-get upgrade installed nothing. ncurses-bin is essential and was kept.",
+      "image": "sha256:17bbfaf4d436f5133c6d40f44bbebb801d5f52024d5e2b32af0978ce691e22cb",
+      "exposure": "Base image packages. The process runs as uid 65532 and is not privileged. mount, infocmp, and perl are present. systemd-homed is not.",
+      "mitigation": "No Debian fix was available. The non-privileged user is a compensating control, not a closure.",
+      "ownerRole": "security reviewer",
+      "ownerName": null,
+      "reviewDeadline": "The security decision on DEV-GOV-2026-001",
+      "reassessWhen": "A fixed Debian package is published, or the container gains privileges.",
+      "disposition": "Proposed residual risk. Not accepted."
+    },
+    {
+      "id": "R-IMG-PIP-VENDOR",
+      "status": "remediated-in-image",
+      "severity": "high",
+      "summary": "The four pip-vendor highs are absent from the candidate scan. pip is not in the runtime image.",
+      "disposition": "Removed from the runtime image. Not a waiver of the Debian findings."
+    },
+    {
+      "id": "R-CI",
+      "status": "open",
+      "severity": "unscored",
+      "summary": "Run 38533405132 failed at npm test. The log requires repository admin rights. The workflow now starts Dex locally in the file, and that change was not pushed.",
+      "disposition": "Hosted CI remains NOT_VERIFIED."
+    },
+    {
+      "id": "R-GOVERNANCE",
+      "status": "open",
+      "severity": "governance",
+      "summary": "P02-R01 through P02-R06 are unsigned. DEV-GOV-2026-001 is proposed.",
+      "disposition": "Phase 03 stays not authorized."
+    },
+    {
+      "id": "R-CLINICAL-DEFAULTS",
+      "status": "open",
+      "severity": "human",
+      "summary": "Five-minute step-up freshness and a fifteen-minute grant cap remain unapproved engineering defaults.",
+      "disposition": "Clinical reviewer. A deferral must be written by that reviewer."
+    }
+  ]
+}

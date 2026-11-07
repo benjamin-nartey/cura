@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions,SectionHeading} from "@/components/page-workspace";
 import { randomUUID } from "node:crypto";
 import {
   NotFoundError,
@@ -28,9 +30,7 @@ export default async function InteropPage({
     noteDenial(getDb(), ctx, "fhir.read", "CapabilityStatement", null);
     return (
       <Shell ctx={ctx} current="interop">
-        <p className="eyebrow">Interop</p>
-        <h1 className="page-title">The chart exchange is closed for this role.</h1>
-        <p className="lede">Audit review does not open patient records.</p>
+        <PageHeader section="Interoperability" href="/interop" icon="plug" eyebrow={<>Interop</>} description={<>Audit review does not open patient records.</>}><h1 className="page-title">The chart exchange is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -60,15 +60,19 @@ export default async function InteropPage({
 
   return (
     <Shell ctx={ctx} current="interop">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">FHIR R4</h1>
+      <PageHeader section="Interoperability" href="/interop" icon="plug" eyebrow={<>{ctx.facilityName}</>}><h1 className="page-title">FHIR R4</h1></PageHeader>
+      <PageActions><a href="/interop/conformance">Inspect published conformance and compatibility</a></PageActions>
+      <PageActions><a href="/interop/reconciliation">Review bulk movement and reconciliation</a></PageActions>
+      <PageActions><a href="/interop/partners">Manage signed partner exchange</a></PageActions>
+      <PageActions><a href="/interop/source">Open current-record FHIR source workbench</a></PageActions>
+      <PageActions><a href="/interop/apps">Manage SMART applications and patient grants</a></PageActions>
       <p className="lede">
-        This is the same facility chart, published as R4 JSON. The directory session is the authorization. SMART on FHIR is not available, and notifications stay in the local inbox.
+        This legacy chart exchange uses your workspace session. Connected applications provide scoped SMART-style reads for current source records. Legacy notifications stay in the local inbox.
       </p>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="stack">
         <section>
-          <h2>Published resources</h2>
+          <SectionHeading icon="plug"><h2>Published resources</h2></SectionHeading>
           <p className="muted">FHIR {String(statement.fhirVersion)}. R5 is not served from this path.</p>
           <div className="list">
             {resources.map((resource) => (
@@ -80,7 +84,7 @@ export default async function InteropPage({
           </div>
         </section>
         <section>
-          <h2>Patient</h2>
+          <SectionHeading icon="plug"><h2>Patient</h2></SectionHeading>
           <div className="list">
             {patients.map((item) => (
               <a className="row" key={item.id} href={`/interop?patient=${item.id}`}>
@@ -100,7 +104,7 @@ export default async function InteropPage({
           ) : null}
         </section>
         <section>
-          <h2>Local inbox</h2>
+          <SectionHeading icon="plug"><h2>Local inbox</h2></SectionHeading>
           <p className="lede">New observations on this facility are copied here. An outside address is refused.</p>
           <form action="/api/fhir/subscription" method="post">
             <input type="hidden" name="idempotencyKey" value={randomUUID()} />
@@ -122,7 +126,7 @@ export default async function InteropPage({
           </div>
         </section>
         <section>
-          <h2>Facility export</h2>
+          <SectionHeading icon="plug"><h2>Facility export</h2></SectionHeading>
           <p className="lede">NDJSON is built from the source rows when you download it. It includes this facility only.</p>
           <form action="/api/fhir/export" method="post">
             <input type="hidden" name="idempotencyKey" value={randomUUID()} />
@@ -133,9 +137,9 @@ export default async function InteropPage({
           {exportMissing ? <p>That export is not on this facility.</p> : null}
           {exportFile ? (
             <>
-              <p className="meta">
+              <PageActions>
                 <a href={`/api/fhir/r4/$export/${exportFile.id}`}>{exportFile.lineCount} resources</a>
-              </p>
+              </PageActions>
               <pre className="record">{exportFile.ndjson.split("\n").slice(0, 2).join("\n")}</pre>
             </>
           ) : null}

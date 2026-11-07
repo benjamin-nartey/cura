@@ -1,36 +1,35 @@
 import { randomUUID } from "node:crypto";
-import type { Chart, SessionContext } from "@curasphere/contracts";
+import type { SessionContext } from "@curasphere/contracts";
 import { writeAudit, noteDenial } from "./audit";
 import { canonicalHash } from "./briefing";
-import { getChart } from "./chart";
+import {AGENT_TOOLS,agentPatientIds,authorizeAgentPatient,parseAgentToolInput,readAgentChartSources} from "./agent-tools";
 import { all, get, run as execute, transaction, type AppDatabase } from "./db";
 import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from "./errors";
 import { GATEWAY_PROMPT, invokeGateway } from "./gateway";
 import { canReadChart } from "./session";
+import {assertLocalHealthcareSandbox} from "./experimental-healthcare";
 
 export const CHART_AGENT = { id: "agt_chart_review", version: 1 };
 
-const LOCAL_TOOLS = {
-  tool_chart_sources: { capability: "read", permitsExecution: true, effect: "read" },
-  tool_propose_review: { capability: "draft", permitsExecution: false, effect: "approve" },
-  tool_model_draft: { capability: "draft", permitsExecution: false, effect: "gateway" },
-  tool_note_write: { capability: "draft", permitsExecution: false, effect: "draft-only" },
-} as const;
-
-type ToolId = keyof typeof LOCAL_TOOLS;
+type ToolId = keyof typeof AGENT_TOOLS;
 type RunStatus = "running" | "awaiting-approval" | "completed" | "refused" | "failed";
 
 export type AgentRunView = {
   runId: string;
+  canCancel: boolean;
   status: RunStatus;
   agentId: string;
   agentVersion: number;
   patientId: string;
   approvalId: string | null;
-  approvalStatus: "pending" | "approved" | "declined" | null;
+  approvalStatus: "pending" | "approved" | "declined" | "expired" | null;
+  approvalExpiresAt: string | null;
+  canDecideApproval: boolean;
   requestedBy: string | null;
   sourceIds: string[];
   createdAt: string;
+  attempts: number;
+  checkpoints: {toolId:string;status:string;recordedAt:string}[];
 };
 
 type RunRow = {
@@ -57,10 +56,14 @@ type ManifestRow = {
   model_policy: string;
   timeout_ms: number;
   max_attempts: number;
+  owner: string;
+  purpose: string;
+  data_scope: string;
+  approval_required: number;
 };
 
 function isToolId(value: string): value is ToolId {
-  return Object.hasOwn(LOCAL_TOOLS, value);
+  return Object.hasOwn(AGENT_TOOLS, value);
 }
 
 function assertKey(key: string) {
@@ -69,18 +72,13 @@ function assertKey(key: string) {
 
 export function assertSandboxedTool(toolId: string, payload: Record<string, unknown>) {
   if (!isToolId(toolId)) throw new ValidationError("invalid", "That tool is not registered.");
-  if ("organizationId" in payload || "facilityId" in payload || "database" in payload || "url" in payload) {
-    throw new ValidationError("invalid", "That tool input is outside the local sandbox.");
-  }
-  if (/https?:|file:/i.test(JSON.stringify(payload))) {
-    throw new ValidationError("invalid", "That tool input is outside the local sandbox.");
-  }
+  parseAgentToolInput(payload);
 }
 
 export function seedAgentRecords(db: AppDatabase) {
   const existing = get<{ c: number }>(db, "SELECT COUNT(*) AS c FROM agent_manifests");
   if ((existing?.c ?? 0) > 0) return;
-  for (const [id, tool] of Object.entries(LOCAL_TOOLS)) {
+  for (const [id, tool] of Object.entries(AGENT_TOOLS)) {
     execute(
       db,
       `INSERT INTO agent_tools (id, capability, permits_execution, sandbox) VALUES (?, ?, ?, 'local-typed')`,
@@ -114,45 +112,100 @@ function facilityId(ctx: SessionContext) {
 }
 
 function manifest(db: AppDatabase, agentId: string, version: number) {
-  const row = get<ManifestRow>(
-    db,
-    `SELECT id, version, status, allowed_actors_json, allowed_tools_json, model_policy, timeout_ms, max_attempts
-     FROM agent_manifests WHERE id = ? AND version = ?`,
-    agentId,
-    version,
-  );
+  const row = get<ManifestRow>(db,`
+    SELECT id,version,status,allowed_actors_json,allowed_tools_json,model_policy,timeout_ms,max_attempts,
+      owner,purpose,data_scope,approval_required
+    FROM agent_manifests WHERE id=? AND version=?
+  `,agentId,version);
   if (!row || row.status !== "active") throw new ValidationError("invalid", "That agent version is not registered.");
-  return row;
+
+  const actors = parseManifestList(row.allowed_actors_json);
+  const tools = parseManifestList(row.allowed_tools_json);
+  const chartReview = row.purpose === "chart-review" && row.model_policy === "none"
+    && row.approval_required === 1 && tools.length === 2
+    && tools[0] === "tool_chart_sources" && tools[1] === "tool_propose_review";
+  const gatewayProbe = row.id !== CHART_AGENT.id && row.purpose === "control" && row.model_policy === "gateway-only"
+    && row.approval_required === 0 && tools.length === 1 && tools[0] === "tool_model_draft";
+  if ((!chartReview && !gatewayProbe) || row.data_scope !== "facility-chart"
+      || !/^[A-Za-z0-9_-]{1,80}$/.test(row.owner)
+      || actors.length === 0 || actors.length > 2 || new Set(actors).size !== actors.length
+      || actors.some(role => role !== "clinician" && role !== "nurse")
+      || !Number.isSafeInteger(row.timeout_ms) || row.timeout_ms < 1 || row.timeout_ms > 30_000
+      || !Number.isSafeInteger(row.max_attempts) || row.max_attempts < 1 || row.max_attempts > 3) {
+    throw new ForbiddenError("forbidden", "The agent manifest exceeds its permitted policy.");
+  }
+  return {...row,actors,tools};
 }
 
-function allowedTools(row: ManifestRow) {
-  return JSON.parse(row.allowed_tools_json) as string[];
+function parseManifestList(json: string): unknown[] {
+  try {
+    const value: unknown = JSON.parse(json);
+    if (Array.isArray(value)) return value;
+  } catch {
+    // Reject malformed policy the same way as an unsupported policy.
+  }
+  throw new ForbiddenError("forbidden", "The agent manifest is invalid.");
+}
+
+function executionManifest(db: AppDatabase, ctx: SessionContext, agentId: string, version: number) {
+  try {
+    const policy = manifest(db,agentId,version);
+    if (ctx.purposeOfUse !== "TREATMENT" || !policy.actors.includes(ctx.role)) throw new ForbiddenError();
+    return policy;
+  } catch (error) {
+    if (error instanceof ForbiddenError) noteDenial(db,ctx,"agent.manifest","Agent",agentId);
+    throw error;
+  }
+}
+
+export function readChartAgentPolicy(db: AppDatabase, ctx: SessionContext) {
+  if (!ctx.facilityId || !canReadChart(ctx)) return null;
+  const policy = manifest(db,CHART_AGENT.id,CHART_AGENT.version);
+  return {owner:policy.owner,version:policy.version,timeoutMs:policy.timeout_ms,
+    maxAttempts:policy.max_attempts,canStart:ctx.purposeOfUse === "TREATMENT" && policy.actors.includes(ctx.role)};
 }
 
 function requireTool(db: AppDatabase, toolId: ToolId) {
   const row = get<{ permits_execution: number }>(db, `SELECT permits_execution FROM agent_tools WHERE id = ?`, toolId);
-  const spec = LOCAL_TOOLS[toolId];
+  const spec = AGENT_TOOLS[toolId];
   if (!row || row.permits_execution !== (spec.permitsExecution ? 1 : 0)) {
     throw new ValidationError("invalid", "That tool is not registered.");
   }
   return spec;
 }
 
-function sourceIds(chart: Chart) {
-  return [
-    ...chart.conditions.map((item) => item.id),
-    ...chart.allergies.map((item) => item.id),
-    ...chart.medications.map((item) => item.id),
-    ...chart.observations.map((item) => item.id),
-    ...chart.encounters.map((item) => item.id),
-    ...chart.appointments.map((item) => item.id),
-  ].sort();
+const APPROVAL_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+function approvalDeadline(createdAt:string) {
+  const created = Date.parse(createdAt);
+  return Number.isFinite(created) ? created + APPROVAL_WINDOW_MS : 0;
 }
 
-function toView(db: AppDatabase, run: RunRow): AgentRunView {
-  const approval = get<{ id: string; status: "pending" | "approved" | "declined"; requested_by: string }>(
+function expireAgentApproval(db:AppDatabase,ctx:SessionContext,run:RunRow) {
+  if (run.status !== "awaiting-approval") return;
+  const approval = get<{id:string;created_at:string}>(db,
+    "SELECT id,created_at FROM agent_approvals WHERE run_id=? AND status='pending'",run.id);
+  if (!approval || Date.now() < approvalDeadline(approval.created_at)) return;
+  transaction(db,() => {
+    const now = new Date().toISOString();
+    const updated = execute(db,
+      "UPDATE agent_approvals SET status='declined',decided_at=? WHERE id=? AND status='pending' AND decided_by IS NULL",now,approval.id);
+    if (!updated.changes) return;
+    execute(db,"UPDATE agent_runs SET status='refused',updated_at=? WHERE id=? AND status='awaiting-approval'",now,run.id);
+    execute(db,"UPDATE agent_steps SET status='refused',output_json=? WHERE run_id=? AND tool_id='tool_propose_review' AND status='parked'",
+      JSON.stringify({executed:false,decision:"expired"}),run.id);
+    execute(db,"INSERT INTO outbox (id,organization_id,event_type,payload_json,created_at) VALUES (?,?,'agent.approval',?,?)",
+      randomUUID(),run.organization_id,JSON.stringify({approvalId:approval.id,runId:run.id,status:"expired"}),now);
+    writeAudit(db,ctx,{action:"agent.approval.expired",resourceType:"AgentApproval",resourceId:approval.id,outcome:"success"});
+  });
+}
+
+function toView(db: AppDatabase, ctx: SessionContext, run: RunRow): AgentRunView {
+  expireAgentApproval(db,ctx,run);
+  run = reload(db,run.id);
+  const approval = get<{ created_at:string; decided_by:string | null; id: string; status: "pending" | "approved" | "declined"; requested_by: string }>(
     db,
-    `SELECT id, status, requested_by FROM agent_approvals WHERE run_id = ? ORDER BY created_at DESC LIMIT 1`,
+    `SELECT id, status, requested_by, created_at, decided_by FROM agent_approvals WHERE run_id = ? ORDER BY created_at DESC LIMIT 1`,
     run.id,
   );
   const step = get<{ output_json: string | null }>(
@@ -163,15 +216,24 @@ function toView(db: AppDatabase, run: RunRow): AgentRunView {
   const parsed = step?.output_json ? (JSON.parse(step.output_json) as { sourceIds?: string[] }) : null;
   return {
     runId: run.id,
+    canCancel: run.status === "running" && run.actor_id === ctx.userId,
     status: run.status,
     agentId: run.agent_id,
     agentVersion: run.agent_version,
     patientId: run.patient_id,
     approvalId: approval?.id ?? null,
-    approvalStatus: approval?.status ?? null,
+    approvalStatus: approval?.status === "declined" && !approval.decided_by ? "expired" : approval?.status ?? null,
+    approvalExpiresAt: approval ? new Date(approvalDeadline(approval.created_at)).toISOString() : null,
+    canDecideApproval: run.status === "awaiting-approval" && approval?.status === "pending"
+      && approval.requested_by !== ctx.userId && ctx.purposeOfUse === "TREATMENT"
+      && (ctx.role === "clinician" || ctx.role === "nurse"),
     requestedBy: approval?.requested_by ?? null,
-    sourceIds: parsed?.sourceIds ?? [],
+    sourceIds: parsed && agentPatientIds(db,ctx,run.patient_id).length > 0 ? parsed.sourceIds ?? [] : [],
     createdAt: run.created_at,
+    attempts: run.attempt_count,
+    checkpoints: all<{tool_id:string;status:string;created_at:string}>(db,
+      "SELECT tool_id,status,created_at FROM agent_steps WHERE run_id=? AND organization_id=? ORDER BY step_index LIMIT 8",
+      run.id,run.organization_id).map(step => ({toolId:step.tool_id,status:step.status,recordedAt:step.created_at})),
   };
 }
 
@@ -237,9 +299,37 @@ function gatewayKey(runId: string) {
   return `gw${runId.replace(/-/g, "")}`.slice(0, 40);
 }
 
+export function agentExecutionStopped(db:AppDatabase,ctx:SessionContext) {
+  return get<{stopped:number}>(db,"SELECT stopped FROM agent_execution_controls WHERE organization_id=?",ctx.organizationId)?.stopped === 1;
+}
+
+export function setAgentExecutionStopped(db:AppDatabase,ctx:SessionContext,stopped:boolean) {
+  assertLocalHealthcareSandbox();
+  if (ctx.role !== "admin" || ctx.purposeOfUse !== "OPERATIONS" || ctx.facilityId !== null ||
+      !get(db,`SELECT u.id FROM users u JOIN organizations o ON o.id=u.organization_id
+        WHERE u.id=? AND u.organization_id=? AND u.role='admin' AND u.facility_id IS NULL
+          AND u.account_status='active' AND o.status='active'`,ctx.userId,ctx.organizationId)) {
+    noteDenial(db,ctx,"agent.execution.control","AgentExecution",null);
+    throw new ForbiddenError();
+  }
+  transaction(db,() => {
+    if (agentExecutionStopped(db,ctx) === stopped) return;
+    execute(db,`INSERT INTO agent_execution_controls (organization_id,stopped) VALUES (?,?)
+      ON CONFLICT(organization_id) DO UPDATE SET stopped=excluded.stopped`,ctx.organizationId,stopped ? 1 : 0);
+    if (stopped) {
+      const running = all<RunRow>(db,"SELECT * FROM agent_runs WHERE organization_id=? AND status='running'",ctx.organizationId);
+      execute(db,"UPDATE agent_runs SET status='refused',updated_at=? WHERE organization_id=? AND status='running'",
+        new Date().toISOString(),ctx.organizationId);
+      for (const run of running) emit(db,ctx,run,"refused","agent.execution.stopped");
+    }
+    writeAudit(db,ctx,{action:stopped ? "agent.execution.disabled" : "agent.execution.enabled",
+      resourceType:"AgentExecution",resourceId:ctx.organizationId,outcome:"success"});
+  });
+}
+
 function applyNext(db: AppDatabase, ctx: SessionContext, run: RunRow) {
-  const policy = manifest(db, run.agent_id, run.agent_version);
-  const tools = allowedTools(policy);
+  const policy = executionManifest(db,ctx,run.agent_id,run.agent_version);
+  const tools = policy.tools;
   const count = get<{ c: number }>(db, `SELECT COUNT(*) AS c FROM agent_steps WHERE run_id = ?`, run.id);
   const index = count?.c ?? 0;
   if (index >= tools.length) {
@@ -253,8 +343,8 @@ function applyNext(db: AppDatabase, ctx: SessionContext, run: RunRow) {
     return "stop" as const;
   }
   const toolId = tools[index] ?? "";
-  if (!isToolId(toolId) || !tools.includes(toolId)) {
-    noteDenial(db, ctx, "agent.tool", "AgentTool", toolId);
+  if (typeof toolId !== "string" || !isToolId(toolId)) {
+    noteDenial(db, ctx, "agent.tool", "AgentTool", null);
     throw new ForbiddenError("forbidden", "That tool is outside the agent manifest.");
   }
   const spec = requireTool(db, toolId);
@@ -282,8 +372,15 @@ function applyNext(db: AppDatabase, ctx: SessionContext, run: RunRow) {
     return "continue" as const;
   }
   if (spec.effect === "read") {
-    const chart = getChart(db, ctx, run.patient_id);
-    if (!chart) {
+    let sources: ReturnType<typeof readAgentChartSources>;
+    try {
+      sources = readAgentChartSources(db,ctx,run.patient_id,Date.parse(run.created_at)+policy.timeout_ms);
+    } catch (error) {
+      if (!(error instanceof ForbiddenError || error instanceof NotFoundError)) throw error;
+      sources = null;
+    }
+    if (!sources) {
+      noteDenial(db,ctx,"agent.tool","AgentTool",toolId);
       transaction(db, () => {
         const now = new Date().toISOString();
         execute(db, `UPDATE agent_runs SET status = 'failed', updated_at = ? WHERE id = ? AND status = 'running'`, now, run.id);
@@ -291,11 +388,11 @@ function applyNext(db: AppDatabase, ctx: SessionContext, run: RunRow) {
       });
       return "stop" as const;
     }
-    const ids = sourceIds(chart);
     transaction(db, () => {
       const already = get<{ c: number }>(db, `SELECT COUNT(*) AS c FROM agent_steps WHERE run_id = ? AND tool_id = ?`, run.id, toolId);
       if ((already?.c ?? 0) > 0) return;
-      insertStep(db, reload(db, run.id), toolId, "committed", { sourceIds: ids });
+      insertStep(db, reload(db, run.id), toolId, "committed", sources);
+      writeAudit(db,ctx,{action:"agent.tool",resourceType:"AgentTool",resourceId:toolId,outcome:"success"});
     });
     return "continue" as const;
   }
@@ -342,8 +439,12 @@ function applyNext(db: AppDatabase, ctx: SessionContext, run: RunRow) {
 
 function advance(db: AppDatabase, ctx: SessionContext, runId: string) {
   const run = scopedRun(db, ctx, runId);
-  if (run.status !== "running") return toView(db, run);
-  const policy = manifest(db, run.agent_id, run.agent_version);
+  if (run.actor_id !== ctx.userId) {
+    noteDenial(db,ctx,"agent.run","AgentRun",runId);
+    throw new ForbiddenError();
+  }
+  if (run.status !== "running") return toView(db, ctx, run);
+  const policy = executionManifest(db,ctx,run.agent_id,run.agent_version);
   const age = Date.now() - Date.parse(run.created_at);
   if (Number.isFinite(age) && age > policy.timeout_ms) {
     transaction(db, () => {
@@ -351,7 +452,7 @@ function advance(db: AppDatabase, ctx: SessionContext, runId: string) {
       execute(db, `UPDATE agent_runs SET status = 'failed', updated_at = ? WHERE id = ? AND status = 'running'`, now, run.id);
       emit(db, ctx, run, "failed", "agent.run");
     });
-    return toView(db, reload(db, run.id));
+    return toView(db, ctx, reload(db, run.id));
   }
   transaction(db, () => {
     execute(
@@ -368,18 +469,19 @@ function advance(db: AppDatabase, ctx: SessionContext, runId: string) {
       execute(db, `UPDATE agent_runs SET status = 'failed', updated_at = ? WHERE id = ? AND status = 'running'`, now, run.id);
       emit(db, ctx, bumped, "failed", "agent.run");
     });
-    return toView(db, reload(db, run.id));
+    return toView(db, ctx, reload(db, run.id));
   }
   for (let guard = 0; guard < 8; guard += 1) {
-    const current = reload(db, run.id);
-    if (current.status !== "running") return toView(db, current);
-    const step = applyNext(db, ctx, current);
-    if (step === "stop") return toView(db, reload(db, run.id));
+    const step = transaction(db, () => {
+      const current = reload(db,run.id);
+      return current.status === "running" ? applyNext(db,ctx,current) : "stop";
+    });
+    if (step === "stop") return toView(db, ctx, reload(db, run.id));
   }
-  return toView(db, reload(db, run.id));
+  return toView(db, ctx, reload(db, run.id));
 }
 
-export function startAgentRun(
+export function enqueueAgentRun(
   db: AppDatabase,
   ctx: SessionContext,
   input: { agentId: string; agentVersion: number; patientId: string; idempotencyKey: string },
@@ -387,31 +489,28 @@ export function startAgentRun(
   assertKey(input.idempotencyKey);
   assertSandboxedTool("tool_chart_sources", { patientId: input.patientId });
   const facility = facilityId(ctx);
-  const policy = manifest(db, input.agentId, input.agentVersion);
-  const actors = JSON.parse(policy.allowed_actors_json) as string[];
-  if (!actors.includes(ctx.role)) {
-    noteDenial(db, ctx, "agent.run", "Agent", input.agentId);
-    throw new ForbiddenError();
+  executionManifest(db,ctx,input.agentId,input.agentVersion);
+  try {
+    authorizeAgentPatient(db,ctx,input.patientId);
+  } catch (error) {
+    noteDenial(db,ctx,"agent.run","Agent",input.agentId);
+    throw error;
   }
-  const chart = getChart(db, ctx, input.patientId);
-  if (!chart) throw new NotFoundError();
   const requestHash = canonicalHash({ agentId: input.agentId, agentVersion: input.agentVersion, patientId: input.patientId });
-  const replay = get<{ request_hash: string; response_json: string }>(
-    db,
-    `SELECT request_hash, response_json FROM idempotency_keys WHERE organization_id = ? AND idempotency_key = ?`,
-    ctx.organizationId,
-    input.idempotencyKey,
-  );
-  if (replay) {
-    if (replay.request_hash !== requestHash) {
-      throw new ConflictError("duplicate", "That submission key was already used for a different entry.");
+  return transaction(db, () => {
+    const replay = get<{actor_id:string;request_hash:string;response_json:string}>(db,
+      "SELECT actor_id,request_hash,response_json FROM idempotency_keys WHERE organization_id=? AND idempotency_key=?",
+      ctx.organizationId,input.idempotencyKey);
+    if (replay) {
+      if (replay.actor_id !== ctx.userId || replay.request_hash !== requestHash) {
+        throw new ConflictError("duplicate", "That submission key was already used for a different entry.");
+      }
+      const stored = JSON.parse(replay.response_json) as {runId:string};
+      return scopedRun(db,ctx,stored.runId).id;
     }
-    const stored = JSON.parse(replay.response_json) as { runId: string };
-    return advance(db, ctx, stored.runId);
-  }
-  const runId = `run_${randomUUID()}`;
-  const now = new Date().toISOString();
-  transaction(db, () => {
+    if (agentExecutionStopped(db,ctx)) throw new ForbiddenError("forbidden","Agent execution is stopped.");
+    const runId = `run_${randomUUID()}`;
+    const now = new Date().toISOString();
     execute(
       db,
       `INSERT INTO agent_runs (
@@ -440,12 +539,26 @@ export function startAgentRun(
       now,
     );
     writeAudit(db, ctx, { action: "agent.run", resourceType: "AgentRun", resourceId: runId, outcome: "success" });
+    return runId;
   });
-  return advance(db, ctx, runId);
+}
+
+export function startAgentRun(db:AppDatabase,ctx:SessionContext,input:Parameters<typeof enqueueAgentRun>[2]) {
+  return advance(db,ctx,enqueueAgentRun(db,ctx,input));
+}
+
+export function stopAgentExecution(db:AppDatabase,ctx:SessionContext,runId:string,reason:"cancelled"|"workflow-failed") {
+  return transaction(db,() => {
+    const current = scopedRun(db,ctx,runId);
+    if (current.actor_id !== ctx.userId) throw new ForbiddenError();
+    if (current.status !== "running") return;
+    const status = reason === "cancelled" ? "refused" : "failed";
+    execute(db,"UPDATE agent_runs SET status=?,updated_at=? WHERE id=?",status,new Date().toISOString(),runId);
+    emit(db,ctx,current,status,`agent.execution.${reason}`);
+  });
 }
 
 export function resumeAgentRun(db: AppDatabase, ctx: SessionContext, runId: string) {
-  scopedRun(db, ctx, runId);
   return advance(db, ctx, runId);
 }
 
@@ -455,56 +568,38 @@ export function callAgentTool(
   input: { runId: string; toolId: string; payload: Record<string, unknown>; idempotencyKey: string },
 ) {
   assertKey(input.idempotencyKey);
-  assertSandboxedTool(input.toolId, input.payload);
   const current = scopedRun(db, ctx, input.runId);
-  const policy = manifest(db, current.agent_id, current.agent_version);
-  if (!allowedTools(policy).includes(input.toolId)) {
-    noteDenial(db, ctx, "agent.tool", "AgentTool", input.toolId);
+  const policy = executionManifest(db,ctx,current.agent_id,current.agent_version);
+  if (!policy.tools.includes(input.toolId)) {
+    noteDenial(db, ctx, "agent.tool", "AgentTool", isToolId(input.toolId) ? input.toolId : null);
     throw new ForbiddenError("forbidden", "That tool is outside the agent manifest.");
+  }
+  try {
+    assertSandboxedTool(input.toolId, input.payload);
+  } catch (error) {
+    noteDenial(db,ctx,"agent.tool","AgentTool",input.toolId);
+    throw error;
   }
   if (typeof input.payload.patientId === "string" && input.payload.patientId !== current.patient_id) {
     noteDenial(db, ctx, "agent.tool", "AgentTool", input.toolId);
     throw new ForbiddenError();
   }
-  const requestHash = canonicalHash({ runId: current.id, toolId: input.toolId });
-  const replay = get<{ request_hash: string; response_json: string }>(
-    db,
-    `SELECT request_hash, response_json FROM idempotency_keys WHERE organization_id = ? AND idempotency_key = ?`,
-    ctx.organizationId,
-    input.idempotencyKey,
-  );
-  if (replay) {
-    if (replay.request_hash !== requestHash) {
-      throw new ConflictError("duplicate", "That submission key was already used for a different entry.");
-    }
-    return JSON.parse(replay.response_json) as AgentRunView;
-  }
   const toolId = input.toolId as ToolId;
-  const spec = requireTool(db, toolId);
-  if (spec.effect !== "draft-only") {
-    const existing = get<{ id: string }>(db, `SELECT id FROM agent_steps WHERE run_id = ? AND tool_id = ?`, current.id, toolId);
-    if (existing) return toView(db, current);
-    throw new ForbiddenError("forbidden", "That tool is outside the agent manifest.");
+  requireTool(db,toolId);
+  try {
+    if (current.actor_id !== ctx.userId) throw new ForbiddenError();
+    authorizeAgentPatient(db,ctx,current.patient_id);
+  } catch (error) {
+    noteDenial(db,ctx,"agent.tool","AgentTool",toolId);
+    throw error;
   }
-  const view = transaction(db, () => {
-    insertStep(db, current, toolId, "refused", { executed: false });
-    const now = new Date().toISOString();
-    writeAudit(db, ctx, { action: "agent.tool", resourceType: "AgentTool", resourceId: toolId, outcome: "denied" });
-    const saved = toView(db, reload(db, current.id));
-    execute(
-      db,
-      `INSERT INTO idempotency_keys (organization_id, idempotency_key, actor_id, request_hash, response_json, created_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      ctx.organizationId,
-      input.idempotencyKey,
-      ctx.userId,
-      requestHash,
-      JSON.stringify(saved),
-      now,
-    );
-    return saved;
-  });
-  return view;
+  const existing = get(db,"SELECT id FROM agent_steps WHERE run_id=? AND tool_id=?",current.id,toolId);
+  if (!existing) {
+    noteDenial(db,ctx,"agent.tool","AgentTool",toolId);
+    throw new ForbiddenError("forbidden","This tool has no recorded step.");
+  }
+  writeAudit(db,ctx,{action:"agent.tool.inspect",resourceType:"AgentTool",resourceId:toolId,outcome:"success"});
+  return toView(db,ctx,current);
 }
 
 export function decideAgentApproval(
@@ -535,22 +630,32 @@ export function decideAgentApproval(
     noteDenial(db, ctx, "agent.approval", "AgentApproval", input.approvalId);
     throw new ForbiddenError("forbidden", "Another person at this facility has to decide.");
   }
+  const run = scopedRun(db,ctx,approval.run_id);
+  const policy = executionManifest(db,ctx,run.agent_id,run.agent_version);
+  if (policy.approval_required !== 1) throw new ForbiddenError();
+  expireAgentApproval(db,ctx,run);
   const requestHash = canonicalHash({ approvalId: input.approvalId, decision: input.decision });
   return transaction(db, () => {
-    const replay = get<{ request_hash: string; response_json: string }>(
+    const replay = get<{ actor_id:string; request_hash:string }>(
       db,
-      `SELECT request_hash, response_json FROM idempotency_keys WHERE organization_id = ? AND idempotency_key = ?`,
+      `SELECT actor_id, request_hash FROM idempotency_keys WHERE organization_id = ? AND idempotency_key = ?`,
       ctx.organizationId,
       input.idempotencyKey,
     );
     if (replay) {
-      if (replay.request_hash !== requestHash) {
+      if (replay.actor_id !== ctx.userId || replay.request_hash !== requestHash) {
         throw new ConflictError("duplicate", "That submission key was already used for a different entry.");
       }
-      return JSON.parse(replay.response_json) as AgentRunView;
+      return toView(db,ctx,run);
     }
-    const current = get<{ status: string }>(db, `SELECT status FROM agent_approvals WHERE id = ?`, input.approvalId);
-    if (current?.status !== "pending") throw new ConflictError("conflict", "That approval is already decided.");
+    const current = get<{status:string;created_at:string}>(db,"SELECT status,created_at FROM agent_approvals WHERE id=?",input.approvalId);
+    if (current?.status !== "pending" || reload(db,run.id).status !== "awaiting-approval" || Date.now() >= approvalDeadline(current.created_at)) throw new ConflictError("conflict", "That approval is already decided.");
+    if (input.decision === "approved" && agentExecutionStopped(db,ctx)) {
+      throw new ForbiddenError("forbidden","Agent execution is stopped. You can still decline this review.");
+    }
+    if (!get(db,"SELECT id FROM agent_steps WHERE run_id=? AND tool_id='tool_propose_review' AND status='parked'",run.id)) {
+      throw new ConflictError("conflict","The review checkpoint is unavailable.");
+    }
     const now = new Date().toISOString();
     const approvalStatus = input.decision === "approved" ? "approved" : "declined";
     const runStatus: RunStatus = input.decision === "approved" ? "completed" : "refused";
@@ -578,7 +683,7 @@ export function decideAgentApproval(
       now,
     );
     writeAudit(db, ctx, { action: "agent.approval", resourceType: "AgentApproval", resourceId: input.approvalId, outcome: "success" });
-    const saved = toView(db, reload(db, approval.run_id));
+    const saved = toView(db, ctx, reload(db, approval.run_id));
     execute(
       db,
       `INSERT INTO idempotency_keys (organization_id, idempotency_key, actor_id, request_hash, response_json, created_at)
@@ -601,7 +706,21 @@ export function listAgentRuns(db: AppDatabase, ctx: SessionContext) {
     `SELECT * FROM agent_runs WHERE organization_id = ? AND facility_id = ? ORDER BY created_at DESC LIMIT 50`,
     ctx.organizationId,
     facility,
-  ).map((row) => toView(db, row));
+  ).map((row) => toView(db, ctx, row));
+}
+
+export function listAgentApprovalInbox(db:AppDatabase,ctx:SessionContext) {
+  const facility = facilityId(ctx);
+  if (ctx.purposeOfUse !== "TREATMENT" || (ctx.role !== "clinician" && ctx.role !== "nurse")) return [];
+  return all<RunRow>(db,`
+    SELECT r.* FROM agent_runs r JOIN agent_approvals a ON a.run_id=r.id
+    WHERE r.organization_id=? AND r.facility_id=? AND r.status='awaiting-approval'
+      AND a.organization_id=r.organization_id AND a.facility_id=r.facility_id
+      AND a.status='pending' AND a.requested_by<>?
+      AND julianday(a.created_at)>julianday(?)
+    ORDER BY a.created_at,a.id LIMIT 50
+  `,ctx.organizationId,facility,ctx.userId,new Date(Date.now()-APPROVAL_WINDOW_MS).toISOString()).map(row => toView(db,ctx,row))
+    .filter(row => row.canDecideApproval);
 }
 
 export function readAgentRun(db: AppDatabase, ctx: SessionContext, runId: string) {
@@ -611,5 +730,5 @@ export function readAgentRun(db: AppDatabase, ctx: SessionContext, runId: string
     if (run) noteDenial(db, ctx, "agent.run", "AgentRun", runId);
     return null;
   }
-  return toView(db, run);
+  return toView(db, ctx, run);
 }

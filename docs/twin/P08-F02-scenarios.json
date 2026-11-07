@@ -1,0 +1,38 @@
+{
+  "feature": "P08-F02",
+  "dataClass": "synthetic",
+  "scenarios": [
+    {
+      "id": "P08-F02-S01",
+      "oracle": "Actual source-backed deterministic state, timestamps, version and every source link"
+    },
+    {
+      "id": "P08-F02-S02",
+      "oracle": "Empty first build without clinical reassurance, no score or active-therapy inference"
+    },
+    {
+      "id": "P08-F02-S04",
+      "oracle": "Repeated/new command same source reuses materialization; real process race serializes receipt"
+    },
+    {
+      "id": "P08-F02-S05",
+      "oracle": "Wrong owner/tenant/facility/purpose/session, changed coverage, foreign origin and invalid requests deny"
+    },
+    {
+      "id": "P08-F02-S09",
+      "oracle": "Clinical/work outage including empty portfolio, offline/cancel/errors with no queued rebuild"
+    },
+    {
+      "id": "P08-F02-S11",
+      "oracle": "Late clinical observation, equal-time ambiguity, actual correction/status/verification transitions, stale withholding and exact source rebuild"
+    },
+    {
+      "id": "P08-F02-S18",
+      "oracle": "Failed receipt/DDL roll back, repair appends immutable source-backed state and preserves originals"
+    },
+    {
+      "id": "P08-F02-S19",
+      "oracle": "Forged cache digest cannot serve false facts; quota, clock uncertainty, accessibility and phone/mobile regressions"
+    }
+  ]
+}

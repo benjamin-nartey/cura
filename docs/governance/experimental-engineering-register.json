@@ -1,0 +1,90 @@
+{
+  "register": "experimental-engineering",
+  "status": "EXPERIMENTAL_DEVELOPMENT_ACTIVE",
+  "formalPhase03": "NOT_AUTHORIZED",
+  "governanceAuthorization": false,
+  "note": "Experimental engineering evidence. This register does not accept Phase 02 or Phase 03 and does not activate DEV-GOV-2026-001.",
+  "features": [
+    {
+      "id": "P03-F01",
+      "name": "Immutable access ledger",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/privacy/P03-F01-experimental-evidence.md"
+    },
+    {
+      "id": "P03-F02",
+      "name": "Consent management",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/privacy/P03-F02-evidence.md"
+    },
+    {
+      "id": "P03-F03",
+      "name": "Retention and legal holds",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/privacy/P03-F03-evidence.md"
+    },
+    {
+      "id": "P03-F04",
+      "name": "DSAR and bulk export",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/privacy/P03-F04-evidence.md"
+    },
+    {
+      "id": "P03-F05",
+      "name": "Privacy telemetry and scrubbing",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/privacy/P03-F05-evidence.md"
+    },
+    {
+      "id": "P04-F01",
+      "name": "Patient and practitioner master records",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/healthcare/P04-F01-evidence.md"
+    },
+    {
+      "id": "P04-F02",
+      "name": "Appointments and encounter lifecycle",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/healthcare/P04-F02-evidence.md"
+    },
+    {
+      "id": "P04-F03",
+      "name": "Clinical source entries",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/healthcare/P04-F03-evidence.md"
+    },
+    {
+      "id": "P04-F04",
+      "name": "Orders, care plans and referrals",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/healthcare/P04-F04-evidence.md"
+    },
+    {
+      "id": "P04-F05",
+      "name": "Billing primitives and chart UX",
+      "engineeringStatus": "EXPERIMENTAL_ENGINEERING_COMPLETE",
+      "formalStatus": "NOT_STARTED",
+      "evidence": "docs/healthcare/P04-F05-evidence.md"
+    }
+  ],
+  "parallelV2Track": {
+    "policy": "CURASPHERE-US-GOVERNANCE-v2",
+    "formalAdoption": "PROPOSED",
+    "request": "docs/governance/v2/policy-request.json",
+    "scope": [
+      "GOV-V2-MIGRATION",
+      "P04-F05"
+    ],
+    "currentEvidenceIndex": "artifacts/governance-v2/latest.json",
+    "formalRecordsUnchanged": true
+  }
+}

@@ -1,0 +1,311 @@
+{
+  "feature": "P07-F03",
+  "dataClass": "synthetic",
+  "scenarios": [
+    {
+      "id": "P07-F03-S01",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "current view collapses logical records while explicit history retains amended versions",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S02",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "clinical and recorded date filters preserve unknown/date precision and encounter/type scope",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S03",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "signed keyset pages traverse tied timestamps deterministically without duplicates",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S04",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "tampered, cross-context, changed-filter and stale-source cursors fail closed",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S05",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "snapshot membership is exact under equal timestamps and correction appears once as before to after",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S06",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "new backdated source remains an added record against exact snapshot membership",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S07",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "since-last-visit is explicit without a prior visit and flags tied closure timestamps as uncertain",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S08",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "last-visit uses recorded membership so late backdated data is added rather than silently missed",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S09",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "snapshots survive reopen/new live session and remain immutable with metadata-only members",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S10",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "baseline ownership, patient, tenant, purpose, revocation and removed source coverage are enforced",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S11",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "tampered member evidence and source outage never report reassuring no changes",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S12",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "invalid filters/bounds and missing paging keys fail without source writes",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S13",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "schema 52 to 53 migration failure is atomic and retry preserves source and queue",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S14",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "visit dependency/permission/corrupt closure evidence cannot be mistaken for absence",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S15",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "diff pagination is stable and cannot be reused across snapshots or new source versions",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    },
+    {
+      "id": "P07-F03-S16",
+      "masterScenarios": [
+        "S01",
+        "S02",
+        "S04",
+        "S05",
+        "S09",
+        "S11",
+        "S18"
+      ],
+      "preconditions": "Isolated GH/EU sourceScenario with actual clinical writes and immutable source versions",
+      "steps": "retained snapshot quota is bounded while an existing command still replays safely",
+      "expectedPersistence": "Query/diff do not mutate clinical records; snapshot metadata references exact ledger versions; failed migration/capture leaves original source intact",
+      "expectedSecurity": "Current patient/facility/purpose/history/type authority; own compatible snapshots only; signed context-pinned pages",
+      "expectedRecovery": "Source recovery or explicit first-page restart; never silently substitute current values into baseline",
+      "testFile": "packages/domain/test/timeline-query.test.ts"
+    }
+  ],
+  "browser": {
+    "testFile": "tools/e2e/p07-f03.spec.ts",
+    "expectedAPIStatuses": [
+      200,
+      401,
+      403,
+      404,
+      409,
+      422
+    ],
+    "oracles": [
+      "Actual new observation 37.1 becomes one amended source record at 37.6 with retained before/after inspection",
+      "Foreign-origin correction rejected before source change; old cursor rejected after real amendment",
+      "Filter/paging/reset/capture/load/compare UI and explicit no-results/error recovery",
+      "Axe zero violations and 390-pixel containment"
+    ]
+  }
+}

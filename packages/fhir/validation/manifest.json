@@ -1,0 +1,72 @@
+{
+  "fixtures": [
+    {
+      "name": "patient-valid",
+      "file": "patient-valid.json",
+      "profile": "https://curasphere.local/fhir/StructureDefinition/source-Patient",
+      "valid": true
+    },
+    {
+      "name": "patient-missing-birth-date",
+      "file": "patient-missing-birth-date.json",
+      "profile": "https://curasphere.local/fhir/StructureDefinition/source-Patient",
+      "valid": false,
+      "expectedError": "Patient.birthDate"
+    },
+    {
+      "name": "source-roundtrip",
+      "file": "source-roundtrip.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+      "valid": true
+    },
+    {
+      "name": "service-executable",
+      "file": "service-executable.json",
+      "profile": "https://curasphere.local/fhir/StructureDefinition/source-ServiceRequest",
+      "valid": false,
+      "expectedError": "ServiceRequest.intent"
+    },
+    {
+      "name": "source-lifecycle",
+      "file": "source-lifecycle.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+      "valid": true
+    },
+    {
+      "name": "smart-delegated",
+      "file": "smart-delegated.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+      "valid": true
+    },
+    {
+      "name": "partner-export",
+      "file": "partner-export.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+      "valid": true
+    },
+    {
+      "name": "capability-legacy",
+      "file": "capability-legacy.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/CapabilityStatement",
+      "valid": true
+    },
+    {
+      "name": "capability-source",
+      "file": "capability-source.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/CapabilityStatement",
+      "valid": true
+    },
+    {
+      "name": "curasphere-local-export",
+      "file": "curasphere-local-export.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/OperationDefinition",
+      "valid": true
+    },
+    {
+      "name": "curasphere-local-events",
+      "file": "curasphere-local-events.json",
+      "profile": "http://hl7.org/fhir/StructureDefinition/OperationDefinition",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "phase": "06",
+  "engineeringStatus": "COMPLETE_LOCAL_SYNTHETIC_REVIEW_PENDING",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "docs/governance/SIMULATION-IMPLEMENTATION-AUTHORITY-2026-11-03.md",
+  "features": [
+    {
+      "id": "P06-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "plan": "docs/integration/P06-F01-plan.md",
+      "implemented": [
+        "Seven versioned current-source R4 mappings and strict inverse comparisons",
+        "Eight draft StructureDefinitions: seven resource profiles plus source-context extension",
+        "Authorized persisted-record inventory, preview and reverse-preview API",
+        "Responsive accessible workbench with error, stale, cancellation and retry states",
+        "Pinned official validator runner, integrity-checked installer, generated lifecycle fixtures and CI job"
+      ],
+      "verified": [
+        "450 domain tests pass, including ten new source-mapping simulations",
+        "Two P06-F01 browser scenarios pass on the final build",
+        "22 existing web browser scenarios pass",
+        "Five official validator cases pass: three valid fixtures with zero errors, two intentional invalid cases rejected",
+        "Four validator/HTTP tool tests pass",
+        "26 governance tests pass",
+        "Build, full workspace typecheck and scoped lint pass"
+      ],
+      "validatorExecution": {
+        "version": "7.0.4",
+        "fhirVersion": "4.0.1",
+        "result": "PASS_ALL_FIVE_EXPECTED_OUTCOMES",
+        "summary": "artifacts/governance-v2/P06-F01-validator/summary.json",
+        "terminologyServer": "disabled (-tx n/a)",
+        "positiveWarnings": {
+          "patient": 1,
+          "eightResourceBundle": 18,
+          "nineResourceLifecycleBundle": 20
+        }
+      },
+      "remaining": [],
+      "reviewer": null,
+      "evidence": "docs/integration/P06-F01-evidence.md",
+      "architectureAndOperations": "docs/integration/P06-F01-architecture-and-operations.md",
+      "riskControls": "docs/integration/P06-F01-risks.md",
+      "adr": "docs/adr/ADR-0071-current-source-fhir-r4-previews.md",
+      "automatedVerificationBy": "Codex; not a qualified clinical or licensing signoff",
+      "privacyPatchFollowup": {
+        "mappingVersion": "1.0.1",
+        "reason": "Exclude transport/session correlations from exported clinical facts; preserve stored rows and clinical data",
+        "reverification": "docs/integration/P06-F02-evidence.md"
+      }
+    },
+    {
+      "id": "P06-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "plan": "docs/integration/P06-F02-plan.md",
+      "reviewer": null,
+      "evidence": "docs/integration/P06-F02-evidence.md",
+      "architectureAndOperations": "docs/integration/P06-F02-architecture-and-operations.md",
+      "riskControls": "docs/integration/P06-F02-risks.md",
+      "adr": "docs/adr/ADR-0072-local-smart-patient-grants.md",
+      "schemaVersion": 49,
+      "implemented": [
+        "Persisted local SMART-style public-client authorization-code and S256 PKCE flow",
+        "Exact patient/type read scopes, original live identity/purpose/facility and current source gates",
+        "Client registration/disable, explicit patient approval/denial, code replay revocation, token/grant revoke",
+        "Actual browser and isolated partner HTTP client, state verification and cold sign-in continuation",
+        "Reserved client-host cookie isolation, strict origin/CORS and private base-R4 projection"
+      ],
+      "verified": [
+        "459 domain tests pass including nine SMART scenarios and process race/reopen/migration failure",
+        "Four SMART browser scenarios pass including actual cold login and external-origin CORS/cookie isolation",
+        "Both P06-F01 browser regressions pass",
+        "Four mobile browser/API regressions pass",
+        "Three HTTP/proxy security tests pass (12 including SMART focused domain cases)",
+        "26 governance tests pass",
+        "All six official HL7 validation expected outcomes pass",
+        "Build, workspace types and lint pass",
+        "Schema 48 to 49 retains all original rows and compound keys in nine clinical/provenance tables",
+        "Five landing, login, table, sidebar and navigation browser regressions pass"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical or licensing signoff"
+    },
+    {
+      "id": "P06-F03",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "plan": "docs/integration/P06-F03-plan.md",
+      "evidence": "docs/integration/P06-F03-evidence.md",
+      "architectureAndOperations": "docs/integration/P06-F03-architecture-and-operations.md",
+      "riskControls": "docs/integration/P06-F03-risks.md",
+      "adr": "docs/adr/ADR-0073-signed-local-partner-exchange.md",
+      "schemaVersion": 50,
+      "implemented": [
+        "Signed idempotent partner receipt, durable alternate-message aliases and malformed/version quarantine",
+        "Immutable partner patient/encounter mappings and explicit clinician-approved authoritative Observation import/correction",
+        "Transactional immutable source outbox, scoped export, subscription lifecycle, durable leases and bounded signed loopback HTTP retries",
+        "Role-aware responsive partner workbench with mapped-patient inspection, diagnostics and retry state",
+        "Executable local receiver, signed sender and Foundation-aware bounded worker"
+      ],
+      "verified": [
+        "475 domain tests pass including 16 new integration simulations and two-process review race",
+        "20 focused integration/domain/HTTP/receiver cases pass; shipped receiver restart also passes after ESM boundary correction",
+        "All three F03 browser scenarios pass including actual signed HTTP, source review, sender and worker processes",
+        "11 prior source/SMART/landing/login/workspace browser scenarios pass; four mobile browser/API regressions pass",
+        "26 governance tests pass",
+        "All seven official HL7 validator expected outcomes pass; partner export has zero errors and eight retained warnings",
+        "Build, contracts/domain/FHIR/web/mobile typechecks and lint pass",
+        "Schema 49 to 50 preserves all original rows and compound keys in 15 clinical/provenance/SMART tables",
+        "Actual API cleanup ends seven test subscriptions and disables eleven temporary test connections without deleting clinical data"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical, privacy, architecture or licensing signoff"
+    },
+    {
+      "id": "P06-F04",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 51,
+      "plan": "docs/integration/P06-F04-plan.md",
+      "evidence": "docs/integration/P06-F04-evidence.md",
+      "architectureAndOperations": "docs/integration/P06-F04-architecture-and-operations.md",
+      "riskControls": "docs/integration/P06-F04-risks.md",
+      "adr": "docs/adr/ADR-0074-resumable-reviewed-integration-batches.md",
+      "implemented": [
+        "Domain-separated signed immutable import manifests and current-session clinician review",
+        "Atomic per-item source/outcome/cursor commits, durable page leases, idempotent page runs and restart recovery",
+        "Version-snapshot bulk Observation export with explicit partial failure accounting",
+        "Audited immutable receipt recovery, reviewed item reconciliation and bounded stable-ID delivery redrive",
+        "Scoped keyset reconciliation dashboard, responsive previews, progress and historical metadata after disable"
+      ],
+      "verified": [
+        "490 domain tests pass including 15 new bulk/reconciliation scenarios",
+        "All 15 targeted tests pass after historical-report safeguard; actual process kill/reopen and concurrent process race verified",
+        "20 existing transport/domain/receiver tests pass",
+        "Three new browser scenarios and all 14 prior web regressions pass; four mobile browser/API regressions pass",
+        "26 governance tests pass; optimized build, contracts/domain/FHIR/web/mobile types and lint pass",
+        "Schema 50 to 51 preserves all original keys/column values in 22 clinical/provenance/SMART/integration tables",
+        "Actual API cleanup ends five subscriptions/disables twelve test connections; historical reports readable and sensitive previews blocked"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical, privacy, architecture or licensing signoff"
+    },
+    {
+      "id": "P06-F05",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "plan": "docs/integration/P06-F05-plan.md",
+      "evidence": "docs/integration/P06-F05-evidence.md",
+      "architectureAndOperations": "docs/integration/P06-F05-architecture-and-operations.md",
+      "riskControls": "docs/integration/P06-F05-risks.md",
+      "adr": "docs/adr/ADR-0075-boundary-specific-published-conformance.md",
+      "r5Plan": "docs/integration/P06-F05-R5-compatibility-plan.md",
+      "implemented": [
+        "Separate legacy/current-source R4 CapabilityStatements and two custom OperationDefinitions",
+        "Twelve whitelisted versioned artifacts, PHI-free catalog, exact hashes and actual staff preview/download workbench",
+        "Explicit incompatible version/media rejection and shared generated-artifact drift checks",
+        "Resource-specific future R5 compatibility/validation plan; no R5 adapter or production activation"
+      ],
+      "verified": [
+        "494 domain tests pass; eight conformance checks pass (four overlap with domain)",
+        "Two new live browser scenarios verify twelve artifact hashes and all seven actual patient-scoped reads",
+        "Seventeen distinct prior web scenarios verified: sixteen in broad run, recovery passes isolated rerun after retained GET ECONNRESET",
+        "Four mobile browser/API regressions pass; four HTTP/receiver process tests pass",
+        "26 governance tests pass; workspace/mobile types, optimized web build and lint pass",
+        "Official HL7 validator 7.0.4: all eleven expected outcomes pass; nine positive fixtures zero errors and two intentional negatives rejected; warnings retained",
+        "Schema remains 51; all original keys and values preserved across 26 tables; no clinical data deleted"
+      ],
+      "remaining": [],
+      "automatedVerificationBy": "Codex; not a qualified clinical, privacy, architecture or licensing signoff"
+    }
+  ],
+  "stopBefore": "P07-F01",
+  "completedEngineeringFeatures": [
+    "P06-F01",
+    "P06-F02",
+    "P06-F03",
+    "P06-F04",
+    "P06-F05"
+  ],
+  "engineeringExitReport": "docs/integration/phase-06-engineering-exit-report.md"
+}

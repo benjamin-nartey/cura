@@ -17,17 +17,23 @@ REQUESTS = Counter(
 )
 CORRELATION_ID = re.compile(r"[A-Za-z0-9_-]{8,80}")
 LOG_FIELDS = ("correlationId", "traceId", "method", "route", "status")
+SECRET = re.compile(r"(?i)(bearer\s+\S+|syn-canary-|\d{3}-\d{3}-\d{4}|cura_session=|code=)")
 
 
 class JsonFormatter(logging.Formatter):
     def format(self, record):
+        message = record.getMessage()
+        if SECRET.search(message):
+            message = "[REDACTED]"
         payload = {
             "level": record.levelname,
             "service": "ai-gateway",
-            "message": record.getMessage(),
+            "message": message,
         }
         for key in LOG_FIELDS:
             value = getattr(record, key, None)
+            if isinstance(value, str) and SECRET.search(value):
+                value = "[REDACTED]"
             if value is not None:
                 payload[key] = value
         return json.dumps(payload, separators=(",", ":"))

@@ -1,0 +1,38 @@
+{
+  "feature": "P07-F05",
+  "dataClass": "synthetic",
+  "scenarios": [
+    {
+      "id": "P07-F05-S01",
+      "oracle": "Actual Foundation session, new source, Kafka publication and exact authorized materialization; source/hash healthy UI"
+    },
+    {
+      "id": "P07-F05-S02",
+      "oracle": "Empty permitted patient has zero counts/lag without clinical findings"
+    },
+    {
+      "id": "P07-F05-S04",
+      "oracle": "Duplicate publication/redelivery and command receipt replay retain one event per source version and exact hash"
+    },
+    {
+      "id": "P07-F05-S05",
+      "oracle": "Wrong patient/tenant/facility/role/purpose/session, pointer contract/hash/extra payload rejected without application"
+    },
+    {
+      "id": "P07-F05-S09",
+      "oracle": "Actual Kafka stop/restart, persisted database reopen and accelerated thirty-minute recording lag; failed SQL application retains Kafka offset"
+    },
+    {
+      "id": "P07-F05-S11",
+      "oracle": "Source amendment/historical pointers, backwards recording timestamps, missing/corrupt/duplicate cache alert and withhold facts"
+    },
+    {
+      "id": "P07-F05-S18",
+      "oracle": "Failed SQLite projection insert rolls back queue/receipt and supports retry; no schema migration"
+    },
+    {
+      "id": "P07-F05-S19",
+      "oracle": "Health read polling stops on offline/error/context invalidation; no POST/reconnect replay; responsive Axe UI and existing web/mobile regressions"
+    }
+  ]
+}

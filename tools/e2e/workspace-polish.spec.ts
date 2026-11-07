@@ -1,0 +1,98 @@
+import { expect, test, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import { mkdirSync } from "node:fs";
+const artifacts = "artifacts/governance-v2/workspace-polish";
+async function signIn(page: Page, id = "usr_gh_doctor") {
+  await page.goto("/login");
+  await page.locator(".development-login summary").click();
+  await page.getByLabel("Workspace identity").selectOption(id);
+  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
+  await expect(page).toHaveURL(/dashboard/);
+}
+
+test("sidebar stays fixed while content scrolls and account menu supports keyboard navigation", async ({ page }) => {
+  mkdirSync(artifacts, { recursive: true });
+  await page.setViewportSize({ width: 1440, height: 800 });
+  await signIn(page);
+  const skip = page.getByRole("link", { name: "Skip to content", exact: true });
+  await skip.focus();
+  await expect(skip).toBeVisible();
+  expect(await skip.evaluate(el => Number(getComputedStyle(el).zIndex))).toBeGreaterThan(50);
+  const side = page.locator(".side");
+  const before = await side.boundingBox();
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  expect((await side.boundingBox())!.y).toBe(before!.y);
+  await page.locator(".side .nav").evaluate(element => { element.scrollTop = element.scrollHeight; });
+  expect((await side.boundingBox())!.y).toBe(0);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  const account = page.getByRole("button", { name: /Account menu for/ });
+  await account.focus();
+  await account.press("ArrowDown");
+  const first = page.getByRole("menuitem", { name: "Account & workspace", exact: true });
+  await expect(first).toBeFocused();
+  await first.press("End");
+  await expect(page.getByRole("menuitem", { name: "Sign out", exact: true })).toBeFocused();
+  await page.getByRole("menuitem", { name: "Sign out", exact: true }).press("Escape");
+  await expect(account).toBeFocused();
+  await expect(page.getByRole("menu")).toHaveCount(0);
+  await account.click();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: `${artifacts}/dashboard-menu-desktop.png`, fullPage: true });
+  await page.getByRole("heading", { name: "Dashboard", exact: true }).click();
+  await expect(page.getByRole("menu")).toHaveCount(0);
+});
+
+test("patient and billing tables share typography and remain contained on phones", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await signIn(page);
+  const dashboardSize = await page.locator(".topbar h1").evaluate(el => getComputedStyle(el).fontSize);
+  await page.goto("/patients");
+  await expect(page.getByRole("columnheader", { name: "Medical record" })).toBeVisible();
+  expect(await page.locator(".topbar h1").evaluate(el => getComputedStyle(el).fontSize)).toBe(dashboardSize);
+  expect(await page.locator("table td").first().evaluate(el => getComputedStyle(el).fontSize)).toBe("14px");
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: `${artifacts}/patients-desktop.png`, fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole("button", { name: "Open navigation", exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Workspace", exact: true })).toBeHidden();
+  await page.getByRole("button", { name: "Open navigation", exact: true }).click();
+  await expect(page.getByRole("navigation", { name: "Workspace", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Close navigation", exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const table = page.getByRole("region", { name: "Patient directory", exact: true });
+  expect(await table.evaluate(el => el.scrollWidth > el.clientWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: `${artifacts}/patients-phone.png`, fullPage: true });
+  await page.request.post("/api/session/end");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await signIn(page, "usr_gh_billing");
+  await page.goto("/billing");
+  await expect(page.getByRole("region", { name: "Facility charges", exact: true })).toBeVisible();
+  expect(await page.locator("table td").first().evaluate(el => getComputedStyle(el).fontSize)).toBe("14px");
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: `${artifacts}/billing-desktop.png`, fullPage: true });
+});
+
+test("patient portal uses the same fixed sidebar and mobile navigation", async ({ page }) => {
+  const directoryResponse = await page.request.get("/api/patient-app/directory");
+  expect(directoryResponse.ok()).toBe(true);
+  const entries = await directoryResponse.json();
+  expect(entries.length).toBeGreaterThan(0);
+  const sessionResponse = await page.request.post("/api/portal/session", { form: { principalId: entries[0].principalId } });
+  expect(sessionResponse.ok()).toBe(true);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/portal/home");
+  const side = await page.locator(".side").boundingBox();
+  const main = await page.locator(".pt-main").boundingBox();
+  expect(main!.x).toBeGreaterThanOrEqual(side!.width);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  expect((await page.locator(".side").boundingBox())!.y).toBe(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.getByRole("button", { name: "Open navigation", exact: true }).click();
+  await expect(page.getByRole("navigation", { name: "Your record", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Close navigation", exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: `${artifacts}/portal-phone.png`, fullPage: true });
+});

@@ -1,0 +1,66 @@
+{
+  "feature": "P08-F05",
+  "scope": "local synthetic; no qualified clinical acceptance",
+  "scenarios": [
+    {
+      "id": "P08-F05-S01",
+      "description": "Literal source-backed overview, stable query/category paging and pending work",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; tools/e2e/p08-f05.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S02",
+      "description": "Exact current clinical/work and historical ledger evidence with modal keyboard access",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; tools/e2e/p08-f05.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S03",
+      "description": "Real source correction and retained snapshot before/after comparison",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; tools/e2e/p08-f05.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S04",
+      "description": "Wrong tenant/facility/purpose/role/owner/coverage and revoked session fail closed",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; tools/e2e/p08-f05.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S05",
+      "description": "Signed cursor tamper, filter/session replay and work-only source change invalidate pages",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; tools/e2e/p08-f05.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S06",
+      "description": "Stale/unbuilt/empty/no-prior-visit never imply clinical absence",
+      "oracle": "packages/domain/test/twin-inspection.test.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S07",
+      "description": "Corrupt cache, source outage, forged context, offline, cancellation and late read withholding",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; tools/e2e/p08-f05.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S08",
+      "description": "Actual Expo bearer-only patient workflow, source evidence and access-loss clearing",
+      "oracle": "tools/e2e/p08-f05.spec.ts; tools/e2e/mobile-workspace.spec.ts",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S09",
+      "description": "Read-only audit, schema57 and all original43-table key/value preservation",
+      "oracle": "packages/domain/test/twin-inspection.test.ts; artifacts/governance-v2/P08-F05-preservation.py",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F05-S10",
+      "description": "F01-F04 retained source tools and live workers remain usable",
+      "oracle": "tools/e2e/p08-f01.spec.ts through p08-f04.spec.ts; local worker smoke",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    }
+  ]
+}

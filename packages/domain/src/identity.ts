@@ -391,6 +391,26 @@ export function verifyTotp(db: AppDatabase, pendingId: string, code: string) {
   return pending;
 }
 
+export function verifyUserTotp(db: AppDatabase, userId: string, code: string) {
+  const row = get<{ secret: string; status: string; failures: number; locked_until: string | null }>(
+    db,
+    "SELECT secret, status, failures, locked_until FROM totp_credentials WHERE user_id = ?",
+    userId,
+  );
+  if (!row || row.status !== "active") throw new ValidationError("invalid", "No authenticator is enrolled.");
+  if (row.locked_until && row.locked_until > new Date().toISOString()) throw new ForbiddenError("closed", "This authenticator is temporarily locked.");
+  if (!totpMatches(row.secret, code)) {
+    const failures = row.failures + 1;
+    const locked = failures >= 5 ? new Date(Date.now() + 15 * 60 * 1000).toISOString() : null;
+    run(db, "UPDATE totp_credentials SET failures = ?, locked_until = ? WHERE user_id = ?", failures, locked, userId);
+    countAuth(db, "mfa_failure");
+    recordAuthEvent(db, "mfa.verify", "denied", userId);
+    throw new ValidationError("invalid", "That code was not accepted.");
+  }
+  run(db, "UPDATE totp_credentials SET failures = 0, locked_until = NULL WHERE user_id = ?", userId);
+  recordAuthEvent(db, "mfa.verify", "success", userId);
+}
+
 export function revokeTotp(db: AppDatabase, userId: string) {
   const updated = db.prepare("UPDATE totp_credentials SET status = 'revoked', secret = '', recovery_hashes = '', failures = 0, locked_until = NULL WHERE user_id = ? AND status != 'revoked'").run(userId);
   if (updated.changes !== 1) throw new NotFoundError("No authenticator is enrolled.");

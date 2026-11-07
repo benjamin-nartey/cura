@@ -1,0 +1,5 @@
+import { AppError,getDb,readTwinEvidence,captureTwinEvidence,inspectTwinEvidence } from "@curasphere/domain";
+import { timelineCaller,snapshotCommand } from "@/lib/timeline-query";
+import { sourceJson,sourceFailure } from "@/lib/fhir-source";
+export async function GET(request:Request){try{const ctx=await timelineCaller(request),q=new URL(request.url).searchParams;if(!q.has('patient')||[...q.keys()].some(k=>!['patient','manifest','fact'].includes(k)||q.getAll(k).length!==1)||q.has('fact')&&!q.has('manifest'))throw new AppError('invalid','Use the documented twin evidence query.');return sourceJson(q.has('fact')?inspectTwinEvidence(getDb(),ctx,q.get('patient')!,q.get('manifest')!,q.get('fact')!):readTwinEvidence(getDb(),ctx,q.get('patient')!,q.has('manifest')?q.get('manifest')!:undefined));}catch(error){return sourceFailure(error);}}
+export async function POST(request:Request){try{const ctx=await timelineCaller(request),body=await snapshotCommand(request);return sourceJson(captureTwinEvidence(getDb(),ctx,body.patient,body.commandKey));}catch(error){return sourceFailure(error);}}
