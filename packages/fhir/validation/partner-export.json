@@ -1,0 +1,102 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "https://curasphere.local/fhir/source/Observation/98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
+        "meta": {
+          "versionId": "2"
+        },
+        "status": "corrected",
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+              "version": "2026.10",
+              "code": "syn-temp"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "effectiveDateTime": "2026-10-21T09:05:00.000Z",
+        "valueQuantity": {
+          "value": 37.4,
+          "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10",
+          "code": "Cel",
+          "unit": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://curasphere.local/fhir/source/Observation/268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
+        "meta": {
+          "versionId": "1"
+        },
+        "status": "preliminary",
+        "code": {
+          "coding": [
+            {
+              "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+              "version": "2026.10",
+              "code": "syn-bp"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
+        },
+        "encounter": {
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
+        },
+        "effectiveDateTime": "2026-10-21T09:06:00.000Z",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+                  "version": "2026.10",
+                  "code": "syn-dbp"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 80,
+              "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10",
+              "code": "mm[Hg]",
+              "unit": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:curasphere:source-system:curasphere.synthetic.observation",
+                  "version": "2026.10",
+                  "code": "syn-sbp"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 120,
+              "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10",
+              "code": "mm[Hg]",
+              "unit": "mm[Hg]"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

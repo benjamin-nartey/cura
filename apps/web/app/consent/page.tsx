@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions} from "@/components/page-workspace";
 import { consentOverview, effectivePermissions, getDb, listConsents } from "@curasphere/domain";
 import { ForbiddenError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,8 +12,7 @@ export default async function ConsentOverviewPage() {
   if (!access.permissions.includes("consent.read")) {
     return (
       <Shell ctx={ctx} current="consent">
-        <p className="eyebrow">Consent</p>
-        <h1 className="page-title">Consent records are limited to authorized staff.</h1>
+        <PageHeader section="Consent" href="/consent" icon="shieldCheck" eyebrow={<>Consent</>}><h1 className="page-title">Consent records are limited to authorized staff.</h1></PageHeader>
       </Shell>
     );
   }
@@ -23,9 +24,7 @@ export default async function ConsentOverviewPage() {
   }
   return (
     <Shell ctx={ctx} current="consent">
-      <p className="eyebrow">Experimental consent</p>
-      <h1 className="page-title">Consent overview</h1>
-      <p className="lede">Synthetic development policies only. This screen is not a formal Phase 03 acceptance and does not choose a production jurisdiction.</p>
+      <PageHeader section="Consent" href="/consent" icon="shieldCheck" eyebrow={<>Experimental consent</>} description={<>Synthetic development policies only. This screen is not a formal Phase 03 acceptance and does not choose a production jurisdiction.</>}><h1 className="page-title">Consent overview</h1></PageHeader>
       <div className="list">
         <p>Total {overview.total}</p>
         <p>Active {overview.active}</p>
@@ -34,7 +33,7 @@ export default async function ConsentOverviewPage() {
         <p>Withdrawn {overview.withdrawn}</p>
         <p>Expired {overview.expired}</p>
       </div>
-      <p><a href="/consent/directory">Open the directory</a></p>
+      <PageActions><a href="/consent/directory">Open the directory</a></PageActions>
       {access.permissions.includes("consent.record") ? <p><a href="/consent/new">Record a consent</a></p> : null}
       {access.permissions.includes("consent.policy.evaluate") && process.env.CURASPHERE_ENV !== "production" && process.env.CURASPHERE_ENV !== "staging" ? <p><a href="/consent/inspect">Inspect a processing decision</a></p> : null}
       {listConsents(getDb(), consentActor(ctx)).length === 0 ? <p>No consent directives are stored for this organization.</p> : null}

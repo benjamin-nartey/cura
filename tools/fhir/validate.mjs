@@ -47,7 +47,9 @@ async function run(java, args, logPath) {
 }
 
 export async function main() {
-  const destination = resolve(root, "artifacts/governance-v2/P06-F01-validator");
+  const runName=process.env.CURASPHERE_FHIR_VALIDATION_RUN??"P06-F01-validator";
+  if(!/^[A-Za-z0-9_-]{1,80}$/.test(runName))throw new Error("Use a simple validation run name.");
+  const destination = resolve(root, "artifacts/governance-v2",runName);
   await mkdir(destination, { recursive: true });
   const startedAt = new Date().toISOString();
   // Invalidate prior aggregate evidence even if integrity or startup fails.

@@ -1,8 +1,10 @@
+import { r4Negotiation } from "@/lib/r4-negotiation";
 import { getDb, startFhirExport } from "@curasphere/domain";
 import { fhirFailure, fhirResponse, idempotencyKey } from "@/lib/fhir-response";
 import { currentSession } from "@/lib/http";
 
 export async function POST(request: Request) {
+  const negotiation=r4Negotiation(request,true);if(negotiation)return negotiation;
   const ctx = await currentSession();
   if (!ctx) {
     return fhirResponse(

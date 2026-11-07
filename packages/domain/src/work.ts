@@ -788,3 +788,11 @@ DROP TABLE IF EXISTS work_departments;
 DELETE FROM schema_migrations WHERE version IN (41, 42, 43);
 INSERT OR IGNORE INTO schema_migrations (version) VALUES (40);
 `;
+
+// Derived readers must validate source availability/authority even for an empty portfolio.
+export function assertWorkHistoryAccess(db:AppDatabase,actor:WorkActor,patientId:string,kind:string){
+  if(!["order","plan","referral"].includes(kind))throw new ValidationError();
+  gate(db,actor,`work.${kind}.read`);
+  gate(db,actor,"work.history.read");
+  assertPatient(db,actor,patientId);
+}

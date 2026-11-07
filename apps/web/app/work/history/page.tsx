@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, workHistory } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
@@ -21,8 +23,7 @@ export default async function WorkHistoryPage({ searchParams }: { searchParams: 
   }
   return (
     <Shell ctx={ctx} current="work">
-      <h1 className="page-title">Work history</h1>
-      <p className="lede">Each version is stored. An earlier version is not rewritten.</p>
+      <PageHeader section="Care coordination" href="/work" icon="checklist" description={<>Each version is stored. An earlier version is not rewritten.</>}><h1 className="page-title">Work history</h1></PageHeader>
       {failed ? <p role="alert">That history is not available.</p> : null}
       {rows.length === 0 && !failed ? <p>No work version is available.</p> : null}
       <ol>

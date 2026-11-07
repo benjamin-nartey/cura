@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { canReviewAudit, getDb, noteDenial, readAnalytics } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -13,8 +15,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
     noteDenial(getDb(), ctx, "analytics.read", "AnalyticsMart", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="analytics">
-        <p className="eyebrow">Analytics</p>
-        <h1 className="page-title">The analytics mart is closed for this role.</h1>
+        <PageHeader section="Analytics" href="/analytics" icon="chart" eyebrow={<>Analytics</>}><h1 className="page-title">The analytics mart is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -23,32 +24,30 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
     <Shell ctx={ctx} current="analytics">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Analytics</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">
+          <PageHeader section="Analytics" href="/analytics" icon="chart" eyebrow={<>Analytics</>} description={<>
             Events are copied from the outbox into a separate mart. Names, dates of birth, and result values are dropped. Counts below 5 are suppressed. This is not a patient list.
-          </p>
+          </>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <p className="provenance">
         {view.governanceVersion} · {view.deidVersion} · {view.metricVersion} · {view.reidVersion} · {view.factCount} facts
       </p>
-      <form action="/api/analytics/ingest" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/analytics/ingest" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Ingest outbox events</button>
-      </form>
-      <form action="/api/analytics/export" method="post" className="form-grid" style={{ marginTop: 12 }}>
+      </form></section>
+      <section className="page-form card"><form action="/api/analytics/export" method="post" className="form-grid" style={{ marginTop: 12 }}>
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <label className="field">
           Metric
-          <select name="metricId" required defaultValue="events-by-type">
+          <select aria-label="Metric" name="metricId" required defaultValue="events-by-type">
             <option value="events-by-type">Events by type</option>
             <option value="events-by-facility">Events by facility</option>
           </select>
         </label>
         <button className="btn-line" type="submit">Export counts</button>
-      </form>
+      </form></section>
       <div className="board" style={{ marginTop: 16 }}>
         {view.exports.map((item) => (
           <section className="card" key={item.exportId}>

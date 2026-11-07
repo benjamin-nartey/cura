@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { ForbiddenError, getDb, listAccessLedger } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { formatWhen } from "@/lib/format";
@@ -13,11 +15,9 @@ export default async function AccessLedgerPage() {
     });
     return (
       <Shell ctx={ctx} current="audit">
-        <p className="eyebrow">Experimental ledger</p>
-        <h1 className="page-title">Access ledger</h1>
-        <p className="lede">
+        <PageHeader section="Audit" href="/audit" icon="fileSearch" eyebrow={<>Experimental ledger</>} description={<>
           Review the organization’s append-only access history, record identifiers, and integrity hashes.
-        </p>
+        </>}><h1 className="page-title">Access ledger</h1></PageHeader>
         <p className={ledger.intact ? "meta" : "error"}>{ledger.intact ? "The hash chain matches." : `The hash chain broke at sequence ${ledger.brokenAt}.`}</p>
         <div className="list">
           {ledger.entries.map((entry) => (
@@ -40,8 +40,7 @@ export default async function AccessLedgerPage() {
     if (!(error instanceof ForbiddenError)) throw error;
     return (
       <Shell ctx={ctx} current="audit">
-        <p className="eyebrow">Experimental ledger</p>
-        <h1 className="page-title">The access ledger is limited to auditors.</h1>
+        <PageHeader section="Audit" href="/audit" icon="fileSearch" eyebrow={<>Experimental ledger</>}><h1 className="page-title">The access ledger is limited to auditors.</h1></PageHeader>
       </Shell>
     );
   }

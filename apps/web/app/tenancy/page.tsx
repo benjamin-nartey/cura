@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { AppError, getDb, listTenancy, mirrorTenancySession, seedDemoTenants } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -22,9 +24,7 @@ export default async function TenancyPage({ searchParams }: { searchParams: Prom
     <Shell ctx={ctx} current="tenancy">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Organization</p>
-          <h1 className="page-title">{view?.organizationName ?? "No active organization"}</h1>
-          <p className="lede">The server chooses the organization and facility from this session. A header cannot change them.</p>
+          <PageHeader section="Organization" href="/tenancy" icon="building" eyebrow={<>Organization</>} description={<>The server chooses the organization and facility from this session. A header cannot change them.</>}><h1 className="page-title">{view?.organizationName ?? "No active organization"}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error ?? loadError} notice={feedback.notice} />
@@ -50,14 +50,14 @@ export default async function TenancyPage({ searchParams }: { searchParams: Prom
               </li>
             ))}
           </ul>
-          <h2>Organizations on this session</h2>
+          <section className="page-section card"><SectionHeading icon="building"><h2>Organizations on this session</h2></SectionHeading>
           {view.organizations.length === 0 ? <p>No organization membership is active.</p> : null}
           <ul>
             {view.organizations.map((org) => (
               <li key={org.id}>{org.name}</li>
             ))}
-          </ul>
-          <h2>Service accounts</h2>
+          </ul></section>
+          <section className="page-section card"><SectionHeading icon="building"><h2>Service accounts</h2></SectionHeading>
           {view.principals.length === 0 ? <p>No service account is active for this organization.</p> : null}
           <ul>
             {view.principals.map((principal) => (
@@ -65,17 +65,17 @@ export default async function TenancyPage({ searchParams }: { searchParams: Prom
                 {principal.name} · {principal.scope}
               </li>
             ))}
-          </ul>
+          </ul></section>
         </>
       ) : null}
-      <h2>Check an organization identifier</h2>
-      <form action="/api/tenancy/organization" method="post" className="form-grid">
+      <section className="page-section card"><SectionHeading icon="building"><h2>Check an organization identifier</h2></SectionHeading>
+      <section className="page-form card"><form action="/api/tenancy/organization" method="post" className="form-grid">
         <label htmlFor="organization-id">Organization identifier</label>
         <input id="organization-id" name="organizationId" autoComplete="off" />
         <button className="btn-line" type="submit">
           Check
         </button>
-      </form>
+      </form></section></section>
     </Shell>
   );
 }

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readPlan } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -22,7 +24,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   if (!row) redirect("/work");
   return (
     <Shell ctx={ctx} current="work">
-      <h1 className="page-title">Care plan</h1>
+      <PageHeader section="Care coordination" href="/work" icon="checklist"><h1 className="page-title">Care plan</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="card">
         <p>{row.display}</p>
@@ -34,10 +36,10 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         <form action={`/api/work/plans/${id}/update`} method="post">
           <input type="hidden" name="expectedVersion" value={String(row.version)} />
           <label className="field">Next status
-            <select name="status"><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+            <select aria-label="Next status" name="status"><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
           </label>
           <label className="field">Reason
-            <select name="reason"><option value="completed">Completed</option><option value="no-longer-needed">No longer needed</option></select>
+            <select aria-label="Reason" name="reason"><option value="completed">Completed</option><option value="no-longer-needed">No longer needed</option></select>
           </label>
           <button className="btn-dark" type="submit">Update plan</button>
         </form>

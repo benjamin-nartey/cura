@@ -1,7 +1,9 @@
 import { decideAgentApproval, getDb } from "@curasphere/domain";
 import { currentSession, failureCode, formId, redirectTo } from "@/lib/http";
+import { sourceOrigin } from "@/lib/fhir-source";
 
 export async function POST(request: Request) {
+  if (!sourceOrigin(request)) return new Response(null,{status:403});
   const ctx = await currentSession();
   if (!ctx) return redirectTo(request, "/");
   const form = await request.formData();

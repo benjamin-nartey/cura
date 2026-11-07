@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, facilityClock, getDb, listAppointments, listPractitioners, listSlots } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
@@ -26,14 +28,12 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
   const appointments = listAppointments(getDb(), actor);
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Calendar</h1>
-      <p className="lede">Open times are checked when this page loads. They are not a guarantee until the booking is saved.</p>
-      <p>
+      <PageHeader section="Appointments" href="/appointments" icon="calendar" eyebrow={<>{ctx.facilityName}</>} description={<>Open times are checked when this page loads. They are not a guarantee until the booking is saved.</>}><h1 className="page-title">Calendar</h1></PageHeader>
+      <PageActions>
         <a href={`/appointments/calendar?date=${date}&practitioner=${practitioner}&view=day`}>Day</a>
         {" · "}
         <a href={`/appointments/calendar?date=${date}&practitioner=${practitioner}&view=week`}>Week</a>
-      </p>
+      </PageActions>
       <form className="search" action="/appointments/calendar" method="get">
         <input type="hidden" name="view" value={view} />
         <label className="field">
@@ -42,7 +42,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
         </label>
         <label className="field">
           Practitioner
-          <select name="practitioner" defaultValue={practitioner}>
+          <select aria-label="Practitioner" name="practitioner" defaultValue={practitioner}>
             {practitioners.map((row) => (
               <option key={row.id} value={row.id}>{row.display_name}</option>
             ))}
@@ -56,7 +56,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
           const booked = appointments.filter((row) => row.practitioner_id === practitioner && row.starts_at.slice(0, 10) === day);
           return (
             <section className="card" key={day}>
-              <h2>{day}</h2>
+              <SectionHeading icon="calendar"><h2>{day}</h2></SectionHeading>
               {booked.length === 0 ? <p>No saved appointment.</p> : null}
               <ul>
                 {booked.map((row) => (

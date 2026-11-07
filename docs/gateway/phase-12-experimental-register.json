@@ -1,0 +1,23 @@
+{
+  "phase": "12",
+  "engineeringStatus": "IN_PROGRESS",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "The product owner authorized Phase 12 and P12-F01 in the local synthetic workspace.",
+  "features": [
+    {
+      "id": "P12-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 63,
+      "validation": "docs/gateway/P12-F01-validation.md"
+    },
+    {
+      "id": "P12-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 63,
+      "validation": "docs/gateway/P12-F02-validation.md"
+    }
+  ],
+  "productionClinicalEnabled": false
+}

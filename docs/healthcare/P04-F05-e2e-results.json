@@ -4,7 +4,8 @@
       "C:\\Program Files\\nodejs\\node.exe",
       "C:\\Users\\user\\Desktop\\curamaster\\node_modules\\@playwright\\test\\cli.js",
       "test",
-      "tools/e2e/p04-f05.spec.ts"
+      "tools/e2e/p10-f03.spec.ts",
+      "--list"
     ],
     "configFile": "C:\\Users\\user\\Desktop\\curamaster\\playwright.config.ts",
     "rootDir": "C:/Users/user/Desktop/curamaster/tools/e2e",
@@ -17,18 +18,14 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 1
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "projects": [
       {
         "outputDir": "C:/Users/user/Desktop/curamaster/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 1
-        },
+        "metadata": {},
         "id": "",
         "name": "",
         "testDir": "C:/Users/user/Desktop/curamaster/tools/e2e",
@@ -46,9 +43,7 @@
         "outputDir": "C:\\Users\\user\\Desktop\\curamaster\\test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 1
-        },
+        "metadata": {},
         "name": "",
         "testDir": "C:\\Users\\user\\Desktop\\curamaster\\tools\\e2e",
         "snapshotDir": "C:\\Users\\user\\Desktop\\curamaster\\tools\\e2e",
@@ -56,7 +51,7 @@
         "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
         "timeout": 240000,
         "use": {
-          "baseURL": "http://127.0.0.1:3105",
+          "baseURL": "http://127.0.0.1:3106",
           "browserName": "chromium",
           "channel": "chrome",
           "headless": true,
@@ -97,13 +92,13 @@
   },
   "suites": [
     {
-      "title": "p04-f05.spec.ts",
-      "file": "p04-f05.spec.ts",
+      "title": "p10-f03.spec.ts",
+      "file": "p10-f03.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [
         {
-          "title": "synthetic visit from booking through clinician closure, with separated billing",
+          "title": "authorized synthetic administrator sees a registered release and its failed reevaluation",
           "ok": true,
           "tags": [],
           "tests": [
@@ -113,61 +108,13 @@
               "expectedStatus": "passed",
               "projectId": "",
               "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 111903,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-11-03T08:02:09.582Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
+              "results": [],
+              "status": "skipped"
             }
           ],
-          "id": "61de397b4ddaf7aeb334-70df22934f001109e58d",
-          "file": "p04-f05.spec.ts",
-          "line": 17,
-          "column": 5
-        },
-        {
-          "title": "chart denies a foreign tenant and shows an empty source record truthfully",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 240000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 16352,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-11-03T08:04:03.250Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "61de397b4ddaf7aeb334-05db76a4029b840cd6ab",
-          "file": "p04-f05.spec.ts",
-          "line": 91,
+          "id": "0e4c8096567baa95f5ca-431833591abcfa648a8c",
+          "file": "p10-f03.spec.ts",
+          "line": 14,
           "column": 5
         }
       ]
@@ -175,10 +122,10 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-11-03T08:02:08.136Z",
-    "duration": 166552.027,
-    "expected": 2,
-    "skipped": 0,
+    "startTime": "2026-11-07T15:27:25.574Z",
+    "duration": 603.2309999999998,
+    "expected": 0,
+    "skipped": 1,
     "unexpected": 0,
     "flaky": 0
   }

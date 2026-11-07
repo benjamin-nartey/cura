@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readLegalHold } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,14 +12,13 @@ export default async function LegalHoldDetailPage({ params, searchParams }: { pa
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("legal-hold.read")) {
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">Legal holds are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Legal holds are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   try {
     const hold = readLegalHold(getDb(), retentionActor(ctx), id);
     return (
       <Shell ctx={ctx} current="retention">
-        <p className="eyebrow">{hold.status}</p>
-        <h1 className="page-title">{hold.matter_ref}</h1>
+        <PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck" eyebrow={<>{hold.status}</>}><h1 className="page-title">{hold.matter_ref}</h1></PageHeader>
         {query.error === "forbidden" ? <p>You cannot release a hold you issued, or this account cannot release holds.</p> : null}
         {query.error === "conflict" ? <p>The hold changed. Refresh and try again.</p> : null}
         {query.notice === "active" ? <p>The hold is active. Destructive retention must stop for this scope.</p> : null}
@@ -42,6 +43,6 @@ export default async function LegalHoldDetailPage({ params, searchParams }: { pa
     );
   } catch (error) {
     if (!(error instanceof NotFoundError)) throw error;
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">That legal hold is not available.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">That legal hold is not available.</h1></PageHeader></Shell>;
   }
 }

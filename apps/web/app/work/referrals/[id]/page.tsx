@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readReferral } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -22,7 +24,7 @@ export default async function ReferralPage({ params, searchParams }: { params: P
   if (!row) redirect("/work");
   return (
     <Shell ctx={ctx} current="work">
-      <h1 className="page-title">Referral</h1>
+      <PageHeader section="Care coordination" href="/work" icon="checklist"><h1 className="page-title">Referral</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="card">
         <p>{row.display}</p>
@@ -34,7 +36,7 @@ export default async function ReferralPage({ params, searchParams }: { params: P
         <form action={`/api/work/referrals/${id}/decide`} method="post">
           <input type="hidden" name="expectedVersion" value={String(row.version)} />
           <label className="field">Decision
-            <select name="decision"><option value="accepted">Accept</option><option value="declined">Decline</option></select>
+            <select aria-label="Decision" name="decision"><option value="accepted">Accept</option><option value="declined">Decline</option></select>
           </label>
           <button className="btn-dark" type="submit">Save decision</button>
         </form>

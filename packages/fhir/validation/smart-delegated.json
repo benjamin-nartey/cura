@@ -30,10 +30,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70",
       "resource": {
         "resourceType": "Encounter",
-        "id": "45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337",
+        "id": "c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70",
         "meta": {
           "versionId": "2"
         },
@@ -52,10 +52,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Condition/62a08e250711507f6b213849f486ee33402a294e66a4745c8ad868f3d5d559ac",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Condition/8f037be3c081466c4674ac9823a6b4e3c5bd56696b7c402e79dae7a449ccb3d8",
       "resource": {
         "resourceType": "Condition",
-        "id": "62a08e250711507f6b213849f486ee33402a294e66a4745c8ad868f3d5d559ac",
+        "id": "8f037be3c081466c4674ac9823a6b4e3c5bd56696b7c402e79dae7a449ccb3d8",
         "meta": {
           "versionId": "3"
         },
@@ -63,7 +63,7 @@
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -87,10 +87,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/AllergyIntolerance/32259ae59d3dcf1a730a98cafd273773c9a4fad75b7491c7db04e0edda54b3b7",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/AllergyIntolerance/0060db65f1ef3b7027f296f7ba325bc1b07f089b03e43ffff6c64d0c7d42b30d",
       "resource": {
         "resourceType": "AllergyIntolerance",
-        "id": "32259ae59d3dcf1a730a98cafd273773c9a4fad75b7491c7db04e0edda54b3b7",
+        "id": "0060db65f1ef3b7027f296f7ba325bc1b07f089b03e43ffff6c64d0c7d42b30d",
         "meta": {
           "versionId": "2"
         },
@@ -98,7 +98,7 @@
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -130,10 +130,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Observation/974da6c65099652b761532a3cb988dadd088ac6c9e914deaa70b8ea27160791a",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Observation/98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
       "resource": {
         "resourceType": "Observation",
-        "id": "974da6c65099652b761532a3cb988dadd088ac6c9e914deaa70b8ea27160791a",
+        "id": "98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
         "meta": {
           "versionId": "2"
         },
@@ -141,7 +141,7 @@
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -165,10 +165,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Observation/645bc2e4a8f4951174f1183304ad9600132d7c535e1b0ed133f69531ffb31a46",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/Observation/268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
       "resource": {
         "resourceType": "Observation",
-        "id": "645bc2e4a8f4951174f1183304ad9600132d7c535e1b0ed133f69531ffb31a46",
+        "id": "268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
         "meta": {
           "versionId": "1"
         },
@@ -176,7 +176,7 @@
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -232,10 +232,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/ServiceRequest/35c8958a9f19f6980087226c205c42c4931517783e21337e7df7139f145948d1",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/ServiceRequest/485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
       "resource": {
         "resourceType": "ServiceRequest",
-        "id": "35c8958a9f19f6980087226c205c42c4931517783e21337e7df7139f145948d1",
+        "id": "485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
         "meta": {
           "versionId": "3"
         },
@@ -243,7 +243,7 @@
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "status": "revoked",
         "intent": "proposal",
@@ -263,10 +263,10 @@
       }
     },
     {
-      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/MedicationRequest/5a49576cd85ff5e0a17889be0306bdb85151fae4f3b748be9a88caf5d1fd3660",
+      "fullUrl": "http://127.0.0.1:3000/api/integrations/r4/smart/MedicationRequest/5fcb20d855bb7d0c0ff4da72c1f670141af6fe5aa4b8f214bb1fac6ef5c1cc75",
       "resource": {
         "resourceType": "MedicationRequest",
-        "id": "5a49576cd85ff5e0a17889be0306bdb85151fae4f3b748be9a88caf5d1fd3660",
+        "id": "5fcb20d855bb7d0c0ff4da72c1f670141af6fe5aa4b8f214bb1fac6ef5c1cc75",
         "meta": {
           "versionId": "2"
         },
@@ -274,7 +274,7 @@
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "status": "cancelled",
         "intent": "proposal",

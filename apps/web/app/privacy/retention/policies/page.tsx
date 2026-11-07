@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listRetentionPolicies } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { retentionActor } from "@/lib/retention";
@@ -7,13 +9,12 @@ export default async function RetentionPoliciesPage() {
   const ctx = await requireSession();
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("retention.policy.read")) {
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">Retention policies are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Retention policies are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   const policies = listRetentionPolicies(getDb(), retentionActor(ctx));
   return (
     <Shell ctx={ctx} current="retention">
-      <h1 className="page-title">Retention policy matrix</h1>
-      <p className="lede">Review configured retention rules and approval status. Production retention periods require policy and jurisdictional approval.</p>
+      <PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck" description={<>Review configured retention rules and approval status. Production retention periods require policy and jurisdictional approval.</>}><h1 className="page-title">Retention policy matrix</h1></PageHeader>
       {policies.length === 0 ? <p>No retention policies are stored for this organization.</p> : null}
       <div className="list">
         {policies.map((policy) => (

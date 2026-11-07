@@ -168,7 +168,8 @@ export { createObservationSubscription, listObservationSubscriptions, listSubscr
 export { buildPatientState, patientSourceHash, patientStateFromChart, readPatientState, rebuildPatientState } from "./patient-state";
 export { evidenceFromChart, readEvidence, rejectUncitedClaim, renderCitation } from "./evidence";
 export { GATEWAY_MODEL, GATEWAY_PROMPT, gatewayPolicy, invokeGateway, listGatewayAttempts, readGatewayAttempt, redactGatewayInput, validateStructuredOutput } from "./gateway";
-export { CHART_AGENT, assertSandboxedTool, callAgentTool, decideAgentApproval, listAgentRuns, readAgentRun, resumeAgentRun, startAgentRun } from "./agents";
+export {commandGatewayLifecycle, readGatewayLifecycle} from "./gateway-lifecycle";
+export { CHART_AGENT, agentExecutionStopped, assertSandboxedTool, callAgentTool, decideAgentApproval, enqueueAgentRun, listAgentApprovalInbox, listAgentRuns, readAgentRun, readChartAgentPolicy, resumeAgentRun, setAgentExecutionStopped, startAgentRun, stopAgentExecution } from "./agents";
 export { GROUNDING_THRESHOLD, askCopilot, readCopilot, readCopilotTurn, recordCopilotFeedback } from "./copilot";
 export {
   acknowledgeLabAlert,
@@ -470,3 +471,35 @@ export { codingConformanceReport, inspectCodingMappings, type CodingSelection, t
 export * from "./fhir-source";
 export * from "./fhir-source-map";
 export * from "./smart";
+
+export * from "./integrations";
+
+export { receiveIntegrationBatch,claimIntegrationBatch,createIntegrationExportBatch,readIntegrationBatch,processIntegrationBatch,cancelIntegrationBatch,reconcileIntegrationBatchItem,listIntegrationReconciliation } from "./integration-batches";
+
+export * from "./fhir-conformance";
+
+export { checkTimelineSource, readCanonicalTimeline, TIMELINE_SCHEMA_VERSION, type CanonicalTimelineEvent } from "./canonical-timeline";
+
+export { readTimelineProjection, processTimelineProjection } from "./timeline-projection";
+
+export { queryTimeline, captureTimelineSnapshot, listTimelineSnapshots, diffTimeline, type TimelineFilters } from "./timeline-query";
+
+export { timelineDeliveryPointers,applyTimelineDelivery } from "./timeline-projection";
+
+export {readTwinEvidence,captureTwinEvidence,inspectTwinEvidence,type TwinEvidencePointer} from "./twin-evidence";
+
+export {readTwinProjection,rebuildTwinProjection,inspectTwinProjectionSource,type TwinProjectedState,type TwinStateFact} from "./twin-projection";
+
+export {readTwinConflicts,requestTwinSourceReview,type TwinReviewIssue} from "./twin-conflicts";
+
+export {readTwinOperations,scheduleDueTwinRefresh,commandTwinRefresh,claimTwinRefresh,prepareTwinRefresh,completeTwinRefresh,executeTwinRefresh,processTwinRefresh,TWIN_REFRESH_POLICY,TWIN_REFRESH_BUDGETS} from "./twin-refresh";
+
+export {readTwinInspection,assertTwinInspectionAccess,type TwinInspectionInput} from "./twin-inspection";
+
+export {readGraphClaims,recordGraphClaim,assertGraphClaimAccess,GRAPH_CLAIM_TYPES,type GraphClaimCommand,type GraphClaimType} from "./evidence-graph";
+
+export {readGraphSources,ingestGraphSource,GRAPH_RELATIONSHIPS,type GraphIngestionCommand,type GraphRelationship,type GraphSourceFormat} from "./evidence-ingestion";
+
+export {agentPatientIds} from "./agent-tools";
+export { readCopilotContext } from "./copilot-context";
+export { readGroundedCopilotSummary } from "./copilot-summary";

@@ -90,8 +90,14 @@ test("mobile browser workspace loads real records, clears failed views and signs
   await expect(page.getByText("Simulation record · Not for live clinical use", { exact: true })).toBeVisible();
   await expect(page.getByText("Observations", { exact: true })).toBeVisible();
   expect((await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze()).violations).toEqual([]);
+  await expect(page.getByText("Registration", {exact:true})).toBeVisible();
+  await expect(page.getByRole("button", {name:"Open complete identity record",exact:true})).toBeVisible();
   await page.screenshot({ path: `${artifacts}/chart-phone.png`, fullPage: true });
   await expect(page.getByRole("tab", { name: "Charges", exact: true })).toHaveCount(0);
+  await page.getByRole("tab", {name:"Visits",exact:true}).click();
+  await expect(page.getByRole("button", {name:"View appointment details",exact:true}).first()).toBeVisible();
+  await expect(page.getByText(/Patient reference/).first()).toBeVisible();
+  await page.screenshot({path:"artifacts/page-workspaces/native-appointments.png",fullPage:true});
   await page.getByRole("tab", { name: "Home", exact: true }).click();
   await page.route("**/api/mobile-workspace/dashboard", route => route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "unavailable" }), headers: { "access-control-allow-origin": "http://127.0.0.1:8082" } }));
   await page.getByRole("button", { name: "Refresh workspace", exact: true }).click();

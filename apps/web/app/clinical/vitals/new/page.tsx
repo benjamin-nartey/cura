@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { ClinicalCodePicker } from "@/components/clinical-code-picker";
 import { effectivePermissions, getDb, getClinicalCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -15,9 +17,8 @@ export default async function NewVitalsPage({ searchParams }: { searchParams: Pr
   const choices = getClinicalCodeChoices(getDb(),ctx,"observation");
   return (
     <Shell ctx={ctx} current="clinical">
-      <h1 className="page-title">Record vital signs</h1>
-      <p className="lede">Record the measurement, unit, and effective time. Recorded measurements do not establish a diagnosis.</p>
-      <form className="form-grid" action="/api/clinical/observations" method="post">
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<>Record the measurement, unit, and effective time. Recorded measurements do not establish a diagnosis.</>}><h1 className="page-title">Record vital signs</h1></PageHeader>
+      <section className="page-form card"><form className="form-grid" action="/api/clinical/observations" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <input type="hidden" name="practitionerId" value={encounter.practitioner_id} />
@@ -35,7 +36,7 @@ export default async function NewVitalsPage({ searchParams }: { searchParams: Pr
           <input name="effectiveAt" type="datetime-local" required />
         </label>
         <button className="btn-dark" type="submit">Save vital sign</button>
-      </form>
+      </form></section>
     </Shell>
   );
 }

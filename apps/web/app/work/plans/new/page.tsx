@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listWorkCatalog, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
@@ -14,14 +16,13 @@ export default async function NewPlanPage({ searchParams }: { searchParams: Prom
   const catalog = listWorkCatalog();
   return (
     <Shell ctx={ctx} current="work">
-      <h1 className="page-title">Care plan</h1>
-      <p className="lede">The owner and due date are explicit. This screen does not generate a treatment plan.</p>
-      <form className="form-grid" action="/api/work/plans" method="post">
+      <PageHeader section="Care coordination" href="/work" icon="checklist" description={<>The owner and due date are explicit. This screen does not generate a treatment plan.</>}><h1 className="page-title">Care plan</h1></PageHeader>
+      <section className="page-form card"><form className="form-grid" action="/api/work/plans" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <input type="hidden" name="practitionerId" value={encounter.practitioner_id} />
         <label className="field">Plan
-          <select name="code" required>{catalog.plans.map((item) => <option key={item.code} value={item.code}>{item.display}</option>)}</select>
+          <select aria-label="Plan" name="code" required>{catalog.plans.map((item) => <option key={item.code} value={item.code}>{item.display}</option>)}</select>
         </label>
         <label className="field">Owner user
           <input name="ownerUserId" required defaultValue={ctx.userId} />
@@ -30,7 +31,7 @@ export default async function NewPlanPage({ searchParams }: { searchParams: Prom
           <input name="dueOn" type="date" required defaultValue="2026-10-29" />
         </label>
         <button className="btn-dark" type="submit">Save care plan</button>
-      </form>
+      </form></section>
     </Shell>
   );
 }

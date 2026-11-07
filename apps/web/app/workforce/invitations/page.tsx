@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { cookies } from "next/headers";
 import { Shell } from "@/components/shell";
 import { invitationsFor, loadWorkforce } from "@/lib/workforce";
@@ -12,9 +14,7 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
     <Shell ctx={ctx} current="workforce" title="Invitations">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Invitations</p>
-          <h1 className="page-title">Invitation status</h1>
-          <p className="lede">Messages are captured in the local sandbox. This screen does not confirm delivery to an external mailbox.</p>
+          <PageHeader section="Workforce" href="/workforce" icon="users" eyebrow={<>Invitations</>} description={<>Messages are captured in the local sandbox. This screen does not confirm delivery to an external mailbox.</>}><h1 className="page-title">Invitation status</h1></PageHeader>
         </div>
       </header>
       {query.notice ? <p role="status">The invitation was updated.</p> : null}

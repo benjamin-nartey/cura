@@ -39,10 +39,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337",
+      "fullUrl": "https://curasphere.local/fhir/source/Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70",
       "resource": {
         "resourceType": "Encounter",
-        "id": "45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337",
+        "id": "c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -52,7 +52,7 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"appointment_id\":\"apt_f90a29aa59b6444e\",\"closed_by\":null,\"closure_reason\":null,\"created_at\":\"2026-10-19T08:00:00.000Z\",\"created_by\":\"usr_gh_doctor\",\"ended_at\":null,\"facility_id\":\"fac_gh_accra\",\"id\":\"enc_299bcc1964574f9b\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"started_at\":\"2026-10-19T08:00:00.000Z\",\"status\":\"in-progress\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Encounter\"}"
+            "valueString": "{\"facts\":{\"appointment_id\":\"apt_45a32b0d3fa648bf\",\"closed_by\":null,\"closure_reason\":null,\"created_at\":\"2026-10-19T08:00:00.000Z\",\"created_by\":\"usr_gh_doctor\",\"ended_at\":null,\"facility_id\":\"fac_gh_accra\",\"id\":\"enc_7393c26a539d4ffc\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"started_at\":\"2026-10-19T08:00:00.000Z\",\"status\":\"in-progress\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Encounter\"}"
           }
         ],
         "status": "in-progress",
@@ -69,10 +69,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/Condition/62a08e250711507f6b213849f486ee33402a294e66a4745c8ad868f3d5d559ac",
+      "fullUrl": "https://curasphere.local/fhir/source/Condition/8f037be3c081466c4674ac9823a6b4e3c5bd56696b7c402e79dae7a449ccb3d8",
       "resource": {
         "resourceType": "Condition",
-        "id": "62a08e250711507f6b213849f486ee33402a294e66a4745c8ad868f3d5d559ac",
+        "id": "8f037be3c081466c4674ac9823a6b4e3c5bd56696b7c402e79dae7a449ccb3d8",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -82,14 +82,14 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"clinical_status\":\"active\",\"code\":\"syn-follow-up\",\"code_system\":\"curasphere.synthetic.condition\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-follow-up\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"code\":\"syn-follow-up\",\"display\":\"Follow-up problem\",\"kind\":\"condition\",\"system\":\"curasphere.synthetic.condition\",\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Follow-up problem\",\"id\":\"e9005ea7c19b2b102b325997df173e20dc3ea485cba9adeeaaf97cbc54f78d04\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"e4bf4346391abf15b2b9b660a48be5a9ae72d5a5f6f6911ac581a07b26402bae\",\"system\":\"curasphere.synthetic.condition\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Follow-up problem\",\"encounter_id\":\"enc_299bcc1964574f9b\",\"facility_id\":\"fac_gh_accra\",\"id\":\"cnd_2485ebfca67d4750\",\"onset_date\":null,\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"resolution_date\":null,\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"verification_status\":\"unconfirmed\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Condition\"}"
+            "valueString": "{\"facts\":{\"clinical_status\":\"active\",\"code\":\"syn-follow-up\",\"code_system\":\"curasphere.synthetic.condition\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-follow-up\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"code\":\"syn-follow-up\",\"display\":\"Follow-up problem\",\"kind\":\"condition\",\"system\":\"curasphere.synthetic.condition\",\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Follow-up problem\",\"id\":\"e9005ea7c19b2b102b325997df173e20dc3ea485cba9adeeaaf97cbc54f78d04\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"e4bf4346391abf15b2b9b660a48be5a9ae72d5a5f6f6911ac581a07b26402bae\",\"system\":\"curasphere.synthetic.condition\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Follow-up problem\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"facility_id\":\"fac_gh_accra\",\"id\":\"cnd_3647306dfd5540d3\",\"onset_date\":null,\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"resolution_date\":null,\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"verification_status\":\"unconfirmed\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Condition\"}"
           }
         ],
         "subject": {
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -121,10 +121,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/AllergyIntolerance/32259ae59d3dcf1a730a98cafd273773c9a4fad75b7491c7db04e0edda54b3b7",
+      "fullUrl": "https://curasphere.local/fhir/source/AllergyIntolerance/0060db65f1ef3b7027f296f7ba325bc1b07f089b03e43ffff6c64d0c7d42b30d",
       "resource": {
         "resourceType": "AllergyIntolerance",
-        "id": "32259ae59d3dcf1a730a98cafd273773c9a4fad75b7491c7db04e0edda54b3b7",
+        "id": "0060db65f1ef3b7027f296f7ba325bc1b07f089b03e43ffff6c64d0c7d42b30d",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -134,14 +134,14 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"category\":\"assessment\",\"clinical_status\":\"active\",\"code\":\"syn-unknown\",\"code_system\":\"curasphere.synthetic.allergy\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-unknown\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"category\":\"assessment\",\"code\":\"syn-unknown\",\"display\":\"Allergy status unknown\",\"finding\":\"unknown\",\"kind\":\"allergy\",\"system\":\"curasphere.synthetic.allergy\",\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Allergy status unknown\",\"id\":\"b88526198275b80148d7094f6e2259f3145cdfd15a709675ec33fa2e8ed0fd32\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"716e8f31533b6e64edfec0b8f7ee82d96d4e10bd1af315b96730240e816dc158\",\"system\":\"curasphere.synthetic.allergy\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"criticality\":null,\"display\":\"Allergy status unknown\",\"encounter_id\":\"enc_299bcc1964574f9b\",\"facility_id\":\"fac_gh_accra\",\"finding\":\"unknown\",\"id\":\"alg_fb6a6e2e1c1843ee\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"verification_status\":\"unconfirmed\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"AllergyIntolerance\"}"
+            "valueString": "{\"facts\":{\"category\":\"assessment\",\"clinical_status\":\"active\",\"code\":\"syn-unknown\",\"code_system\":\"curasphere.synthetic.allergy\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-unknown\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"category\":\"assessment\",\"code\":\"syn-unknown\",\"display\":\"Allergy status unknown\",\"finding\":\"unknown\",\"kind\":\"allergy\",\"system\":\"curasphere.synthetic.allergy\",\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Allergy status unknown\",\"id\":\"b88526198275b80148d7094f6e2259f3145cdfd15a709675ec33fa2e8ed0fd32\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"716e8f31533b6e64edfec0b8f7ee82d96d4e10bd1af315b96730240e816dc158\",\"system\":\"curasphere.synthetic.allergy\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"criticality\":null,\"display\":\"Allergy status unknown\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"facility_id\":\"fac_gh_accra\",\"finding\":\"unknown\",\"id\":\"alg_60fcb18634c6435d\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"verification_status\":\"unconfirmed\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"AllergyIntolerance\"}"
           }
         ],
         "patient": {
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -173,10 +173,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/Observation/974da6c65099652b761532a3cb988dadd088ac6c9e914deaa70b8ea27160791a",
+      "fullUrl": "https://curasphere.local/fhir/source/Observation/98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
       "resource": {
         "resourceType": "Observation",
-        "id": "974da6c65099652b761532a3cb988dadd088ac6c9e914deaa70b8ea27160791a",
+        "id": "98388bbf0479ca847ec45dafdb56374d410f448e0366e736dde644775f4e637d",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -186,14 +186,14 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"category\":\"vital-sign\",\"code\":\"syn-temp\",\"code_system\":\"curasphere.synthetic.observation\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-temp\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"category\":\"vital-sign\",\"code\":\"syn-temp\",\"display\":\"Body temperature\",\"kind\":\"observation\",\"max\":45,\"min\":30,\"system\":\"curasphere.synthetic.observation\",\"unit\":\"Cel\",\"unitSystem\":\"curasphere.synthetic.ucum-style/2026.10\",\"version\":\"2026.10\"},\"display\":\"Body temperature\",\"id\":\"7acce81b58a33395234d7e3e26e89363bc409b8fd82767283a709179dd50eed5\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"06d8cb47cd7239d240b76485ce33678561412cf5262da9b8b0b83688b6f50cd8\",\"system\":\"curasphere.synthetic.observation\",\"version\":\"2026.10\"},\"components\":[],\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Body temperature\",\"effective_at\":\"2026-10-21T09:05:00.000Z\",\"encounter_id\":\"enc_299bcc1964574f9b\",\"facility_id\":\"fac_gh_accra\",\"id\":\"obs_f42dd47599db46c1\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"final\",\"unit_code\":\"Cel\",\"unit_system\":\"curasphere.synthetic.ucum-style/2026.10\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"value_quantity\":37.1,\"value_type\":\"quantity\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Observation\"}"
+            "valueString": "{\"facts\":{\"category\":\"vital-sign\",\"code\":\"syn-temp\",\"code_system\":\"curasphere.synthetic.observation\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-temp\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"category\":\"vital-sign\",\"code\":\"syn-temp\",\"display\":\"Body temperature\",\"kind\":\"observation\",\"max\":45,\"min\":30,\"system\":\"curasphere.synthetic.observation\",\"unit\":\"Cel\",\"unitSystem\":\"curasphere.synthetic.ucum-style/2026.10\",\"version\":\"2026.10\"},\"display\":\"Body temperature\",\"id\":\"7acce81b58a33395234d7e3e26e89363bc409b8fd82767283a709179dd50eed5\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"06d8cb47cd7239d240b76485ce33678561412cf5262da9b8b0b83688b6f50cd8\",\"system\":\"curasphere.synthetic.observation\",\"version\":\"2026.10\"},\"components\":[],\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Body temperature\",\"effective_at\":\"2026-10-21T09:05:00.000Z\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"facility_id\":\"fac_gh_accra\",\"id\":\"obs_9625794a49b14093\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"final\",\"unit_code\":\"Cel\",\"unit_system\":\"curasphere.synthetic.ucum-style/2026.10\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"value_quantity\":37.1,\"value_type\":\"quantity\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Observation\"}"
           }
         ],
         "subject": {
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -217,10 +217,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/Observation/645bc2e4a8f4951174f1183304ad9600132d7c535e1b0ed133f69531ffb31a46",
+      "fullUrl": "https://curasphere.local/fhir/source/Observation/268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
       "resource": {
         "resourceType": "Observation",
-        "id": "645bc2e4a8f4951174f1183304ad9600132d7c535e1b0ed133f69531ffb31a46",
+        "id": "268bf426a6c9dcfa8f610d882770a0e0f6ca177c55c7736d9e802322b5ed1e3f",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -230,14 +230,14 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"category\":\"vital-sign\",\"code\":\"syn-bp\",\"code_system\":\"curasphere.synthetic.observation\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-bp\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"category\":\"vital-sign\",\"code\":\"syn-bp\",\"components\":[{\"code\":\"syn-sbp\",\"display\":\"Systolic blood pressure\",\"max\":300,\"min\":40,\"unit\":\"mm[Hg]\"},{\"code\":\"syn-dbp\",\"display\":\"Diastolic blood pressure\",\"max\":200,\"min\":20,\"unit\":\"mm[Hg]\"}],\"display\":\"Blood pressure\",\"kind\":\"observation\",\"system\":\"curasphere.synthetic.observation\",\"unitSystem\":\"curasphere.synthetic.ucum-style/2026.10\",\"version\":\"2026.10\"},\"display\":\"Blood pressure\",\"id\":\"e52dad7a90dfa48471de86fab40d2cf171b103ca75988d8cde7aa44a716dce6f\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"daf1b5e8cb51b53b591aacd390a7fa4072e5140d40acd042f679cec2ab64cdc7\",\"system\":\"curasphere.synthetic.observation\",\"version\":\"2026.10\"},\"components\":[{\"code\":\"syn-dbp\",\"display\":\"Diastolic blood pressure\",\"unit_code\":\"mm[Hg]\",\"value_quantity\":80},{\"code\":\"syn-sbp\",\"display\":\"Systolic blood pressure\",\"unit_code\":\"mm[Hg]\",\"value_quantity\":120}],\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Blood pressure\",\"effective_at\":\"2026-10-21T09:06:00.000Z\",\"encounter_id\":\"enc_299bcc1964574f9b\",\"facility_id\":\"fac_gh_accra\",\"id\":\"obs_7295fd0dc3054839\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"preliminary\",\"unit_code\":null,\"unit_system\":\"curasphere.synthetic.ucum-style/2026.10\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"value_quantity\":null,\"value_type\":\"component\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Observation\"}"
+            "valueString": "{\"facts\":{\"category\":\"vital-sign\",\"code\":\"syn-bp\",\"code_system\":\"curasphere.synthetic.observation\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-bp\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"category\":\"vital-sign\",\"code\":\"syn-bp\",\"components\":[{\"code\":\"syn-sbp\",\"display\":\"Systolic blood pressure\",\"max\":300,\"min\":40,\"unit\":\"mm[Hg]\"},{\"code\":\"syn-dbp\",\"display\":\"Diastolic blood pressure\",\"max\":200,\"min\":20,\"unit\":\"mm[Hg]\"}],\"display\":\"Blood pressure\",\"kind\":\"observation\",\"system\":\"curasphere.synthetic.observation\",\"unitSystem\":\"curasphere.synthetic.ucum-style/2026.10\",\"version\":\"2026.10\"},\"display\":\"Blood pressure\",\"id\":\"e52dad7a90dfa48471de86fab40d2cf171b103ca75988d8cde7aa44a716dce6f\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"daf1b5e8cb51b53b591aacd390a7fa4072e5140d40acd042f679cec2ab64cdc7\",\"system\":\"curasphere.synthetic.observation\",\"version\":\"2026.10\"},\"components\":[{\"code\":\"syn-dbp\",\"display\":\"Diastolic blood pressure\",\"unit_code\":\"mm[Hg]\",\"value_quantity\":80},{\"code\":\"syn-sbp\",\"display\":\"Systolic blood pressure\",\"unit_code\":\"mm[Hg]\",\"value_quantity\":120}],\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Blood pressure\",\"effective_at\":\"2026-10-21T09:06:00.000Z\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"facility_id\":\"fac_gh_accra\",\"id\":\"obs_a4255368a2ee4004\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"preliminary\",\"unit_code\":null,\"unit_system\":\"curasphere.synthetic.ucum-style/2026.10\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"value_quantity\":null,\"value_type\":\"component\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"Observation\"}"
           }
         ],
         "subject": {
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "code": {
           "coding": [
@@ -293,10 +293,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/ServiceRequest/35c8958a9f19f6980087226c205c42c4931517783e21337e7df7139f145948d1",
+      "fullUrl": "https://curasphere.local/fhir/source/ServiceRequest/485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
       "resource": {
         "resourceType": "ServiceRequest",
-        "id": "35c8958a9f19f6980087226c205c42c4931517783e21337e7df7139f145948d1",
+        "id": "485ff81ef54ab6c1581b389266e75184a45cb25ffc7e61380c8bf35549538604",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -306,14 +306,14 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"catalogSnapshot\":null,\"category\":\"laboratory\",\"code\":\"syn-cbc\",\"code_system\":\"curasphere.synthetic.order\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-cbc\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"catalogRevision\":null,\"catalogVersionId\":null,\"category\":\"laboratory\",\"code\":\"syn-cbc\",\"display\":\"Full blood count request\",\"kind\":\"work-order\",\"system\":\"curasphere.synthetic.order\",\"unit\":null,\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Full blood count request\",\"id\":\"83ed948f79b16d2f386a8bfac1fe80585fcd89214b38a3c55b8dda37df2517e9\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"10d0f55346fdb88f46599958b15ea0823205b6a9080ce058863046d69157905a\",\"system\":\"curasphere.synthetic.order\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"destination_department_id\":\"dep_gh_madina_lab\",\"display\":\"Full blood count request\",\"due_on\":\"2026-10-22\",\"encounter_id\":\"enc_299bcc1964574f9b\",\"facility_id\":\"fac_gh_accra\",\"fulfillment\":\"not-transmitted\",\"id\":\"ord_86dcf4bf0c124949\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"priority\":\"routine\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"submitted\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"ServiceRequest\"}"
+            "valueString": "{\"facts\":{\"catalogSnapshot\":null,\"category\":\"laboratory\",\"code\":\"syn-cbc\",\"code_system\":\"curasphere.synthetic.order\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-cbc\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"catalogRevision\":null,\"catalogVersionId\":null,\"category\":\"laboratory\",\"code\":\"syn-cbc\",\"display\":\"Full blood count request\",\"kind\":\"work-order\",\"system\":\"curasphere.synthetic.order\",\"unit\":null,\"unitSystem\":null,\"version\":\"2026.10\"},\"display\":\"Full blood count request\",\"id\":\"83ed948f79b16d2f386a8bfac1fe80585fcd89214b38a3c55b8dda37df2517e9\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"10d0f55346fdb88f46599958b15ea0823205b6a9080ce058863046d69157905a\",\"system\":\"curasphere.synthetic.order\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"destination_department_id\":\"dep_gh_madina_lab\",\"display\":\"Full blood count request\",\"due_on\":\"2026-10-22\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"facility_id\":\"fac_gh_accra\",\"fulfillment\":\"not-transmitted\",\"id\":\"ord_c7892688357b4918\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"priority\":\"routine\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"status\":\"submitted\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"ServiceRequest\"}"
           }
         ],
         "subject": {
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "status": "draft",
         "intent": "proposal",
@@ -333,10 +333,10 @@
       }
     },
     {
-      "fullUrl": "https://curasphere.local/fhir/source/MedicationRequest/5a49576cd85ff5e0a17889be0306bdb85151fae4f3b748be9a88caf5d1fd3660",
+      "fullUrl": "https://curasphere.local/fhir/source/MedicationRequest/5fcb20d855bb7d0c0ff4da72c1f670141af6fe5aa4b8f214bb1fac6ef5c1cc75",
       "resource": {
         "resourceType": "MedicationRequest",
-        "id": "5a49576cd85ff5e0a17889be0306bdb85151fae4f3b748be9a88caf5d1fd3660",
+        "id": "5fcb20d855bb7d0c0ff4da72c1f670141af6fe5aa4b8f214bb1fac6ef5c1cc75",
         "meta": {
           "versionId": "1",
           "profile": [
@@ -346,14 +346,14 @@
         "extension": [
           {
             "url": "https://curasphere.local/fhir/StructureDefinition/source-context",
-            "valueString": "{\"facts\":{\"code\":\"syn-paracetamol\",\"code_system\":\"curasphere.synthetic.medication\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-paracetamol\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"code\":\"syn-paracetamol\",\"display\":\"Paracetamol\",\"frequency\":\"as-recorded\",\"kind\":\"medication-order\",\"max\":4000,\"min\":1,\"route\":\"oral\",\"system\":\"curasphere.synthetic.medication\",\"unit\":\"mg\",\"unitSystem\":\"curasphere.synthetic.ucum-style/2026.10\",\"version\":\"2026.10\"},\"display\":\"Paracetamol\",\"id\":\"d62fb61c87be01a0a893fff92aa1314475dd127516d40ae409878b418a77a564\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"cbe5639bd8b16242bf06f284add08dda78eccf450c468721a2c31eb2b6939680\",\"system\":\"curasphere.synthetic.medication\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Paracetamol\",\"dose_quantity\":250,\"dose_unit\":\"mg\",\"encounter_id\":\"enc_299bcc1964574f9b\",\"executable\":0,\"facility_id\":\"fac_gh_accra\",\"frequency\":\"as-recorded\",\"id\":\"med_261c847b68144428\",\"intent\":\"proposal\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"route\":\"oral\",\"status\":\"draft\",\"transmission\":\"disabled\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"MedicationRequest\"}"
+            "valueString": "{\"facts\":{\"code\":\"syn-paracetamol\",\"code_system\":\"curasphere.synthetic.medication\",\"code_system_version\":\"2026.10\",\"coding\":{\"code\":\"syn-paracetamol\",\"definition\":{\"bindingPack\":\"curasphere-synthetic-bindings-2026.10\",\"code\":\"syn-paracetamol\",\"display\":\"Paracetamol\",\"frequency\":\"as-recorded\",\"kind\":\"medication-order\",\"max\":4000,\"min\":1,\"route\":\"oral\",\"system\":\"curasphere.synthetic.medication\",\"unit\":\"mg\",\"unitSystem\":\"curasphere.synthetic.ucum-style/2026.10\",\"version\":\"2026.10\"},\"display\":\"Paracetamol\",\"id\":\"d62fb61c87be01a0a893fff92aa1314475dd127516d40ae409878b418a77a564\",\"recordedAt\":\"2026-10-19T08:00:00.000Z\",\"revision\":\"cbe5639bd8b16242bf06f284add08dda78eccf450c468721a2c31eb2b6939680\",\"system\":\"curasphere.synthetic.medication\",\"version\":\"2026.10\"},\"created_at\":\"2026-10-19T08:00:00.000Z\",\"display\":\"Paracetamol\",\"dose_quantity\":250,\"dose_unit\":\"mg\",\"encounter_id\":\"enc_7393c26a539d4ffc\",\"executable\":0,\"facility_id\":\"fac_gh_accra\",\"frequency\":\"as-recorded\",\"id\":\"med_d79ab5a6670b4407\",\"intent\":\"proposal\",\"organization_id\":\"org_demo_gh\",\"patient_id\":\"pat_gh_kofi_a\",\"practitioner_id\":\"pr_gh_kwame\",\"recorded_at\":\"2026-10-19T08:00:00.000Z\",\"recorded_by\":\"usr_gh_doctor\",\"route\":\"oral\",\"status\":\"draft\",\"transmission\":\"disabled\",\"updated_at\":\"2026-10-19T08:00:00.000Z\",\"version\":1},\"mappingVersion\":\"1.0.1\",\"type\":\"MedicationRequest\"}"
           }
         ],
         "subject": {
           "reference": "Patient/2252399d2c89abcb7ab2418843ad6da622a8c02aee3ee07a69ced71505be27d2"
         },
         "encounter": {
-          "reference": "Encounter/45c004f27c4c3d8a6c7bab3422d0bcd39d57cfe5f8a3627e9cd3cbe232085337"
+          "reference": "Encounter/c810ae5730df62fb91c34fd437f2a49d001298d825854b7f4defcd6e1edf4a70"
         },
         "status": "draft",
         "intent": "proposal",

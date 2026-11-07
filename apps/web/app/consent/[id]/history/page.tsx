@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { consentHistory, effectivePermissions, getDb } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,13 +12,13 @@ export default async function ConsentHistoryPage({ params }: { params: Promise<{
   const { id } = await params;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("consent.history.read")) {
-    return <Shell ctx={ctx} current="consent"><h1 className="page-title">Consent history is limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="consent"><PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">Consent history is limited to authorized staff.</h1></PageHeader></Shell>;
   }
   try {
     const history = consentHistory(getDb(), consentActor(ctx), id);
     return (
       <Shell ctx={ctx} current="consent">
-        <h1 className="page-title">Consent history</h1>
+        <PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">Consent history</h1></PageHeader>
         {history.length === 0 ? <p>No versions are stored.</p> : null}
         <div className="list">
           {history.map((item) => (
@@ -33,6 +35,6 @@ export default async function ConsentHistoryPage({ params }: { params: Promise<{
     );
   } catch (error) {
     if (!(error instanceof NotFoundError)) throw error;
-    return <Shell ctx={ctx} current="consent"><h1 className="page-title">That consent record is not available.</h1></Shell>;
+    return <Shell ctx={ctx} current="consent"><PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">That consent record is not available.</h1></PageHeader></Shell>;
   }
 }

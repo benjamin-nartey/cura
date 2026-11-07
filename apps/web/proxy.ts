@@ -7,7 +7,7 @@ import { isSmartClientHost } from "@curasphere/contracts";
 export function proxy(request: NextRequest) {
   const hosts=[request.nextUrl.hostname,...[request.headers.get("host"),request.headers.get("x-forwarded-host")].filter(Boolean).flatMap(value=>value!.split(",").map(part=>{try{return new URL(`http://${part.trim()}`).hostname;}catch{return "";}}))];
   if(hosts.some(isSmartClientHost))return NextResponse.json({error:"reserved-client-host"},{status:403,headers:{"cache-control":"no-store"}});
-  if(request.nextUrl.pathname.startsWith("/interop/apps")){
+  if(request.nextUrl.pathname.startsWith("/interop/apps")||request.nextUrl.pathname.startsWith("/interop/partners")||request.nextUrl.pathname.startsWith("/interop/reconciliation")||request.nextUrl.pathname.startsWith("/interop/conformance")){
     const response=NextResponse.next();response.headers.set("x-frame-options","DENY");response.headers.set("content-security-policy","frame-ancestors 'none'; base-uri 'self'; object-src 'none'");response.headers.set("referrer-policy",request.nextUrl.pathname.endsWith("/callback")?"no-referrer":"same-origin");response.headers.set("cache-control","no-store");return response;
   }
   if(request.nextUrl.pathname!=="/api/patient-app"&&!request.nextUrl.pathname.startsWith("/api/patient-app/"))return NextResponse.next();

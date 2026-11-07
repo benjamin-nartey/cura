@@ -1,3 +1,5 @@
+import {twinInspectionQuery} from "@/lib/twin-inspection-query";
+import {readTwinInspection} from "@curasphere/domain";
 import { AppError, assertLocalHealthcareSandbox, effectivePermissions, getDb, listAppointments, listCharges, listMasterPatients, listPending, readBoundSession, readDashboard, readUnifiedChart } from "@curasphere/domain";
 import { endFoundationSession, openFoundationSession, readFoundationDirectory, readFoundationSession } from "@/lib/foundation";
 import { allowedMobileOrigin } from "@/lib/mobile-origin";
@@ -67,6 +69,7 @@ async function handle(request: Request, context: Context) {
     if (request.method !== "GET") return reply({ error: "method" }, 405);
     const actor = { userId: ctx.userId, organizationId: ctx.organizationId, facilityId: ctx.facilityId, sessionId: token };
     const url = new URL(request.url);
+    if (operation === "twin") { const q=twinInspectionQuery(url.searchParams); return reply(readTwinInspection(getDb(),ctx,q.patient,q.input)); }
     if (operation === "dashboard") return reply(readDashboard(getDb(), ctx));
     if (operation === "patients") return reply({ records: listMasterPatients(getDb(), actor, (url.searchParams.get("q") ?? "").slice(0, 80)), limit: 50 });
     if (operation === "appointments") return reply({ records: listAppointments(getDb(), actor), limit: 50 });
@@ -75,7 +78,7 @@ async function handle(request: Request, context: Context) {
     if (segments.length === 2 && segments[0] === "chart" && /^[A-Za-z0-9_-]{1,80}$/.test(segments[1]!)) return reply(readUnifiedChart(getDb(), actor, segments[1]!));
     return reply({ error: "notfound" }, 404);
   } catch (error) {
-    if (error instanceof AppError) return reply({ error: error.code }, error.code === "forbidden" ? 403 : error.code === "notfound" ? 404 : 400);
+    if (error instanceof AppError) return reply({ error: error.code }, error.code === "forbidden" ? 403 : error.code === "notfound" ? 404 : error.code === "unavailable" ? 503 : error.code === "conflict" ? 409 : error.code === "invalid" ? 422 : 400);
     console.error("mobile_workspace_failure");
     return reply({ error: "unavailable" }, 503);
   }

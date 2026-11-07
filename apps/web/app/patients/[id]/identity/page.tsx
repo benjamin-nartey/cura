@@ -1,3 +1,6 @@
+import {PageHeader,PageActions,SectionHeading,RecordFacts,DetailFact,PageEmpty} from "@/components/page-workspace";
+import {Icon} from "@/components/icon";
+import {formatWhen} from "@/lib/format";
 import { canReadChart, getDb, readMasterPatient } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -23,89 +26,21 @@ export default async function PatientIdentityPage({
   } catch {
     redirect("/patients?error=notfound");
   }
-  return (
-    <Shell ctx={ctx} current="patients">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">
-        {patient.given_name} {patient.family_name}
-      </h1>
-      <p className="lede">
-        {patient.registration_status} · version {patient.version} · source {patient.registration_source}
-        {patient.merged_into_id ? ` · superseded by ${patient.merged_into_id}` : ""}
-      </p>
-      <Feedback error={feedback.error} notice={feedback.notice} />
-      <section className="card">
-        <h2 style={{ marginTop: 0 }}>Demographics</h2>
-        <p>Preferred name: {patient.preferred_name ?? "Not recorded"}</p>
-        <p>Birth date: {patient.birth_date}</p>
-        <p>Sex: {patient.sex}</p>
-        <p className="mono">MRN {patient.mrn}</p>
-      </section>
-      <section className="card">
-        <h2 style={{ marginTop: 0 }}>Identifiers</h2>
-        {patient.identifiers.length === 0 ? <p>No identifier is stored.</p> : null}
-        <ul>
-          {patient.identifiers.map((identifier) => (
-            <li key={`${identifier.system}-${identifier.value}`}>
-              {identifier.system} · {identifier.value} · {identifier.status}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section className="card">
-        <h2 style={{ marginTop: 0 }}>Contacts</h2>
-        {patient.contacts.length === 0 ? <p>No contact is stored.</p> : null}
-        <ul>
-          {patient.contacts.map((contact) => (
-            <li key={`${contact.system}-${contact.value}`}>
-              {contact.use} {contact.system}: {contact.value}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section className="card">
-        <h2 style={{ marginTop: 0 }}>Facilities</h2>
-        <ul>
-          {patient.registrations.map((registration) => (
-            <li key={registration.facility_id}>
-              {registration.facility_id} · {registration.status}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section className="card">
-        <h2 style={{ marginTop: 0 }}>History</h2>
-        {patient.history.length === 0 ? <p>No version note is stored yet.</p> : null}
-        <ul>
-          {patient.history.map((entry) => (
-            <li key={`${entry.version}-${entry.reason}`}>
-              Version {entry.version} · {entry.reason} · {entry.author_id}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section className="card">
-        <h2 style={{ marginTop: 0 }}>Privacy</h2>
-        {patient.subjects.length === 0 ? (
-          <p>No verified privacy-subject link is stored. Creating this record did not set a consent basis.</p>
-        ) : (
-          <ul>
-            {patient.subjects.map((subject) => (
-              <li key={subject.subject_kind}>
-                {subject.subject_kind} · {subject.status}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-      {canReadChart(ctx) && patient.registration_status !== "merged" ? (
-        <p>
-          <a href={`/patients/${patient.id}`}>Open the clinical chart</a>
-        </p>
-      ) : null}
-      <p>
-        <a href="/patients">Back to the directory</a>
-      </p>
-    </Shell>
-  );
+  return <Shell ctx={ctx} current="patients">
+    <PageHeader section="Patient identity" href="/patients" icon="users" eyebrow={ctx.facilityName} description="Demographics, identifiers, contacts, and the provenance of this patient record."><h1 className="page-title">{patient.given_name} {patient.family_name}</h1></PageHeader>
+    <PageActions><a href="/patients">Back to the directory</a>{canReadChart(ctx)&&patient.registration_status!=="merged"&&<a href={`/patients/${patient.id}/chart`}>Open the clinical chart</a>}</PageActions>
+    <Feedback error={feedback.error} notice={feedback.notice}/>
+    <section className="record-profile" aria-label="Patient identity summary"><span className="record-profile-avatar" aria-hidden="true">{patient.given_name[0]}{patient.family_name[0]}</span><div className="record-profile-copy"><h2>Identity record</h2><p>Medical record number <strong>{patient.mrn}</strong></p><div className="record-badges"><span className="record-badge">Record status · {patient.registration_status}</span><span className="record-badge">Version {patient.version}</span><span className="record-badge">Source · {patient.registration_source}</span></div></div></section>
+    {patient.merged_into_id&&<div className="page-note"><Icon name="alert" size={18}/><span>This record has been superseded by {patient.merged_into_id}. Its history is retained.</span></div>}
+    <nav className="record-tabs" aria-label="Patient identity sections"><a href="#demographics">Demographics</a><a href="#identifiers">Identifiers</a><a href="#contacts">Contacts</a><a href="#facilities">Facilities</a><a href="#history">History</a><a href="#privacy">Privacy</a></nav>
+    <div className="record-layout"><div className="record-column">
+      <section className="card record-section" id="demographics"><SectionHeading icon="users"><h2>Demographics</h2></SectionHeading><RecordFacts><DetailFact label="Given name">{patient.given_name}</DetailFact><DetailFact label="Family name">{patient.family_name}</DetailFact><DetailFact label="Preferred name">{patient.preferred_name??"Not recorded"}</DetailFact><DetailFact label="Birth date">{patient.birth_date}</DetailFact><DetailFact label="Sex">{patient.sex}</DetailFact><DetailFact label="Medical record number"><span className="mono">{patient.mrn}</span></DetailFact></RecordFacts></section>
+      <section className="card record-section" id="identifiers"><SectionHeading icon="card"><h2>Identifiers</h2></SectionHeading>{patient.identifiers.length===0?<PageEmpty title="No identifier is stored." icon="card"/>:patient.identifiers.map(identifier=><div className="record-entry" key={`${identifier.system}-${identifier.value}`}><span className="record-entry-label">{identifier.system}</span><span className="record-entry-value mono">{identifier.value}</span><span><span className="record-status">{identifier.status}</span></span></div>)}</section>
+      <section className="card record-section" id="contacts"><SectionHeading icon="message"><h2>Contacts</h2></SectionHeading>{patient.contacts.length===0?<PageEmpty title="No contact is stored." icon="message"/>:patient.contacts.map(contact=><div className="record-entry" key={`${contact.system}-${contact.value}`}><span className="record-entry-label">{contact.use} · {contact.system}</span><span className="record-entry-value">{contact.value}</span></div>)}</section>
+    </div><div className="record-column">
+      <section className="card record-section" id="facilities"><SectionHeading icon="building"><h2>Facilities</h2></SectionHeading>{patient.registrations.length===0?<PageEmpty title="No facility registration is stored." icon="building"/>:patient.registrations.map(registration=><div className="record-entry" key={registration.facility_id}><span className="record-entry-label">Facility reference</span><span className="record-entry-value">{registration.facility_id}</span><span><span className="record-status">{registration.status}</span></span></div>)}</section>
+      <section className="card record-section" id="privacy"><SectionHeading icon="shield"><h2>Privacy</h2></SectionHeading>{patient.subjects.length===0?<div className="page-note"><Icon name="shield" size={18}/><span>No verified privacy-subject link is stored. Creating this record did not set a consent basis.</span></div>:patient.subjects.map(subject=><div className="record-entry" key={subject.subject_kind}><span className="record-entry-label">{subject.subject_kind}</span><span className="record-entry-value">{subject.status}</span></div>)}</section>
+      <section className="card record-section" id="history"><SectionHeading icon="fileSearch"><h2>History</h2></SectionHeading>{patient.history.length===0?<PageEmpty title="No version note is stored yet."/>:<ol className="record-history">{patient.history.map(entry=><li key={`${entry.version}-${entry.reason}`}><strong>Version {entry.version} · {entry.reason}</strong><p>Recorded by {entry.author_id}</p><time dateTime={entry.created_at}>{Number.isFinite(Date.parse(entry.created_at))?formatWhen(entry.created_at):"Recording time unavailable"}</time></li>)}</ol>}</section>
+    </div></div>
+  </Shell>;
 }

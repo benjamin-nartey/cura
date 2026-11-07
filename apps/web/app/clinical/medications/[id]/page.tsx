@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageActions,PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readMedicationOrder } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -22,9 +24,8 @@ export default async function MedicationPage({ params, searchParams }: { params:
   if (!row) return <Shell ctx={ctx} current="clinical"><p role="alert">That draft is not available.</p></Shell>;
   return (
     <Shell ctx={ctx} current="clinical">
-      <p><a href={`/clinical/coding/medication-order/${id}`}>Recorded coding provenance</a></p>
-      <h1 className="page-title">Medication draft</h1>
-      <p className="lede"><strong>Synthetic draft — not a valid prescription.</strong></p>
+      <PageActions><a href={`/clinical/coding/medication-order/${id}`}>Recorded coding provenance</a></PageActions>
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<><strong>Synthetic draft — not a valid prescription.</strong></>}><h1 className="page-title">Medication draft</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="card">
         <p>{String(row.display)} · {String(row.dose_quantity)} {String(row.dose_unit)} · {String(row.route)}</p>

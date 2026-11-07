@@ -1,6 +1,3 @@
-import { fhirCapability } from "@curasphere/domain";
-import { fhirResponse } from "@/lib/fhir-response";
-
-export async function GET() {
-  return fhirResponse(fhirCapability());
-}
+import { readLegacyCapabilities } from "@curasphere/domain";
+import { conformanceFailure,conformanceResponse } from "@/lib/conformance";
+export async function GET(request:Request){try{return conformanceResponse(request,readLegacyCapabilities(),true);}catch(error){return conformanceFailure(error,true);}}

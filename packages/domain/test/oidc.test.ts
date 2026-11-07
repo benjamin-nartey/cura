@@ -207,7 +207,9 @@ test("P02-S12 through P02-S15 a live token is verified and bad claims or signatu
   assert.throws(() => assertIdentityClaims({ ...payload, aud: "other-client" }), /audience/);
   assert.throws(() => assertIdentityClaims(payload, Number(payload.exp) + 5), /expired/);
   const [header, body, signature] = tokens.idToken.split(".");
-  await assert.rejects(() => verifyPresentedIdToken(`${header}.${body}.${signature.slice(0, -2)}aa`), /signature/);
+  const alteredSignature = Buffer.from(signature, "base64url");
+  alteredSignature[0] ^= 1; // Change an actual signed byte, not unused base64 padding bits.
+  await assert.rejects(() => verifyPresentedIdToken(`${header}.${body}.${alteredSignature.toString("base64url")}`), /signature/);
   await assert.rejects(() => verifyPresentedIdToken(`${header}.${body}`), /not signed/);
   const none = Buffer.from(JSON.stringify({ alg: "none", kid: payload.kid })).toString("base64url");
   await assert.rejects(() => verifyPresentedIdToken(`${none}.${body}.`), /algorithm|not signed/);

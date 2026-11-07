@@ -1,3 +1,4 @@
+import { sourceOrigin } from "@/lib/fhir-source";
 import { correctObservation, getDb } from "@curasphere/domain";
 import { sourceError, sourceKey } from "@/lib/clinical";
 import { redirectTo } from "@/lib/http";
@@ -5,6 +6,7 @@ import { masterActor } from "@/lib/master";
 import { requireSession } from "@/lib/session";
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
+  if(!sourceOrigin(request))return new Response("Forbidden",{status:403});
   const ctx = await requireSession();
   const { id } = await context.params;
   const form = await request.formData();

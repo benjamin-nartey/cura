@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { Shell } from "@/components/shell";
 import { facilitiesFor, loadWorkforce, memberOrDeny } from "@/lib/workforce";
 
@@ -14,23 +16,21 @@ export default async function AccessEditPage({ params }: { params: Promise<{ id:
     <Shell ctx={ctx} current="workforce" title="Edit access">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Access</p>
-          <h1 className="page-title">Edit access for {member.name}</h1>
-          <p className="lede">The server checks this change again. A preview on this page is not permission to grant it. No administrator role is selected.</p>
+          <PageHeader section="Workforce" href="/workforce" icon="users" eyebrow={<>Access</>} description={<>The server checks this change again. A preview on this page is not permission to grant it. No administrator role is selected.</>}><h1 className="page-title">Edit access for {member.name}</h1></PageHeader>
         </div>
       </header>
       <form className="panel card form-grid" method="post" action={`/api/workforce/${member.id}`}>
         <input type="hidden" name="action" value="role" />
         <input type="hidden" name="assurance" value="mfa" />
         <label className="field">Facility
-          <select name="facilityId" required defaultValue={current?.facilityId ?? ""}>
+          <select aria-label="Facility" name="facilityId" required defaultValue={current?.facilityId ?? ""}>
             {member.memberships.filter((membership) => membership.status === "active").map((membership) => (
               <option key={membership.facilityId} value={membership.facilityId}>{names.get(membership.facilityId) ?? membership.facilityId}</option>
             ))}
           </select>
         </label>
         <label className="field">Role
-          <select name="roleId" required defaultValue="">
+          <select aria-label="Role" name="roleId" required defaultValue="">
             <option value="" disabled>Choose a role</option>
             {ROLES.map((role) => <option key={role} value={role}>{role}</option>)}
           </select>
@@ -41,7 +41,7 @@ export default async function AccessEditPage({ params }: { params: Promise<{ id:
         <button type="submit">Confirm role change</button>
       </form>
       <section className="panel card">
-        <h2>Remove a role</h2>
+        <SectionHeading icon="users"><h2>Remove a role</h2></SectionHeading>
         {member.roles.filter((role) => role.status === "active").map((role) => (
           <form key={role.id} method="post" action={`/api/workforce/${member.id}`}>
             <input type="hidden" name="action" value="revoke-role" />

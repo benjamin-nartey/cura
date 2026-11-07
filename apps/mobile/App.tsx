@@ -75,5 +75,5 @@ export default function App() {
   if (mode === "patient") return <PatientApp base={`http://${address}:3000`} onExit={() => setMode(null)} />;
   if (mode === "clinic") return <Workspace base={`http://${address}:3000`} onExit={() => setMode(null)} />;
   if (mode === "foundation") return <ClinicApp root={`http://${address}:8081`} onExit={() => setMode(null)} />;
-  return <Welcome host={host} onHost={changeHost} onChoose={setMode} />;
+  return <Welcome onTour={() => setLanding(true)} host={host} onHost={changeHost} onChoose={setMode} />;
 }

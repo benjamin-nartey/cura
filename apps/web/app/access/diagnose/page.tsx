@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { authorize, devDirectoryEnabled, getDb } from "@curasphere/domain";
 import { redirect } from "next/navigation";
 import { Shell } from "@/components/shell";
@@ -35,9 +37,7 @@ export default async function DiagnosePage({
     <Shell ctx={ctx} current="access" title="Policy check">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Local test</p>
-          <h1 className="page-title">Policy decision</h1>
-          <p className="lede">This check uses the server policy for the current organization. It is unavailable outside the local test configuration.</p>
+          <PageHeader section="Access management" href="/access" icon="shieldCheck" eyebrow={<>Local test</>} description={<>This check uses the server policy for the current organization. It is unavailable outside the local test configuration.</>}><h1 className="page-title">Policy decision</h1></PageHeader>
         </div>
       </header>
       <form className="panel card" method="get">

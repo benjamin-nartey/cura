@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions} from "@/components/page-workspace";
 import { getDb, listWorkforce, workforceActor } from "@curasphere/domain";
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/shell";
@@ -22,11 +24,9 @@ export default async function WorkforcePage({ searchParams }: { searchParams: Pr
     <Shell ctx={ctx} current="workforce" title="Workforce">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Workforce</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">Staff you are allowed to administer. Counts and rows come from the server for this organization and facility scope.</p>
+          <PageHeader section="Workforce" href="/workforce" icon="users" eyebrow={<>Workforce</>} description={<>Staff you are allowed to administer. Counts and rows come from the server for this organization and facility scope.</>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
-        <p><a href="/workforce/invite">Invite staff</a></p>
+        <PageActions><a href="/workforce/invite">Invite staff</a></PageActions>
       </header>
       {query.notice ? <p className="lede" role="status">The change was saved.</p> : null}
       {query.error ? <p className="lede" role="alert">The change was not saved. Refresh the record and try again.</p> : null}
@@ -37,15 +37,15 @@ export default async function WorkforcePage({ searchParams }: { searchParams: Pr
         <p><a href="/workforce/invitations">Invitations</a> · <a href="/workforce/activity">Activity</a></p>
       </section>
       <form className="panel card form-grid" method="get">
-        <label className="field">Search<label className="sr">Staff name</label><input name="q" defaultValue={q} /></label>
+        <label className="field">Search<span className="sr">Staff name</span><input name="q" defaultValue={q} /></label>
         <label className="field">Facility
-          <select name="facilityId" defaultValue={facilityId}>
+          <select aria-label="Facility" name="facilityId" defaultValue={facilityId}>
             <option value="">All permitted facilities</option>
             {facilities.map((facility) => <option key={facility.id} value={facility.id}>{facility.name}</option>)}
           </select>
         </label>
         <label className="field">Role
-          <select name="role" defaultValue={role}>
+          <select aria-label="Role" name="role" defaultValue={role}>
             <option value="">Any role</option>
             <option value="nurse">Nurse</option>
             <option value="doctor">Doctor</option>
@@ -55,7 +55,7 @@ export default async function WorkforcePage({ searchParams }: { searchParams: Pr
           </select>
         </label>
         <label className="field">Status
-          <select name="status" defaultValue={status}>
+          <select aria-label="Status" name="status" defaultValue={status}>
             <option value="">Any status</option>
             <option value="active">Active</option>
             <option value="suspended">Suspended</option>

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { Shell } from "@/components/shell";
 import { emergencyContext } from "@/lib/emergency";
 
@@ -14,7 +16,7 @@ export default async function EmergencyEndedPage({ searchParams }: { searchParam
   return (
     <Shell ctx={ctx} current="emergency" title="Emergency access ended">
       <section className="panel card">
-        <h1 className="page-title">Emergency access ended</h1>
+        <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck"><h1 className="page-title">Emergency access ended</h1></PageHeader>
         <p role="status">{reason}</p>
         <p>The restricted record is no longer shown.</p>
         <p><a href="/emergency/history">Your emergency access history</a></p>

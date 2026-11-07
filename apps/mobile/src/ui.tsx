@@ -20,6 +20,11 @@ export function Card({ children, style, onPress }: { children: ReactNode; style?
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
+export function MetricCard({label,value,detail,icon="chart-box-outline",index=0,onPress}:{label:string;value:number;detail?:string;icon?:IconName;index?:number;onPress?:()=>void}) {
+ const featured=index===0&&!!onPress,tones=[{ink:"#267466",wash:"#eaf4ee"},{ink:"#476da6",wash:"#edf2fa"},{ink:"#90672d",wash:"#faf3e7"},{ink:"#79619b",wash:"#f2eef8"}],tone=tones[index%tones.length];
+ return <Card onPress={onPress} style={[styles.metric,featured?styles.featured:null]}><View style={styles.metricTop}><IconBadge name={icon} tint={featured?"#e0f0e8":tone.ink} wash={featured?"#ffffff18":tone.wash} size={38}/>{onPress&&<Icon name="arrow-top-right" size={18} tint={featured?"#d0e5dd":color.muted}/>}</View><Text style={[styles.metricLabel,featured&&styles.light]}>{label}</Text><Text style={[styles.metricValue,featured&&{color:"#ffffff"}]}>{value.toLocaleString("en-US")}</Text>{detail&&<Text style={[styles.metricDetail,featured&&styles.light]}>{detail}</Text>}{onPress&&<View style={[styles.metricFooter,featured&&{borderTopColor:"#ffffff25"}]}><Text style={[styles.metricFooterText,featured&&styles.light]}>View records</Text><Icon name="arrow-right" size={14} tint={featured?"#d0e5dd":color.primary}/></View>}</Card>;
+}
+
 export function IconBadge({ name, tint, wash, size = 44 }: { name: IconName; tint: string; wash: string; size?: number }) {
   return (
     <View style={[styles.badge, { width: size, height: size, borderRadius: size / 2.6, backgroundColor: wash }]}>
@@ -128,7 +133,16 @@ export function Orbs({ tint = "#ffffff" }: { tint?: string }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: 12, borderWidth: 1, borderColor: color.hairline, padding: 18, ...shadow },
+  metric:{width:"47%",minWidth:130,padding:18,minHeight:196,gap:8},
+  featured:{backgroundColor:"#18564d",borderColor:"#18564d"},
+  metricTop:{flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginBottom:8},
+  metricLabel:{fontSize:12,lineHeight:18,color:color.body,fontWeight:"500"},
+  metricValue:{fontSize:34,lineHeight:40,fontWeight:"600",letterSpacing:-1.5,color:color.ink,fontVariant:["tabular-nums"]},
+  metricDetail:{fontSize:12,lineHeight:18,color:color.muted},
+  metricFooter:{flexDirection:"row",justifyContent:"space-between",alignItems:"center",borderTopWidth:1,borderTopColor:color.hairline,marginTop:8,paddingTop:10},
+  metricFooterText:{fontSize:11,fontWeight:"600",color:color.primary},
+  light:{color:"#d0e5dd"},
+  card: { backgroundColor: color.surface, borderRadius: 16, borderWidth: 1, borderColor: color.hairline, padding: 18, ...shadow },
   pressed: { opacity: 0.86, transform: [{ scale: 0.985 }] },
   badge: { alignItems: "center", justifyContent: "center" },
   avatar: { alignItems: "center", justifyContent: "center" },
@@ -138,7 +152,7 @@ const styles = StyleSheet.create({
   sectionAction: { color: color.primary, fontWeight: "700" },
   pill: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4, alignSelf: "flex-start" },
   pillText: { fontSize: 12, fontWeight: "700", textTransform: "capitalize" },
-  button: { height: 54, borderRadius: 8, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 18 },
+  button: { minHeight: 50, borderRadius: 11, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 18 },
   quiet: { borderWidth: 1, borderColor: color.hairline },
   buttonText: { fontWeight: "600", fontSize: 15 },
   field: {
@@ -146,14 +160,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     backgroundColor: color.surface,
-    borderRadius: 8,
+    borderRadius: 11,
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: color.hairline,
     marginBottom: 12,
   },
   fieldInput: { flex: 1, color: color.ink, paddingVertical: 14, fontSize: 15 },
-  banner: { flexDirection: "row", alignItems: "center", gap: 10, padding: 14, borderRadius: 8, marginBottom: 14 },
+  banner: { flexDirection: "row", alignItems: "center", gap: 10, padding: 14, borderRadius: 12, marginBottom: 14 },
   bannerText: { flex: 1, lineHeight: 20, fontWeight: "600" },
   empty: { alignItems: "center", gap: 10, paddingVertical: 22 },
   emptyText: { color: color.muted, textAlign: "center", lineHeight: 20 },

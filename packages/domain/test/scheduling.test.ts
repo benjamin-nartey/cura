@@ -516,7 +516,7 @@ test("P04-F02-S41 timezone conversion preserves the intended local time", () => 
 
 test("P04-F02-S42 migration and fixtures reproduce from a clean database", () => {
   const database = db();
-  assert.equal(healthcheck(database).schemaVersion, 49);
+  assert.equal(healthcheck(database).schemaVersion, 63);
   assert.equal(get<{ capacity: number }>(database, `SELECT capacity FROM scheduling_resources WHERE id = ?`, ROOM)?.capacity, 1);
   assert.equal(get<{ c: number }>(database, `SELECT COUNT(*) AS c FROM patients WHERE facility_id = 'fac_riverside'`)?.c, 10);
   database.close();
@@ -537,7 +537,7 @@ test("scheduling rollback returns to the previous schema and can migrate again",
   database.exec(SCHEDULE_ROLLBACK);
   database.close();
   const reopened = createDatabase(file);
-  assert.equal(healthcheck(reopened).schemaVersion, 49);
+  assert.equal(healthcheck(reopened).schemaVersion, 63);
   assert.equal(get<{ capacity: number }>(reopened, `SELECT capacity FROM scheduling_resources WHERE id = ?`, ROOM)?.capacity, undefined);
   reopened.close();
 });

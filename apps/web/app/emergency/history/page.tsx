@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { emergencyHistory, getDb } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { emergencyActor, emergencyContext } from "@/lib/emergency";
@@ -17,8 +19,7 @@ export default async function EmergencyHistoryPage() {
     <Shell ctx={ctx} current="emergency" title="Emergency history">
       <header className="chart-head">
         <div>
-          <h1 className="page-title">Your emergency access history</h1>
-          <p className="lede">This list shows only your own requests.</p>
+          <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck" description={<>This list shows only your own requests.</>}><h1 className="page-title">Your emergency access history</h1></PageHeader>
         </div>
       </header>
       {rows.length === 0 ? <p role="status">No emergency requests are recorded for you.</p> : null}

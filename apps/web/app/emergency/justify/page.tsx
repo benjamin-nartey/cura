@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { Shell } from "@/components/shell";
@@ -13,16 +15,14 @@ export default async function EmergencyJustifyPage({ searchParams }: { searchPar
     <Shell ctx={ctx} current="emergency" title="Emergency access">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Emergency access</p>
-          <h1 className="page-title">Emergency access</h1>
-          <p className="lede">Scope: one restricted simulation record at {ctx.facilityName}. Allowed operation: read only. This activity is recorded and reviewed.</p>
+          <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck" eyebrow={<>Emergency access</>} description={<>Scope: one restricted simulation record at {ctx.facilityName}. Allowed operation: read only. This activity is recorded and reviewed.</>}><h1 className="page-title">Emergency access</h1></PageHeader>
         </div>
       </header>
       {query.error ? <p role="alert">The request was not accepted. Add the reason and try again.</p> : null}
       <form className="panel card form-grid" method="post" action="/api/emergency-access/requests">
         <input type="hidden" name="idempotencyKey" value={key} />
         <label className="field">Reason category
-          <select name="reasonCategory" required defaultValue="emergency-treatment">
+          <select aria-label="Reason category" name="reasonCategory" required defaultValue="emergency-treatment">
             <option value="emergency-treatment">Emergency treatment</option>
           </select>
         </label>

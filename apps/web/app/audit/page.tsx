@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions} from "@/components/page-workspace";
 import { canReviewAudit, getDb, listAudit, noteDenial } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { formatWhen, purposeLabel } from "@/lib/format";
@@ -9,18 +11,15 @@ export default async function AuditPage() {
     noteDenial(getDb(), ctx, "audit.read", "AuditEvent", null);
     return (
       <Shell ctx={ctx} current="audit">
-        <p className="eyebrow">Audit</p>
-        <h1 className="page-title">Audit review is limited to auditors.</h1>
+        <PageHeader section="Audit" href="/audit" icon="fileSearch" eyebrow={<>Audit</>}><h1 className="page-title">Audit review is limited to auditors.</h1></PageHeader>
       </Shell>
     );
   }
   const entries = listAudit(getDb(), ctx);
   return (
     <Shell ctx={ctx} current="audit">
-      <p className="eyebrow">{ctx.organizationName}</p>
-      <h1 className="page-title">Access decisions</h1>
-      <p className="lede">Who opened or changed a record, and whether the decision was allowed. Limited to this organization.</p>
-      <p><a href="/audit/ledger">Open the access ledger</a></p>
+      <PageHeader section="Audit" href="/audit" icon="fileSearch" eyebrow={<>{ctx.organizationName}</>} description={<>Who opened or changed a record, and whether the decision was allowed. Limited to this organization.</>}><h1 className="page-title">Access decisions</h1></PageHeader>
+      <PageActions><a href="/audit/ledger">Open the access ledger</a></PageActions>
       <div className="list">
         {entries.map((entry) => (
           <article className="row" key={entry.id} style={{ gridTemplateColumns: "180px minmax(0, 1fr) auto" }}>

@@ -165,7 +165,7 @@ export async function Shell({
     if (link.id === "appointments") return allowed.has("appointment.read");
     if (link.id === "clinical") return allowed.has("clinical.condition.read") || allowed.has("clinical.observation.read");
     if (link.id === "work") return allowed.has("work.pending.read") || allowed.has("work.order.read");
-    if (link.id === "billing") return allowed.has("billing.charge.read") || allowed.has("billing.read");
+    if (link.id === "billing") return !!ctx.facilityId && allowed.has("billing.charge.read");
     return allowed.has("clinical.read");
   });
   const groups = [...new Set(links.map((link) => link.group))];
@@ -178,7 +178,7 @@ export async function Shell({
             <label className="sr" htmlFor="side-q">
               Search patients
             </label>
-            <input id="side-q" name="q" type="search" placeholder="Search" />
+            <input id="side-q" name="q" type="search" placeholder="Find a patient…" />
           </form>
         ) : null}
         <nav className="nav" aria-label="Workspace">
@@ -203,7 +203,7 @@ export async function Shell({
       </Sidebar>
       <div className="workspace">
         <header className="topbar">
-          <h1>{title ?? TITLES[current]}</h1>
+          <div className="workspace-heading"><span className="workspace-heading-label">CARE WORKSPACE</span><h1>{title ?? TITLES[current]}</h1></div>
           <div className="top-actions">
             {chart ? (
               <a className="bell" href="/clinical" aria-label="Open clinical workspace">

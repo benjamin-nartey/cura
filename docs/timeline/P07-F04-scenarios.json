@@ -1,0 +1,30 @@
+{
+  "feature": "P07-F04",
+  "scope": "local synthetic engineering",
+  "scenarios": [
+    {
+      "id": "navigation",
+      "oracle": "Actual source cards, missing/amended labels, chronological roving focus, date anchors, reduced motion, desktop/phone Axe and containment"
+    },
+    {
+      "id": "source-amendment",
+      "oracle": "New synthetic observation and two actual corrections; exact old evidence stays historical, hash check clears stale list, refresh shows latest"
+    },
+    {
+      "id": "offline",
+      "oracle": "Visible facts and modal clear; commands disabled; reconnect requires explicit reads and does not replay writes"
+    },
+    {
+      "id": "untrusted-source",
+      "oracle": "Mismatched source hash cannot render injected value; Escape cancels delayed response; different patient has empty state"
+    },
+    {
+      "id": "authorization",
+      "oracle": "Readonly metadata endpoint rejects unauthenticated, wrong role/tenant/origin, duplicate patient and POST; returns only three metadata fields"
+    },
+    {
+      "id": "regression",
+      "oracle": "Existing canonical source and explorer filters/snapshots/comparisons remain operational; mobile regressions remain operational"
+    }
+  ]
+}

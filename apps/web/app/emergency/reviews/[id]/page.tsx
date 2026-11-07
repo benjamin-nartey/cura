@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readEmergencyReview } from "@curasphere/domain";
 import { notFound, redirect } from "next/navigation";
 import { Shell } from "@/components/shell";
@@ -29,8 +31,7 @@ export default async function EmergencyReviewDetailPage({
     <Shell ctx={ctx} current="emergency" title="Emergency review">
       <header className="chart-head">
         <div>
-          <h1 className="page-title">Emergency request</h1>
-          <p className="lede">Status {detail.review.status}. This page does not show the restricted record.</p>
+          <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck" description={<>Status {detail.review.status}. This page does not show the restricted record.</>}><h1 className="page-title">Emergency request</h1></PageHeader>
         </div>
       </header>
       {query.error === "conflict" ? <p role="alert">This review changed. Reload it and try again.</p> : null}
@@ -38,7 +39,7 @@ export default async function EmergencyReviewDetailPage({
       <section className="panel card">
         <p>Reason category: {detail.request?.reason_category}</p>
         <p>Justification: {detail.request?.justification}</p>
-        <h2>Activity</h2>
+        <SectionHeading icon="shieldCheck"><h2>Activity</h2></SectionHeading>
         <ol>
           {(detail.events as Array<{ event_type: string; created_at: string; action: string | null; outcome: string }>).map((event, index) => (
             <li key={`${event.event_type}-${index}`}>{event.created_at} · {event.event_type} · {event.action ?? "review"} · {event.outcome}</li>
@@ -54,7 +55,7 @@ export default async function EmergencyReviewDetailPage({
       {canDispose ? (
         <form className="form-grid" method="post" action={`/api/emergency-access/reviews/${id}/disposition`}>
           <label className="field">Disposition
-            <select name="disposition" defaultValue="closed_appropriate">
+            <select aria-label="Disposition" name="disposition" defaultValue="closed_appropriate">
               <option value="closed_appropriate">Closed appropriate</option>
               <option value="closed_inappropriate">Closed inappropriate</option>
             </select>

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readObservation } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
@@ -19,7 +21,7 @@ export default async function ObservationPage({ params }: { params: Promise<{ id
   return (
     <Shell ctx={ctx} current="clinical">
       {row?<p><a href={`/clinical/coding/observation/${id}`}>Recorded coding provenance</a></p>:null}
-      <h1 className="page-title">Observation</h1>
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope"><h1 className="page-title">Observation</h1></PageHeader>
       {failed || !row ? <p role="alert">That observation is not available.</p> : null}
       {row ? (
         <div className="card">

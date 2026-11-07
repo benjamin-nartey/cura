@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading,PageActions} from "@/components/page-workspace";
 import { getDb, readRegistrationDraft } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -19,12 +21,10 @@ export default async function ReviewRegistrationPage({ searchParams }: { searchP
   }
   return (
     <Shell ctx={ctx} current="patients">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Possible duplicate</h1>
-      <p className="lede">These candidates are not confirmed as the same person. Nothing is merged from this screen.</p>
+      <PageHeader section="Patients" href="/patients" icon="users" eyebrow={<>{ctx.facilityName}</>} description={<>These candidates are not confirmed as the same person. Nothing is merged from this screen.</>}><h1 className="page-title">Possible duplicate</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <section className="card">
-        <h2 style={{ marginTop: 0 }}>Registration waiting to be saved</h2>
+        <SectionHeading icon="users"><h2 style={{ marginTop: 0 }}>Registration waiting to be saved</h2></SectionHeading>
         <p>
           {draft.given_name} {draft.family_name}
           {draft.preferred_name ? ` · preferred ${draft.preferred_name}` : ""}
@@ -48,9 +48,9 @@ export default async function ReviewRegistrationPage({ searchParams }: { searchP
           Save as a separate record
         </button>
       </form>
-      <p>
+      <PageActions>
         <a href="/patients">Return without saving</a>
-      </p>
+      </PageActions>
     </Shell>
   );
 }

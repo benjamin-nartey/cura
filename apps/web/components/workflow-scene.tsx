@@ -1,0 +1,22 @@
+'use client';
+import {useLayoutEffect,useRef,useState} from 'react';
+import {tourStage,tourValue,workflows} from '../../mobile/src/walkthrough-model';
+import {Icon} from './icon';
+
+export function WorkflowScene({chapter,elapsed,reduced,playing}:{chapter:number;elapsed:number;reduced:boolean;playing:boolean}){
+ const flow=workflows[chapter]!,stage=tourStage(elapsed),root=useRef<HTMLDivElement>(null),[point,setPoint]=useState({x:25,y:25});
+ useLayoutEffect(()=>{
+  const node=root.current;if(!node)return;
+  const measure=()=>{const target=node.querySelector<HTMLElement>(`[data-tour-target="${stage}"]`);if(!target)return;const box=node.getBoundingClientRect(),rect=target.getBoundingClientRect();setPoint({x:Math.min(node.offsetWidth-42,(rect.left-box.left+Math.min(rect.width*.7,rect.width-8))*node.offsetWidth/box.width),y:(rect.top-box.top+rect.height*.55)*node.offsetHeight/box.height});};
+  measure();const observer=new ResizeObserver(measure);observer.observe(node);return()=>observer.disconnect();
+ },[stage,chapter]);
+ const icon=chapter===0?'calendar':chapter===1?'users':chapter===2?'handoff':chapter===3?'wallet':'shieldCheck';
+ return <div ref={root} className="activity-demo" data-workflow={flow.id} data-stage={stage} data-moving={playing&&!reduced} aria-label={`${flow.title} illustrative workflow`}>
+  <div className="activity-toolbar"><span>{flow.section}<small>Ama Owusu · Synthetic example</small></span><span data-tour-target="0" className={`activity-button ${stage===0?'activity-target':''}`}><span aria-hidden="true">＋</span>{flow.open}</span></div>
+  <div className="activity-canvas">
+   {stage===0?<div className="activity-empty"><Icon name={icon} size={34}/><strong>{chapter===0?'Your next visit starts here.':chapter===1?'Make room for a new patient.':chapter===2?'Keep the next step moving.':chapter===3?'Connect the service to the visit.':'Care starts with the right context.'}</strong><span>Watch the cursor complete this workflow.</span><div className="activity-skeleton"><i/><i/><i/></div></div>:stage<4?<div className="activity-form"><div className="activity-form-title"><span className="activity-form-mark"><Icon name={icon} size={17}/></span><strong>{flow.title}</strong><span aria-hidden="true">×</span></div>{flow.labels.map((label,i)=><div className={`activity-field ${stage===i+1?'activity-field-active':''}`} key={label}><span>{label}</span><div data-tour-target={i+1}><strong>{tourValue(flow.values[i]!,i,elapsed,reduced)||' '}</strong>{stage===i+1&&!reduced&&<i className="activity-caret" aria-hidden="true"/>}{chapter===0&&i===1&&<span className="activity-field-arrow" aria-hidden="true">⌄</span>}</div></div>)}<div className="activity-form-foot"><span>Preview only</span><span data-tour-target="3" className={`activity-button ${stage===3?'activity-target':''}`}>{stage===3?'Saving…':flow.save}<span aria-hidden="true">↗</span></span></div></div>:<div className="activity-complete"><div className="activity-success"><span className="activity-check" aria-hidden="true">✓</span><div><strong>{flow.success}</strong><small>{flow.steps[4]}</small></div></div><div className="activity-result" data-tour-target="4"><span className="film-monogram">{chapter===1?'AO':chapter===0?'09':'✓'}</span><span><strong>{flow.result}</strong><small>{flow.detail}</small></span><span className="film-chip">{flow.badge}</span></div><div className="activity-next"><Icon name="fileSearch" size={16}/><span>{chapter===0?'Patient context is ready for the visit.':chapter===1?'Identity is ready for appointments and chart access.':chapter===2?'The assigned task keeps its patient context.':chapter===3?'Draft retained for authorized billing review.':'Role, facility and purpose remain in view.'}</span></div></div>}
+  </div>
+  <div className="activity-step"><span>{String(stage+1).padStart(2,'0')} / 05</span><strong>{flow.steps[stage]}</strong><span className="activity-mini-progress" aria-hidden="true">{flow.steps.map((_,i)=><i className={i<=stage?'done':''} key={i}/>)}</span></div>
+  {!reduced&&<div className="activity-cursor" aria-hidden="true" data-clicking={stage===0||stage===3} data-stage={stage} style={{transform:`translate3d(${point.x}px,${point.y}px,0)`}}><span className="activity-click-ring" key={`${chapter}-${stage}`}/><svg viewBox="0 0 25 30" width="25" height="30"><path d="M2 1.5 20.5 15l-9 .8L7.2 25Z" fill="#183f38" stroke="#fff" strokeWidth="1.8" strokeLinejoin="round"/></svg><span className="activity-cursor-label">{stage===1||stage===2?'Typing…':stage===4?'Done':'Click'}</span></div>}
+ </div>;
+}

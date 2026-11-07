@@ -299,12 +299,12 @@ test("P04-F04-S16 restart and rollback preserve the schema head", () => {
   const reopened = createDatabase(file);
   assert.equal(get<{ status: string }>(reopened, `SELECT status FROM work_orders WHERE id = ?`, created.id)?.status, "submitted");
   assert.equal(get<{ executable: number }>(reopened, `SELECT executable FROM source_medication_orders WHERE id = ?`, draft.id)?.executable, 0);
-  assert.equal(healthcheck(reopened).schemaVersion, 49);
+  assert.equal(healthcheck(reopened).schemaVersion, 63);
   reopened.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   reopened.exec(WORK_ROLLBACK);
   reopened.close();
   const restored = createDatabase(file);
-  assert.equal(healthcheck(restored).schemaVersion, 49);
+  assert.equal(healthcheck(restored).schemaVersion, 63);
   assert.equal(get<{ name: string }>(restored, `SELECT name FROM sqlite_master WHERE name = 'work_orders'`)?.name, "work_orders");
   restored.close();
 });

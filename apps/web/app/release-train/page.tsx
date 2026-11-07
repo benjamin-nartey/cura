@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { getDb, noteDenial, readReleaseTrain } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -12,8 +14,7 @@ export default async function ReleaseTrainPage({ searchParams }: { searchParams:
     noteDenial(getDb(), ctx, "release.read", "ReleaseDossier", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="release-train">
-        <p className="eyebrow">Release train</p>
-        <h1 className="page-title">The release train is closed for this role.</h1>
+        <PageHeader section="Release management" href="/release-train" icon="branch" eyebrow={<>Release train</>}><h1 className="page-title">The release train is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -22,28 +23,26 @@ export default async function ReleaseTrainPage({ searchParams }: { searchParams:
     <Shell ctx={ctx} current="release-train">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Release train · {view.strategyVersion}</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">
+          <PageHeader section="Release management" href="/release-train" icon="branch" eyebrow={<>Release train · {view.strategyVersion}</>} description={<>
             {view.strategyNote} {view.dossierNote} {view.traceNote} {view.traceDocs.join(", ")}. {view.riskNote} {view.validationNote} {view.clinicalNote} {view.changeNote} {view.surveillanceNote} {view.attemptNote} {view.aiNote}
-          </p>
+          </>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form action="/api/release-train/strategy" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/release-train/strategy" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <input type="hidden" name="jurisdiction" value="local-synthetic" />
         <button className="btn-line" type="submit">Store strategy as not-approved</button>
-      </form>
-      <form action="/api/release-train/explain" method="post" className="form-grid" style={{ marginTop: 12 }}>
+      </form></section>
+      <section className="page-form card"><form action="/api/release-train/explain" method="post" className="form-grid" style={{ marginTop: 12 }}>
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Ask the gateway</button>
-      </form>
+      </form></section>
       <div className="board" style={{ marginTop: 16 }}>
         {view.strategies.map((strategy) => (
           <section className="card" key={strategy.id}>
             <p className="eyebrow">{strategy.status} · {strategy.jurisdiction}</p>
-            <h2>Strategy</h2>
+            <SectionHeading icon="branch"><h2>Strategy</h2></SectionHeading>
             <p>{view.strategyNote}</p>
             <form action="/api/release-train/dossier" method="post" className="form-grid" style={{ marginTop: 12 }}>
               <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
@@ -59,7 +58,7 @@ export default async function ReleaseTrainPage({ searchParams }: { searchParams:
         {view.dossiers.map((dossier) => (
           <section className="card" key={dossier.id}>
             <p className="eyebrow">{dossier.label}</p>
-            <h2>Dossier</h2>
+            <SectionHeading icon="branch"><h2>Dossier</h2></SectionHeading>
             <p>{view.dossierNote}</p>
             <p className="muted">{dossier.id}</p>
             <p>{dossier.trace ? view.traceNote : "Trace is not stored."}</p>
@@ -110,7 +109,7 @@ export default async function ReleaseTrainPage({ searchParams }: { searchParams:
         {view.attempts.map((attempt) => (
           <section className="card" key={attempt.id}>
             <p className="eyebrow">{attempt.outcome}</p>
-            <h2>Release attempt</h2>
+            <SectionHeading icon="branch"><h2>Release attempt</h2></SectionHeading>
             <p>{view.attemptNote}</p>
           </section>
         ))}

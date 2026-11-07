@@ -6,7 +6,7 @@ import { Field, Icon, Orbs, type IconName } from "./ui";
 
 export type Mode = "patient" | "clinic" | "foundation";
 
-export function Welcome({ host, onHost, onChoose }: { host: string; onHost: (host: string) => void; onChoose: (mode: Mode) => void }) {
+export function Welcome({ host, onHost, onChoose, onTour }: { onTour: () => void; host: string; onHost: (host: string) => void; onChoose: (mode: Mode) => void }) {
   const [editing, setEditing] = useState(false);
   const rise = useRef(new Animated.Value(0)).current;
 
@@ -33,6 +33,7 @@ export function Welcome({ host, onHost, onChoose }: { host: string; onHost: (hos
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
         <Animated.View style={enter}>
           <Text style={styles.ask}>Choose your workspace</Text>
+          <Pressable accessibilityRole="button" accessibilityLabel="Discover CuraSphere" onPress={onTour} style={styles.server}><Icon name="play-circle-outline" size={18} tint={color.primary}/><Text style={styles.serverText}>Discover CuraSphere</Text></Pressable>
           <Choice
             icon="account-heart-outline"
             title="I’m a patient"

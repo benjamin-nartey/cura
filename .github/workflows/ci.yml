@@ -30,15 +30,18 @@ jobs:
           key: fhir-r4-${{ runner.os }}-${{ hashFiles('tools/fhir/validator.lock.json') }}
       - run: node tools/fhir/install-validator.mjs
       - run: node --test tools/fhir/validate.test.mjs
-      - run: node --import tsx --test tools/platform/fhir-source-http.test.ts tools/platform/smart-http.test.ts
-      - run: node --import tsx --import ./packages/domain/test/dev-env.ts --test packages/domain/test/fhir-source.test.ts packages/domain/test/smart.test.ts
+      - run: node --import tsx --test tools/platform/fhir-source-http.test.ts tools/platform/smart-http.test.ts tools/platform/integrations-http.test.ts tools/platform/partner-receiver.test.ts tools/platform/twin-reads.test.ts
+      - run: node --import tsx --import ./packages/domain/test/dev-env.ts --test packages/domain/test/fhir-source.test.ts packages/domain/test/smart.test.ts packages/domain/test/integrations.test.ts packages/domain/test/integration-batches.test.ts
       - run: node --import tsx tools/fhir/generate-fixtures.ts
+      - run: npm run conformance:test
       - run: node tools/fhir/validate.mjs
+        env:
+          CURASPHERE_FHIR_VALIDATION_RUN: P06-F05-validator
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: fhir-source-validation
-          path: artifacts/governance-v2/P06-F01-validator
+          path: artifacts/governance-v2/P06-F05-validator
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -62,6 +65,7 @@ jobs:
           exit 1
       - run: npm test
       - run: npm run typecheck
+      - run: npm run lint:gateway-boundary
       - run: node --test tools/platform/contract-compat.test.mjs tools/platform/signing.test.mjs tools/platform/delivery-static.test.mjs
       - run: npm audit --audit-level=critical
       - run: npm sbom --sbom-format cyclonedx
@@ -130,3 +134,27 @@ jobs:
         with:
           name: governance-v2-synthetic-evidence
           path: artifacts/governance-v2
+
+  timeline-kafka-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: docker compose -f infra/local/compose.yaml up -d --wait kafka
+      - run: npm run timeline:kafka:test
+      - if: always()
+        run: docker compose -f infra/local/compose.yaml logs kafka > kafka-recovery.log
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timeline-kafka-recovery
+          path: |
+            artifacts/governance-v2/P07-F05-kafka-outage.json
+            kafka-recovery.log
+      - if: always()
+        run: docker compose -f infra/local/compose.yaml stop kafka

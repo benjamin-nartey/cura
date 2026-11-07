@@ -1,3 +1,4 @@
+import { queueIntegrationObservation } from "./integration-outbox";
 import { codingCommandHash, codingDefinition, codingForAuthorizedSource, pinClinicalCoding, type CodingSelection } from "./clinical-coding";
 import { randomUUID } from "node:crypto";
 import { writeAudit } from "./audit";
@@ -429,6 +430,7 @@ export function recordObservation(db: AppDatabase, actor: SourceActor, input: { 
     pinClinicalCoding(db,actor,"observation",id,codingDefinition("observation",input.code===PRESSURE.code?PRESSURE:QUANTITIES.find(item=>item.code===input.code)!,UNIT_SYSTEM),input.coding);
     writeAudit(db, sessionFor(db, actor), { action: "clinical.observation.record", resourceType: "Observation", resourceId: id, outcome: "success" });
     countMetric(db, "source.observation.recorded");
+    queueIntegrationObservation(db,id);
     const response = { id, version: 1, status: input.status };
     saveCommand(db, actor.organizationId, input.idempotencyKey, hash, response);
     return { ...response, idempotent: false };
@@ -475,6 +477,7 @@ export function correctObservation(db: AppDatabase, actor: SourceActor, id: stri
     remember(db, actor, "observation", id, next, row.version, row.encounter_id, input.reason, snapshot, now);
     writeAudit(db, sessionFor(db, actor), { action: "clinical.observation.correct", resourceType: "Observation", resourceId: id, outcome: "success" });
     countMetric(db, "source.observation.corrected");
+    queueIntegrationObservation(db,id);
     const response = { id, version: next, status: "corrected", value: input.valueQuantity };
     saveCommand(db, actor.organizationId, input.idempotencyKey, hash, response);
     return { ...response, idempotent: false };

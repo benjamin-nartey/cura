@@ -1,3 +1,4 @@
+import { INTEGRATION_FIXTURE_ROLLBACK } from "./integration-schema";
 export const SMART_SCHEMA = `
 CREATE TABLE smart_clients (
  id TEXT PRIMARY KEY, organization_id TEXT NOT NULL REFERENCES organizations(id), name TEXT NOT NULL,
@@ -39,4 +40,4 @@ CREATE TRIGGER smart_client_identity_immutable BEFORE UPDATE OF id,organization_
 CREATE TRIGGER smart_client_no_reenable BEFORE UPDATE OF status ON smart_clients WHEN OLD.status='disabled' AND NEW.status<>'disabled' BEGIN SELECT RAISE(ABORT,'SMART client disable is terminal'); END;
 `;
 // Disposable fixtures only. Operational rollback revokes grants and preserves security evidence.
-export const SMART_FIXTURE_ROLLBACK = `DROP TABLE IF EXISTS smart_tokens; DROP TABLE IF EXISTS smart_codes; DROP TABLE IF EXISTS smart_grants; DROP TABLE IF EXISTS smart_requests; DROP TABLE IF EXISTS smart_clients; DROP TABLE IF EXISTS smart_controls; DELETE FROM schema_migrations WHERE version=49;`;
+export const SMART_FIXTURE_ROLLBACK = `${INTEGRATION_FIXTURE_ROLLBACK} DROP TABLE IF EXISTS smart_tokens; DROP TABLE IF EXISTS smart_codes; DROP TABLE IF EXISTS smart_grants; DROP TABLE IF EXISTS smart_requests; DROP TABLE IF EXISTS smart_clients; DROP TABLE IF EXISTS smart_controls; DELETE FROM schema_migrations WHERE version=49;`;

@@ -260,6 +260,6 @@ test("P03-F03 schema rollback returns to version 34 and the next open upgrades",
   assert.equal(rolled.version, 34);
   database.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 49);
+  assert.equal(healthcheck(upgraded).schemaVersion, 63);
   upgraded.close();
 });

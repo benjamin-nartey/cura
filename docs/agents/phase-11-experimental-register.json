@@ -1,0 +1,45 @@
+{
+  "phase": "11",
+  "engineeringStatus": "ENGINEERING_COMPLETE_REVIEW_PENDING",
+  "closeout": "docs/agents/P11-closeout.md",
+  "formalPhaseStatus": "NOT_STARTED",
+  "authority": "The product owner authorized Phase 11 and P11-F01 in the local synthetic workspace.",
+  "features": [
+    {
+      "id": "P11-F01",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 62,
+      "validation": "docs/agents/P11-F01-validation.md"
+    },
+    {
+      "id": "P11-F02",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 62,
+      "validation": "docs/agents/P11-F02-validation.md"
+    },
+    {
+      "id": "P11-F03",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 62,
+      "validation": "docs/agents/P11-F03-validation.md"
+    },
+    {
+      "id": "P11-F04",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 62,
+      "validation": "docs/agents/P11-F04-validation.md"
+    },
+    {
+      "id": "P11-F05",
+      "status": "ENGINEERING_VERIFIED_REVIEW_PENDING",
+      "reviewer": null,
+      "schemaVersion": 63,
+      "validation": "docs/agents/P11-F05-validation.md"
+    }
+  ],
+  "productionClinicalEnabled": false
+}

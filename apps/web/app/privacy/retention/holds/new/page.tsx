@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { requireSession } from "@/lib/session";
@@ -7,11 +9,11 @@ export default async function NewLegalHoldPage({ searchParams }: { searchParams:
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("legal-hold.create")) {
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">Creating a legal hold is limited to the hold workflow.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Creating a legal hold is limited to the hold workflow.</h1></PageHeader></Shell>;
   }
   return (
     <Shell ctx={ctx} current="retention">
-      <h1 className="page-title">Create a legal hold</h1>
+      <PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Create a legal hold</h1></PageHeader>
       <p>Record a preservation request for this organization. Legal authority must be verified separately.</p>
       {query.error ? <p>The hold could not be recorded. Check the matter reference and the record id.</p> : null}
       <form action="/api/privacy/legal-holds" method="post">

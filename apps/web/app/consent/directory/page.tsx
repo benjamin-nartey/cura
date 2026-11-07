@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listConsents } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { consentActor } from "@/lib/consent";
@@ -10,7 +12,7 @@ export default async function ConsentDirectoryPage({ searchParams }: { searchPar
   if (!access.permissions.includes("consent.read")) {
     return (
       <Shell ctx={ctx} current="consent">
-        <h1 className="page-title">Consent records are limited to authorized staff.</h1>
+        <PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">Consent records are limited to authorized staff.</h1></PageHeader>
       </Shell>
     );
   }
@@ -21,8 +23,7 @@ export default async function ConsentDirectoryPage({ searchParams }: { searchPar
   });
   return (
     <Shell ctx={ctx} current="consent">
-      <p className="eyebrow">{ctx.organizationName}</p>
-      <h1 className="page-title">Consent directory</h1>
+      <PageHeader section="Consent" href="/consent" icon="shieldCheck" eyebrow={<>{ctx.organizationName}</>}><h1 className="page-title">Consent directory</h1></PageHeader>
       {query.error === "forbidden" ? <p>That action is not available for this account.</p> : null}
       {query.error === "missing" ? <p>No matching consent record was found.</p> : null}
       <form method="get">

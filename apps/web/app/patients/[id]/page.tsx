@@ -1,5 +1,8 @@
-import { canReadChart, canRegisterPatient, evidenceFromChart, filterTimeline, formatQuantity, getChart, getDb, groupTimelineByDay, isTimelineGroup, listFacilityObservationCatalog, noteDenial, patientStateFromChart, readCoordination, readCopilot, readCopilotTurn, readDocumentation, readLab, readPatientDesk, readRx, TERMINOLOGY } from "@curasphere/domain";
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
+import { AppError, canReadChart, canRegisterPatient, evidenceFromChart, filterTimeline, formatQuantity, getChart, getDb, groupTimelineByDay, isTimelineGroup, listFacilityObservationCatalog, noteDenial, patientStateFromChart, readCoordination, readCopilot, readCopilotContext, readCopilotTurn, readGroundedCopilotSummary, readDocumentation, readLab, readPatientDesk, readRx, TERMINOLOGY } from "@curasphere/domain";
 import { notFound } from "next/navigation";
+import { GroundedSummary } from "@/components/grounded-summary";
 import { Feedback } from "@/components/feedback";
 import { listFoundationConditionCatalog, listFoundationObservations, readFoundationChartCore, readFoundationTimeline } from "@/lib/foundation";
 import { Shell } from "@/components/shell";
@@ -12,7 +15,7 @@ export default async function ChartPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; notice?: string; group?: string; turn?: string }>;
+  searchParams: Promise<{ error?: string; notice?: string; group?: string; turn?: string; context?: string; summary?: string }>;
 }) {
   const ctx = await requireSession();
   const { id } = await params;
@@ -24,8 +27,7 @@ export default async function ChartPage({
     noteDenial(getDb(), ctx, "patient.read", "Patient", id);
     return (
       <Shell ctx={ctx} current="patients">
-        <p className="eyebrow">Chart</p>
-        <h1 className="page-title">The chart is closed for this role.</h1>
+        <PageHeader section="Patients" href="/patients" icon="users" eyebrow={<>Chart</>}><h1 className="page-title">The chart is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -33,9 +35,7 @@ export default async function ChartPage({
   if (!chart) {
     return (
       <Shell ctx={ctx} current="patients">
-        <p className="eyebrow">Record</p>
-        <h1 className="page-title">Nothing on this facility matches.</h1>
-        <p className="lede">The identifier is missing here, or it belongs to another facility.</p>
+        <PageHeader section="Patients" href="/patients" icon="users" eyebrow={<>Record</>} description={<>The identifier is missing here, or it belongs to another facility.</>}><h1 className="page-title">Nothing on this facility matches.</h1></PageHeader>
       </Shell>
     );
   }
@@ -44,6 +44,23 @@ export default async function ChartPage({
   const state = patientStateFromChart(getDb(), ctx, chart);
   const evidence = evidenceFromChart(getDb(), ctx, chart);
   const copilot = readCopilot(getDb(), ctx, chart.patient.id);
+  const canPreviewContext = ctx.role === "clinician" && process.env.CURASPHERE_DATA_CLASS === "synthetic";
+  let context: ReturnType<typeof readCopilotContext> | null = null;
+  if (canPreviewContext && query.context === "1") {
+    try {
+      context = readCopilotContext(getDb(),ctx,chart.patient.id);
+    } catch (error) {
+      if (!(error instanceof AppError)) throw error;
+    }
+  }
+  let groundedSummary: ReturnType<typeof readGroundedCopilotSummary> | null = null;
+  if (canPreviewContext && query.summary === "1") {
+    try {
+      groundedSummary = readGroundedCopilotSummary(getDb(),ctx,chart.patient.id);
+    } catch (error) {
+      if (!(error instanceof AppError)) throw error;
+    }
+  }
   const turn = query.turn && /^ask_[A-Za-z0-9-]{1,80}$/.test(query.turn) ? readCopilotTurn(getDb(), ctx, query.turn) : null;
   const answer = turn && turn.patientId === chart.patient.id ? turn : null;
   const documentation = readDocumentation(getDb(), ctx, chart.patient.id);
@@ -82,10 +99,9 @@ export default async function ChartPage({
     <Shell ctx={ctx} current="patients">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">{chart.patient.mrn}</p>
-          <h1 className="page-title">
+          <PageHeader section="Patients" href="/patients" icon="users" eyebrow={<>{chart.patient.mrn}</>}><h1 className="page-title">
             {chart.patient.givenName} {chart.patient.familyName}
-          </h1>
+          </h1></PageHeader>
           <p className="meta">
             <span>
               {chart.patient.ageYears} years · {sexLabel(chart.patient.sex)}
@@ -122,7 +138,7 @@ export default async function ChartPage({
           </label>
           <label className="field">
             Criticality
-            <select name="criticality" defaultValue="low">
+            <select aria-label="Criticality" name="criticality" defaultValue="low">
               <option value="low">low</option>
               <option value="high">high</option>
             </select>
@@ -132,7 +148,7 @@ export default async function ChartPage({
       </section>
       <div className="chart">
         <section className="timeline-pane">
-          <h2 className="section-title">Timeline</h2>
+          <SectionHeading icon="users"><h2 className="section-title">Timeline</h2></SectionHeading>
           <p className="muted">Every line is a source row. A group only hides other rows. Nothing here is generated.</p>
           <nav className="filters" aria-label="Timeline group">
             {filters.map(([id, label]) => (
@@ -373,6 +389,30 @@ export default async function ChartPage({
               </ul>
             )}
           </section>
+          {canPreviewContext && <section id="copilot-context" className="card">
+            <h3>Read-only context</h3>
+            {query.context !== "1" ? <a href="?context=1#copilot-context">Check available sources</a> : context ? (
+              <>
+                <p>Recorded source versions from the last 90 days.</p>
+                <dl>{Object.entries(context.sources).map(([name,source]) => (
+                  <div key={name}>
+                    <dt>{name === "twin" ? "Patient twin" : name === "timeline" ? "Clinical timeline" : "Evidence graph"}</dt>
+                    <dd>{source.status === "available" ? `${source.references.length} references` :
+                      ({empty:"No sources in this period",unavailable:"Unavailable",stale:"Source versions have changed",
+                        "not-built":"Patient twin has not been built",deadline:"Source check timed out"}[source.status])}
+                      {source.truncated && " · Limited to a subset"}
+                    </dd>
+                  </div>
+                ))}</dl>
+                <a href="?context=1#copilot-context">Refresh source availability</a>
+              </>
+            ) : <p>Context is unavailable for this record.</p>}
+          </section>}
+          {canPreviewContext && <section id="grounded-summary" className="card">
+            <h3>Versioned patient summary</h3>
+            {query.summary === "1" ? <GroundedSummary patientId={chart.patient.id} summary={groundedSummary} />
+              : <a href="?summary=1#grounded-summary">View versioned summary</a>}
+          </section>}
           {copilot ? (
             <section className="card">
               <p className="eyebrow">Copilot</p>
@@ -429,7 +469,7 @@ export default async function ChartPage({
               <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
               <label className="field">
                 Observation
-                <select name="code" defaultValue={catalog[0]?.code}>
+                <select aria-label="Observation" name="code" defaultValue={catalog[0]?.code}>
                   {catalog.map((item) => (
                     <option key={item.code} value={item.code}>
                       {item.display} ({item.unit})
@@ -457,7 +497,7 @@ export default async function ChartPage({
                 <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
                 <label className="field">
                   Order
-                  <select name="code" defaultValue={catalog[0]?.code}>
+                  <select aria-label="Order" name="code" defaultValue={catalog[0]?.code}>
                     {catalog.map((item) => (
                       <option key={item.code} value={item.code}>
                         {item.display} ({item.unit})
@@ -558,7 +598,7 @@ export default async function ChartPage({
                 <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
                 <label className="field">
                   Formulary
-                  <select name="formularyId" defaultValue={rx?.formulary[0]?.id}>
+                  <select aria-label="Formulary" name="formularyId" defaultValue={rx?.formulary[0]?.id}>
                     {rx?.formulary.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.display} · {item.therapyClass} · {item.status}
@@ -664,21 +704,21 @@ export default async function ChartPage({
               <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
               <label className="field">
                 Locale
-                <select name="locale" defaultValue={care?.preference?.locale ?? "en"}>
+                <select aria-label="Locale" name="locale" defaultValue={care?.preference?.locale ?? "en"}>
                   <option value="en">English</option>
                   <option value="es">Español</option>
                 </select>
               </label>
               <label className="field">
                 Channel
-                <select name="channel" defaultValue={care?.preference?.channel ?? "none"}>
+                <select aria-label="Channel" name="channel" defaultValue={care?.preference?.channel ?? "none"}>
                   <option value="portal">Facility record</option>
                   <option value="none">No outreach</option>
                 </select>
               </label>
               <label className="field">
                 Consent
-                <select name="consent" defaultValue={care?.preference?.consent ?? "withheld"}>
+                <select aria-label="Consent" name="consent" defaultValue={care?.preference?.consent ?? "withheld"}>
                   <option value="withheld">Withheld</option>
                   <option value="granted">Granted</option>
                 </select>
@@ -692,7 +732,7 @@ export default async function ChartPage({
               <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
               <label className="field">
                 Template
-                <select name="templateId" defaultValue={care?.templates[0]?.id}>
+                <select aria-label="Template" name="templateId" defaultValue={care?.templates[0]?.id}>
                   {care?.templates.map((template) => (
                     <option key={template.id} value={template.id}>
                       {template.id} · {template.locales.join(", ")}
@@ -770,12 +810,12 @@ export default async function ChartPage({
             </form>
             {canRegisterPatient(ctx) ? (
               <>
-                <form className="form-grid" action="/api/care/referral" method="post">
+                <section className="page-form card"><form className="form-grid" action="/api/care/referral" method="post">
                   <input type="hidden" name="patientId" value={chart.patient.id} />
                   <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
                   <label className="field">
                     Facility in this organization
-                    <select name="toFacilityId" defaultValue={care?.targets[0]?.id}>
+                    <select aria-label="Facility in this organization" name="toFacilityId" defaultValue={care?.targets[0]?.id}>
                       {care?.targets.map((target) => (
                         <option key={target.id} value={target.id}>
                           {target.name}
@@ -790,8 +830,8 @@ export default async function ChartPage({
                   <button className="btn-line" type="submit">
                     Request referral
                   </button>
-                </form>
-                <form className="form-grid" action="/api/care/plan" method="post">
+                </form></section>
+                <section className="page-form card"><form className="form-grid" action="/api/care/plan" method="post">
                   <input type="hidden" name="patientId" value={chart.patient.id} />
                   <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
                   <label className="field">
@@ -801,7 +841,7 @@ export default async function ChartPage({
                   <button className="btn-dark" type="submit">
                     Store draft plan
                   </button>
-                </form>
+                </form></section>
               </>
             ) : null}
             {care?.plans.map((plan) => (
@@ -905,7 +945,7 @@ export default async function ChartPage({
                     Record consent
                   </button>
                 </form>
-                <form className="form-grid" action="/api/documentation/text" method="post">
+                <section className="page-form card"><form className="form-grid" action="/api/documentation/text" method="post">
                   <input type="hidden" name="patientId" value={chart.patient.id} />
                   <input type="hidden" name="encounterId" value={documentation.encounterId} />
                   <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
@@ -916,7 +956,7 @@ export default async function ChartPage({
                   <button className="btn-dark" type="submit">
                     Store draft
                   </button>
-                </form>
+                </form></section>
                 <form action="/api/documentation/audio" method="post" encType="multipart/form-data">
                   <input type="hidden" name="patientId" value={chart.patient.id} />
                   <input type="hidden" name="encounterId" value={documentation.encounterId} />

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readCharge } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -23,8 +25,7 @@ export default async function ChargePage({ params, searchParams }: { params: Pro
   const item = row.items[0];
   return (
     <Shell ctx={ctx} current="billing">
-      <h1 className="page-title">Synthetic charge</h1>
-      <p className="lede"><strong>Not an invoice.</strong> Nothing was collected.</p>
+      <PageHeader section="Charges" href="/billing" icon="wallet" description={<><strong>Not an invoice.</strong> Nothing was collected.</>}><h1 className="page-title">Synthetic charge</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="card">
         <p>Status: <strong>{row.status}</strong> · version {row.version}</p>
@@ -32,7 +33,7 @@ export default async function ChargePage({ params, searchParams }: { params: Pro
         <p>Patient {row.patient_id} · encounter {row.encounter_id}</p>
         <p><a href={`/billing/charges/${id}/history`}>History</a></p>
       </div>
-      <h2>Items</h2>
+      <section className="page-section card"><SectionHeading icon="wallet"><h2>Items</h2></SectionHeading>
       <ul>
         {row.items.map((entry) => (
           <li key={entry.id}>{entry.display} · qty {entry.quantity} · catalog v{entry.catalog_version} · {entry.currency} {(entry.amount_minor / 100).toFixed(2)}</li>
@@ -58,7 +59,7 @@ export default async function ChargePage({ params, searchParams }: { params: Pro
             <input name="amountMinor" type="number" min={0} required defaultValue={item.amount_minor} />
           </label>
           <label className="field">Reason
-            <select name="reason"><option value="price-correction">Price correction</option><option value="quantity-correction">Quantity correction</option></select>
+            <select aria-label="Reason" name="reason"><option value="price-correction">Price correction</option><option value="quantity-correction">Quantity correction</option></select>
           </label>
           <button className="btn-line" type="submit">Adjust charge</button>
         </form>
@@ -69,7 +70,7 @@ export default async function ChargePage({ params, searchParams }: { params: Pro
           <input type="hidden" name="reason" value="no-longer-needed" />
           <button className="btn-line" type="submit">Void charge</button>
         </form>
-      ) : null}
+      ) : null}</section>
     </Shell>
   );
 }

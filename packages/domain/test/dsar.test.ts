@@ -265,6 +265,6 @@ test("P03-F04-S49 S50 S51 and schema rollback", () => {
   fresh.exec(DSAR_ROLLBACK);
   fresh.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 49);
+  assert.equal(healthcheck(upgraded).schemaVersion, 63);
   upgraded.close();
 });

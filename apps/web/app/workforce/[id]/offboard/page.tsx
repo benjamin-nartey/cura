@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { Shell } from "@/components/shell";
 import { facilitiesFor, loadWorkforce, memberOrDeny } from "@/lib/workforce";
 
@@ -11,9 +13,7 @@ export default async function OffboardPage({ params }: { params: Promise<{ id: s
     <Shell ctx={ctx} current="workforce" title="Offboard staff">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Offboarding</p>
-          <h1 className="page-title">End access for {member.name}</h1>
-          <p className="lede">This revokes organization and facility memberships in {ctx.organizationName}. History stays. Another organization is not changed. The last organization administrator cannot be removed here.</p>
+          <PageHeader section="Workforce" href="/workforce" icon="users" eyebrow={<>Offboarding</>} description={<>This revokes organization and facility memberships in {ctx.organizationName}. History stays. Another organization is not changed. The last organization administrator cannot be removed here.</>}><h1 className="page-title">End access for {member.name}</h1></PageHeader>
         </div>
       </header>
       <section className="panel card">

@@ -1,3 +1,4 @@
+import {PageHeader} from "@/components/page-workspace";
 import { cookies } from "next/headers";
 import { getDb, pendingLoginOpen } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
@@ -19,7 +20,7 @@ export default async function MfaPage({ searchParams }: { searchParams: Promise<
     <main className="gate" id="content">
       <section className="panel card">
         <p className="eyebrow">Authenticator</p>
-        <h1>Enter the verification code</h1>
+        <PageHeader section="Account security" href="/login" icon="shieldCheck">        <h1>Enter the verification code</h1></PageHeader>
         <p className="lede">This code comes from the authenticator enrolled for this account. It is checked on the server.</p>
         <Feedback error={feedback.error} notice={null} />
         <form action="/api/auth/mfa" method="post" className="form-grid">

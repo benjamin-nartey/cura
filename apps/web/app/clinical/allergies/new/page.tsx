@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { ClinicalCodePicker } from "@/components/clinical-code-picker";
 import { effectivePermissions, getDb, getClinicalCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -15,21 +17,20 @@ export default async function NewAllergyPage({ searchParams }: { searchParams: P
   const choices = getClinicalCodeChoices(getDb(),ctx,"allergy");
   return (
     <Shell ctx={ctx} current="clinical">
-      <h1 className="page-title">Record allergy information</h1>
-      <p className="lede">Unknown allergy status is a separate entry from no known allergies. Severity is stored only when the author selects it.</p>
-      <form className="form-grid" action="/api/clinical/allergies" method="post">
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<>Unknown allergy status is a separate entry from no known allergies. Severity is stored only when the author selects it.</>}><h1 className="page-title">Record allergy information</h1></PageHeader>
+      <section className="page-form card"><form className="form-grid" action="/api/clinical/allergies" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <input type="hidden" name="practitionerId" value={encounter.practitioner_id} />
         <ClinicalCodePicker label="Information" choices={choices}/>
         <label className="field">Verification
-          <select name="verificationStatus" defaultValue="unconfirmed"><option value="unconfirmed">Unconfirmed</option><option value="confirmed">Confirmed by the author</option></select>
+          <select aria-label="Verification" name="verificationStatus" defaultValue="unconfirmed"><option value="unconfirmed">Unconfirmed</option><option value="confirmed">Confirmed by the author</option></select>
         </label>
         <label className="field">Criticality, only for a documented allergy
-          <select name="criticality" defaultValue=""><option value="">Not documented</option><option value="low">Low</option><option value="high">High</option><option value="unable-to-assess">Unable to assess</option></select>
+          <select aria-label="Criticality, only for a documented allergy" name="criticality" defaultValue=""><option value="">Not documented</option><option value="low">Low</option><option value="high">High</option><option value="unable-to-assess">Unable to assess</option></select>
         </label>
         <button className="btn-dark" type="submit">Save allergy information</button>
-      </form>
+      </form></section>
     </Shell>
   );
 }

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listConsentDispatches, readConsent } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,14 +12,13 @@ export default async function ConsentDetailPage({ params, searchParams }: { para
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("consent.read")) {
-    return <Shell ctx={ctx} current="consent"><h1 className="page-title">Consent records are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="consent"><PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">Consent records are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   try {
     const row = readConsent(getDb(), consentActor(ctx), id);
     return (
       <Shell ctx={ctx} current="consent">
-        <p className="eyebrow">{row.status}</p>
-        <h1 className="page-title">Consent {row.subject_id}</h1>
+        <PageHeader section="Consent" href="/consent" icon="shieldCheck" eyebrow={<>{row.status}</>}><h1 className="page-title">Consent {row.subject_id}</h1></PageHeader>
         {query.error === "conflict" ? <p>That record changed. Refresh and try again.</p> : null}
         {query.error === "forbidden" ? <p>The authority or account cannot do that.</p> : null}
         {query.error === "invalid" ? <p>The submitted values were not accepted.</p> : null}
@@ -28,7 +29,7 @@ export default async function ConsentDetailPage({ params, searchParams }: { para
         <p>Purpose {row.purpose}. Scope {row.resource_category}. Recipient {row.recipient}.</p>
         <p>Workspace consent policy, version 1. Authority {row.verification_status}. Version {row.version}.</p>
         <p>Effective {row.effective_at ?? "not set"}. Expires {row.expires_at ?? "not set"}.</p>
-        <p><a href={`/consent/${row.id}/history`}>Version history</a></p>
+        <PageActions><a href={`/consent/${row.id}/history`}>Version history</a></PageActions>
         {access.permissions.includes("consent.verify") && row.status === "pending_verification" ? (
           <form action={`/api/consents/${row.id}/verify`} method="post">
             <input type="hidden" name="authorityId" value={row.authority_id} />
@@ -49,7 +50,7 @@ export default async function ConsentDetailPage({ params, searchParams }: { para
           </form>
         ) : null}
         {access.permissions.includes("consent.withdraw") && row.status === "active" ? <p><a href={`/consent/${row.id}/withdraw`}>Withdraw consent</a></p> : null}
-        <h2>Queued processing</h2>
+        <section className="page-section card"><SectionHeading icon="shieldCheck"><h2>Queued processing</h2></SectionHeading>
         {listConsentDispatches(getDb(), consentActor(ctx), row.subject_id).filter((job) => job.action === row.action).map((job) => (
           <p key={job.id}>
             {job.status}{job.reason_code ? ` · ${job.reason_code}` : ""}
@@ -61,11 +62,11 @@ export default async function ConsentDetailPage({ params, searchParams }: { para
               </form>
             ) : null}
           </p>
-        ))}
+        ))}</section>
       </Shell>
     );
   } catch (error) {
     if (!(error instanceof NotFoundError)) throw error;
-    return <Shell ctx={ctx} current="consent"><h1 className="page-title">That consent record is not available.</h1></Shell>;
+    return <Shell ctx={ctx} current="consent"><PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">That consent record is not available.</h1></PageHeader></Shell>;
   }
 }

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { randomUUID } from "node:crypto";
 import { Shell } from "@/components/shell";
 import { facilitiesFor, loadWorkforce } from "@/lib/workforce";
@@ -11,9 +13,7 @@ export default async function InvitePage({ searchParams }: { searchParams: Promi
     <Shell ctx={ctx} current="workforce" title="Invite staff">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Invitation</p>
-          <h1 className="page-title">Invite staff</h1>
-          <p className="lede">An invitation does not grant access. The person must sign in with the identity provider and accept it. No administrator role is selected.</p>
+          <PageHeader section="Workforce" href="/workforce" icon="users" eyebrow={<>Invitation</>} description={<>An invitation does not grant access. The person must sign in with the identity provider and accept it. No administrator role is selected.</>}><h1 className="page-title">Invite staff</h1></PageHeader>
         </div>
       </header>
       {query.error ? <p role="alert">The invitation was not created. Check the facility and try again.</p> : null}
@@ -21,13 +21,13 @@ export default async function InvitePage({ searchParams }: { searchParams: Promi
         <input type="hidden" name="idempotencyKey" value={key} />
         <label className="field">Email<input name="email" type="email" required autoComplete="off" /></label>
         <label className="field">Facility
-          <select name="facilityId" required defaultValue="">
+          <select aria-label="Facility" name="facilityId" required defaultValue="">
             <option value="" disabled>Choose a facility</option>
             {facilities.map((facility) => <option key={facility.id} value={facility.id}>{facility.name}</option>)}
           </select>
         </label>
         <label className="field">Initial role
-          <select name="roleId" required defaultValue="nurse">
+          <select aria-label="Initial role" name="roleId" required defaultValue="nurse">
             <option value="nurse">Nurse</option>
             <option value="doctor">Doctor</option>
             <option value="receptionist">Receptionist</option>

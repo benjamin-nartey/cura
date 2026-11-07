@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { Shell } from "@/components/shell";
 import { facilitiesFor, loadWorkforce, memberOrDeny } from "@/lib/workforce";
 
@@ -12,22 +14,20 @@ export default async function TransferPage({ params }: { params: Promise<{ id: s
     <Shell ctx={ctx} current="workforce" title="Transfer staff">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Transfer</p>
-          <h1 className="page-title">Move {member.name}</h1>
-          <p className="lede">A transfer revokes the source facility and opens the destination. Other facility memberships stay as they are.</p>
+          <PageHeader section="Workforce" href="/workforce" icon="users" eyebrow={<>Transfer</>} description={<>A transfer revokes the source facility and opens the destination. Other facility memberships stay as they are.</>}><h1 className="page-title">Move {member.name}</h1></PageHeader>
         </div>
       </header>
       <form className="panel card form-grid" method="post" action={`/api/workforce/${member.id}`}>
         <input type="hidden" name="action" value="transfer" />
         <label className="field">From
-          <select name="fromFacilityId" required defaultValue={current?.facilityId ?? ""}>
+          <select aria-label="From" name="fromFacilityId" required defaultValue={current?.facilityId ?? ""}>
             {member.memberships.filter((membership) => membership.status === "active").map((membership) => (
               <option key={membership.facilityId} value={membership.facilityId}>{names.get(membership.facilityId) ?? membership.facilityId}</option>
             ))}
           </select>
         </label>
         <label className="field">To
-          <select name="facilityId" required defaultValue="">
+          <select aria-label="To" name="facilityId" required defaultValue="">
             <option value="" disabled>Choose a destination</option>
             {facilities.map((facility) => <option key={facility.id} value={facility.id}>{facility.name}</option>)}
           </select>
@@ -38,9 +38,9 @@ export default async function TransferPage({ params }: { params: Promise<{ id: s
       </form>
       <form className="panel card form-grid" method="post" action={`/api/workforce/${member.id}`}>
         <input type="hidden" name="action" value="add-facility" />
-        <h2>Add a facility without removing the current one</h2>
+        <SectionHeading icon="users"><h2>Add a facility without removing the current one</h2></SectionHeading>
         <label className="field">Facility
-          <select name="facilityId" required defaultValue="">
+          <select aria-label="Facility" name="facilityId" required defaultValue="">
             <option value="" disabled>Choose a facility</option>
             {facilities.map((facility) => <option key={facility.id} value={facility.id}>{facility.name}</option>)}
           </select>

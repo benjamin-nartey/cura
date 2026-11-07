@@ -169,7 +169,7 @@ test("P03-F05-S31 through S46 alert access and lifecycle", () => {
   assert.equal((persisted.prepare(`SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1`).get() as { version: number }).version, 36);
   persisted.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 49);
+  assert.equal(healthcheck(upgraded).schemaVersion, 63);
   upgraded.close();
 });
 

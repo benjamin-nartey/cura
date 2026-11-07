@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listPrivacySecurityAlerts } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { privacyActor } from "@/lib/privacy";
@@ -8,7 +10,7 @@ export default async function PrivacyAlertsPage({ searchParams }: { searchParams
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("privacy.alert.read")) {
-    return <Shell ctx={ctx} current="telemetry"><h1 className="page-title">Privacy alerts are limited to authorized reviewers.</h1></Shell>;
+    return <Shell ctx={ctx} current="telemetry"><PageHeader section="Privacy alerts" href="/privacy/alerts" icon="shieldCheck"><h1 className="page-title">Privacy alerts are limited to authorized reviewers.</h1></PageHeader></Shell>;
   }
   const needle = (query.q ?? "").trim().toLowerCase();
   const rows = listPrivacySecurityAlerts(getDb(), privacyActor(ctx)).filter((row) => {
@@ -20,18 +22,18 @@ export default async function PrivacyAlertsPage({ searchParams }: { searchParams
   });
   return (
     <Shell ctx={ctx} current="telemetry">
-      <h1 className="page-title">Privacy alerts</h1>
+      <PageHeader section="Privacy alerts" href="/privacy/alerts" icon="shieldCheck"><h1 className="page-title">Privacy alerts</h1></PageHeader>
       <form method="get">
         <label>Search <input name="q" defaultValue={query.q ?? ""} /></label>
         <label>Severity
-          <select name="severity" defaultValue={query.severity ?? ""}>
+          <select aria-label="Severity" name="severity" defaultValue={query.severity ?? ""}>
             <option value="">Any</option>
             <option value="high">High</option>
             <option value="medium">Medium</option>
           </select>
         </label>
         <label>Status
-          <select name="status" defaultValue={query.status ?? ""}>
+          <select aria-label="Status" name="status" defaultValue={query.status ?? ""}>
             <option value="">Any</option>
             <option value="delivered">Delivered</option>
             <option value="acknowledged">Acknowledged</option>
@@ -43,7 +45,7 @@ export default async function PrivacyAlertsPage({ searchParams }: { searchParams
           </select>
         </label>
         <label>Category
-          <select name="category" defaultValue={query.category ?? ""}>
+          <select aria-label="Category" name="category" defaultValue={query.category ?? ""}>
             <option value="">Any</option>
             <option value="export">Export</option>
             <option value="emergency">Emergency</option>

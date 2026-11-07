@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { canReadChart, ensureClinicBoard, ForbiddenError, getDb, listDirectory, listFacilityBoard, noteDenial, readFacility } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -13,8 +15,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
     noteDenial(getDb(), ctx, "facility.read", "FacilityState", ctx.facilityId);
     return (
       <Shell ctx={ctx} current="facility">
-        <p className="eyebrow">Facility</p>
-        <h1 className="page-title">The facility projection is closed for this role.</h1>
+        <PageHeader section="Beds and wards" href="/facility" icon="bed" eyebrow={<>Facility</>}><h1 className="page-title">The facility projection is closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -32,9 +33,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
     <Shell ctx={ctx} current="facility">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Beds and wards</p>
-          <h1 className="page-title">{ctx.facilityName}</h1>
-          <p className="lede">Review current bed occupancy and availability by ward. Bed assignment requires a separate action.</p>
+          <PageHeader section="Beds and wards" href="/facility" icon="bed" eyebrow={<>Beds and wards</>} description={<>Review current bed occupancy and availability by ward. Bed assignment requires a separate action.</>}><h1 className="page-title">{ctx.facilityName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
@@ -43,10 +42,10 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
         {view.stale ? " · source rows changed after this build" : ""}
         {view.eventsPending ? " · an event is waiting" : ""}
       </p>
-      <form action="/api/facility/rebuild" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/facility/rebuild" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Refresh overview</button>
-      </form>
+      </form></section>
       <div className="stat-grid">
         <section className="card stat">
           <p className="eyebrow">Total beds</p>
@@ -155,7 +154,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
             </label>
             <label className="field">
               Status
-              <select name="status" required defaultValue="open">
+              <select aria-label="Status" name="status" required defaultValue="open">
                 <option value="open">Open</option>
                 <option value="occupied">Occupied</option>
                 <option value="closed">Closed</option>
@@ -174,7 +173,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
             <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
             <label className="field">
               Person
-              <select name="userId" required>
+              <select aria-label="Person" name="userId" required>
                 {staff.map((person) => (
                   <option key={person.userId} value={person.userId}>{person.displayName}</option>
                 ))}
@@ -190,7 +189,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
             </label>
             <label className="field">
               Status
-              <select name="status" required defaultValue="scheduled">
+              <select aria-label="Status" name="status" required defaultValue="scheduled">
                 <option value="scheduled">Scheduled</option>
                 <option value="active">Active</option>
                 <option value="finished">Finished</option>
@@ -209,7 +208,7 @@ export default async function FacilityPage({ searchParams }: { searchParams: Pro
             </label>
             <label className="field">
               Status
-              <select name="status" required defaultValue="available">
+              <select aria-label="Status" name="status" required defaultValue="available">
                 <option value="available">Available</option>
                 <option value="out-of-service">Out of service</option>
               </select>

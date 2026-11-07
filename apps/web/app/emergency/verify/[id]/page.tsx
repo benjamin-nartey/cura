@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions} from "@/components/page-workspace";
 import { listPasskeys, readTotpStatus, getDb } from "@curasphere/domain";
 import { notFound } from "next/navigation";
 import { EmergencyPasskey } from "@/components/emergency-passkey";
@@ -15,9 +17,7 @@ export default async function EmergencyVerifyPage({ params, searchParams }: { pa
     <Shell ctx={ctx} current="emergency" title="Verify identity">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Identity verification</p>
-          <h1 className="page-title">Verify your identity</h1>
-          <p className="lede">A fresh verification is required. Submitting a reason does not grant access.</p>
+          <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck" eyebrow={<>Identity verification</>} description={<>A fresh verification is required. Submitting a reason does not grant access.</>}><h1 className="page-title">Verify your identity</h1></PageHeader>
         </div>
       </header>
       {query.error ? <p role="alert">Verification was not accepted. Try again or cancel.</p> : null}
@@ -32,7 +32,7 @@ export default async function EmergencyVerifyPage({ params, searchParams }: { pa
         <p role="status">No authenticator is enrolled for this account.</p>
       )}
       {passkeys.length > 0 ? <EmergencyPasskey requestId={id} /> : <p>No passkey is enrolled for this account.</p>}
-      <p><a href="/emergency">Cancel</a></p>
+      <PageActions><a href="/emergency">Cancel</a></PageActions>
     </Shell>
   );
 }

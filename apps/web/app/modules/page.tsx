@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { getDb, noteDenial, readModules } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -12,8 +14,7 @@ export default async function ModulesPage({ searchParams }: { searchParams: Prom
     noteDenial(getDb(), ctx, "module.read", "AiModule", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="modules">
-        <p className="eyebrow">Modules</p>
-        <h1 className="page-title">Module cards are closed for this role.</h1>
+        <PageHeader section="Modules" href="/modules" icon="boxes" eyebrow={<>Modules</>}><h1 className="page-title">Module cards are closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -23,25 +24,23 @@ export default async function ModulesPage({ searchParams }: { searchParams: Prom
     <Shell ctx={ctx} current="modules">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Modules · {view.catalogVersion}</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">{view.platformNote} {view.aiNote}</p>
+          <PageHeader section="Modules" href="/modules" icon="boxes" eyebrow={<>Modules · {view.catalogVersion}</>} description={<>{view.platformNote} {view.aiNote}</>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form action="/api/modules/platform" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/modules/platform" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Approve every module</button>
-      </form>
-      <form action="/api/modules/explain" method="post" className="form-grid" style={{ marginTop: 12 }}>
+      </form></section>
+      <section className="page-form card"><form action="/api/modules/explain" method="post" className="form-grid" style={{ marginTop: 12 }}>
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Ask the gateway</button>
-      </form>
+      </form></section>
       <div className="board" style={{ marginTop: 16 }}>
         {view.catalog.map((item) => (
           <section className="card" key={item.code}>
             <p className="eyebrow">{item.code}</p>
-            <h2>{item.intendedUse}</h2>
+            <SectionHeading icon="boxes"><h2>{item.intendedUse}</h2></SectionHeading>
             <p>{item.modelCard}</p>
             {stored.has(item.code) ? null : (
               <form action="/api/modules/record" method="post" className="form-grid" style={{ marginTop: 12 }}>
@@ -55,7 +54,7 @@ export default async function ModulesPage({ searchParams }: { searchParams: Prom
         {view.modules.map((item) => (
           <section className="card" key={item.id}>
             <p className="eyebrow">{item.code} · {item.status}</p>
-            <h2>{item.intendedUse}</h2>
+            <SectionHeading icon="boxes"><h2>{item.intendedUse}</h2></SectionHeading>
             <p>{item.modelCard}</p>
             <p>{item.datasetNote}</p>
             <p>{item.validation ? `refused. ${item.validationNote}` : "Validation is not stored."}</p>

@@ -633,3 +633,5 @@ DROP TABLE IF EXISTS scheduling_resources;
 DELETE FROM schema_migrations WHERE version IN (39, 40, 41, 42, 43);
 INSERT OR IGNORE INTO schema_migrations (version) VALUES (38);
 `;
+
+export function assertVisitReadAccess(db:AppDatabase,actor:Actor){gate(db,actor,"encounter.read");}

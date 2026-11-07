@@ -1,0 +1,97 @@
+{
+  "feature": "P08-F03",
+  "scope": "local synthetic; no qualified signoff",
+  "scenarios": [
+    {
+      "id": "P08-F03-S01",
+      "description": "Real positive/no-known allergy and differing medication doses retain exact assertions",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S02",
+      "description": "Unknown verification/allergy/timing remains explicit; no active medication inference",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S03",
+      "description": "Stable candidates independent of processing time",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S04",
+      "description": "Durable request replay and candidate dedup without clinical source writes",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S05",
+      "description": "Source correction withholds stale candidates and retains open-source-changed queue",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S06",
+      "description": "Owner/tenant/purpose/session/input/foreign-origin authorization",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S07",
+      "description": "Atomic receipt failure and live source outage",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S08",
+      "description": "Immutable queue and corrupt metadata withheld",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S09",
+      "description": "Schema56 failure preserves schema55 source/state and retry",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S10",
+      "description": "Actual competing SQLite processes serialize one request",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S11",
+      "description": "Cancelled medication excluded from draft disagreement; equal-time observations retained",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S12",
+      "description": "Authorized reader own current build shares source-context queue",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S13",
+      "description": "Request100 and receipt200 quotas retain prior evidence",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S14",
+      "description": "Actual UI source creation, side-by-side history, persistence, Axe and phone containment",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S15",
+      "description": "Offline/errors clear candidates and never replay writes",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S16",
+      "description": "Prior Twin and mobile/browser/API regressions; source table preservation",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S17",
+      "description": "Queued GET ordering, abort/failure recovery, no POST queue/retry, and actual successful one-at-a-time browser reads",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F03-S18",
+      "description": "Five-candidate pages and type filtering retain all selected source assertions",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    }
+  ],
+  "evidence": "docs/twin/P08-F03-evidence.md"
+}

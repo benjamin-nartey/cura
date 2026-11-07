@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readPrivacySecurityAlert } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,14 +12,13 @@ export default async function PrivacyAlertDetailPage({ params, searchParams }: {
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("privacy.alert.read")) {
-    return <Shell ctx={ctx} current="telemetry"><h1 className="page-title">Privacy alerts are limited to authorized reviewers.</h1></Shell>;
+    return <Shell ctx={ctx} current="telemetry"><PageHeader section="Privacy alerts" href="/privacy/alerts" icon="shieldCheck"><h1 className="page-title">Privacy alerts are limited to authorized reviewers.</h1></PageHeader></Shell>;
   }
   try {
     const row = readPrivacySecurityAlert(getDb(), privacyActor(ctx), id);
     return (
       <Shell ctx={ctx} current="telemetry">
-        <p className="eyebrow">{row.severity}</p>
-        <h1 className="page-title">{row.status}</h1>
+        <PageHeader section="Privacy alerts" href="/privacy/alerts" icon="shieldCheck" eyebrow={<>{row.severity}</>}><h1 className="page-title">{row.status}</h1></PageHeader>
         {query.error === "forbidden" ? <p>That action is not available for this account.</p> : null}
         {query.error === "conflict" ? <p>The alert changed or delivery is unavailable. Refresh and use the current state.</p> : null}
         {query.notice === "acknowledged" ? <p>The alert is acknowledged.</p> : null}
@@ -72,7 +73,7 @@ export default async function PrivacyAlertDetailPage({ params, searchParams }: {
       </Shell>
     );
   } catch (error) {
-    if (error instanceof NotFoundError) return <Shell ctx={ctx} current="telemetry"><h1 className="page-title">That privacy alert is not available.</h1></Shell>;
+    if (error instanceof NotFoundError) return <Shell ctx={ctx} current="telemetry"><PageHeader section="Privacy alerts" href="/privacy/alerts" icon="shieldCheck"><h1 className="page-title">That privacy alert is not available.</h1></PageHeader></Shell>;
     throw error;
   }
 }

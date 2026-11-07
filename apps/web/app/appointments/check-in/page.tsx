@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, facilityClock, getDb, listAppointments, listMasterPatients } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -23,9 +25,7 @@ export default async function CheckInPage({ searchParams }: { searchParams: Prom
   });
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Check in</h1>
-      <p className="lede">Recording arrival does not start the clinical encounter.</p>
+      <PageHeader section="Appointments" href="/appointments" icon="calendar" eyebrow={<>{ctx.facilityName}</>} description={<>Recording arrival does not start the clinical encounter.</>}><h1 className="page-title">Check in</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <form className="search" action="/appointments/check-in" method="get">
         <label className="field">

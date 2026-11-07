@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { chargeHistory, effectivePermissions, getDb } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
@@ -18,8 +20,7 @@ export default async function ChargeHistoryPage({ params }: { params: Promise<{ 
   }
   return (
     <Shell ctx={ctx} current="billing">
-      <h1 className="page-title">Charge history</h1>
-      <p className="lede">Earlier versions are kept. An adjustment does not rewrite the original total.</p>
+      <PageHeader section="Charges" href="/billing" icon="wallet" description={<>Earlier versions are kept. An adjustment does not rewrite the original total.</>}><h1 className="page-title">Charge history</h1></PageHeader>
       {failed ? <p role="alert">That history is not available.</p> : null}
       <ol>
         {rows.map((row) => (

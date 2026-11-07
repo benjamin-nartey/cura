@@ -4,6 +4,9 @@ import "@curasphere/design-system/system.css";
 import "./globals.css";
 import "./premium.css";
 import "./workspace.css";
+import "./interface.css";
+import "./page-workspaces.css";
+import "./landing-motion.css";
 
 const sans = Inter({
   subsets: ["latin"],

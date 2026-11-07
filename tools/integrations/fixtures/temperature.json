@@ -1,0 +1,14 @@
+{
+  "contractVersion": 1,
+  "sourceVersion": 1,
+  "resource": {
+    "resourceType": "Observation",
+    "id": "temperature-100",
+    "status": "final",
+    "code": { "coding": [{ "system": "urn:curasphere:source-system:curasphere.synthetic.observation", "version": "2026.10", "code": "syn-temp" }] },
+    "subject": { "reference": "Patient/MRN-100" },
+    "encounter": { "reference": "Encounter/VISIT-100" },
+    "effectiveDateTime": "2026-11-03T09:10:00.000Z",
+    "valueQuantity": { "value": 37.3, "unit": "Cel", "code": "Cel", "system": "urn:curasphere:source-system:curasphere.synthetic.ucum-style%2F2026.10" }
+  }
+}

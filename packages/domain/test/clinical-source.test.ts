@@ -529,7 +529,7 @@ test("P04-F03-S48 a restart preserves entries and versions", () => {
   database.close();
   const reopened = createDatabase(file);
   assert.equal(get<{ version: number }>(reopened, `SELECT version FROM source_conditions WHERE id = ?`, created.id)?.version, 1);
-  assert.equal(healthcheck(reopened).schemaVersion, 49);
+  assert.equal(healthcheck(reopened).schemaVersion, 63);
   reopened.close();
 });
 
@@ -545,13 +545,13 @@ test("P04-F03-S49 a failed transaction leaves no partial history", () => {
 
 test("P04-F03-S51 migration and fixtures reproduce from a clean database", () => {
   const { database, file } = fileDb();
-  assert.equal(healthcheck(database).schemaVersion, 49);
+  assert.equal(healthcheck(database).schemaVersion, 63);
   assert.equal(get<{ id: string }>(database, `SELECT id FROM retention_policies WHERE id = 'pol_syn_gh_source'`)?.id, "pol_syn_gh_source");
   database.exec(CODE_SYSTEM_REGISTRY_FIXTURE_ROLLBACK);
   database.exec(SOURCE_ROLLBACK);
   database.close();
   const reopened = createDatabase(file);
-  assert.equal(healthcheck(reopened).schemaVersion, 49);
+  assert.equal(healthcheck(reopened).schemaVersion, 63);
   assert.equal(get<{ name: string }>(reopened, `SELECT name FROM sqlite_master WHERE name = 'source_conditions'`)?.name, "source_conditions");
   reopened.close();
 });

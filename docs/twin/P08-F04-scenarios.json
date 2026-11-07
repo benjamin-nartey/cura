@@ -1,0 +1,122 @@
+{
+  "feature": "P08-F04",
+  "scope": "local synthetic; no qualified clinical acceptance",
+  "scenarios": [
+    {
+      "id": "P08-F04-S01",
+      "description": "queue is durable; no rebuild before worker",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S02",
+      "description": "same-source checkpoint preserves deterministic state",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S03",
+      "description": "source/history usable while job runs; correction propagates",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S04",
+      "description": "partial checkpoint failure and explicit retry",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S05",
+      "description": "source outage and recovery; no source deletion",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S06",
+      "description": "lease expiry/cancel fencing",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S07",
+      "description": "tenant/owner/purpose/session/coverage and replay",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S08",
+      "description": "atomic request receipt and corrupt checkpoint repair",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S09",
+      "description": "append repair of corrupt F02 cache",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S10",
+      "description": "three-attempt crash bound",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S11",
+      "description": "failed schema57 rollback/retry",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S12",
+      "description": "actual competing worker processes",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S13",
+      "description": "100-job empty-source retention",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S14",
+      "description": "200-command quota and known replay",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S15",
+      "description": "source correction between prepare/completion",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S16",
+      "description": "automatic due scheduling/clock safety",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S17",
+      "description": "same empty-source hash with changed permission coverage",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S18",
+      "description": "real UI queued/running/success/cancel and source history",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S19",
+      "description": "real CLI repair and source-change redaction",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S20",
+      "description": "strict HTTP/role/origin and job ownership",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S21",
+      "description": "offline/error redaction without command replay",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S22",
+      "description": "Axe/phone keyboard-scroll and screenshot checks",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    },
+    {
+      "id": "P08-F04-S23",
+      "description": "prior Twin/mobile regressions and original-data preservation",
+      "status": "PASSED_LOCAL_SYNTHETIC"
+    }
+  ],
+  "evidence": "docs/twin/P08-F04-evidence.md"
+}

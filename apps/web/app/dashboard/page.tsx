@@ -1,115 +1,20 @@
-import { getDb, readDashboard } from "@curasphere/domain";
-import { Shell } from "@/components/shell";
-import { requireSession } from "@/lib/session";
-
-const TONES = ["orange", "blue", "green", "red", "ink"] as const;
-
-export default async function DashboardPage() {
-  const ctx = await requireSession();
-  const view = readDashboard(getDb(), ctx);
-  const headlines = view.metrics.slice(0, 4);
-  const peak = Math.max(...view.metrics.map((item) => item.count), 1);
-  const mixPeak = Math.max(...view.mix.map((item) => item.count), 1);
-
-  return (
-    <Shell ctx={ctx} current="dashboard">
-      <div className="dashboard-welcome"><div><p className="eyebrow">YOUR WORKSPACE, AT A GLANCE</p><h2>Welcome back, {ctx.displayName.split(" ")[0]}.</h2><p>Your facility’s activity, patient records, and care workflows in one view.</p></div><span className="workspace-context"><span className="live-dot" /> {ctx.facilityName ?? ctx.organizationName}</span></div>
-      <div className="metric-grid">
-        {headlines.map((item, index) => (
-          <a className="card metric metric-link" key={item.label} href={item.href}>
-            <p className="metric-label">{item.label}</p>
-            <p className="metric-value">{item.count}</p>
-            {index !== 1 ? (
-              <div className={`meter ${TONES[index] ?? "orange"}`} aria-hidden="true">
-                <span style={{ width: `${share(item.count, peak)}%` }} />
-              </div>
-            ) : null}
-            <p className="muted">{item.detail}</p>
-          </a>
-        ))}
-      </div>
-      <div className="dash-grid">
-        <section className="card">
-          <div className="section-row">
-            <p className="metric-label">Activity overview</p>
-            <p className="muted">{view.metrics.length} categories</p>
-          </div>
-          <div className="model-bars">
-            {view.metrics.map((item) => (
-              <a key={item.label} href={item.href}>
-                <span>{item.label}</span>
-                <span className="meter orange" aria-hidden="true">
-                  <span style={{ width: `${share(item.count, peak)}%` }} />
-                </span>
-                <strong>{item.count}</strong>
-              </a>
-            ))}
-          </div>
-        </section>
-        <section className="card">
-          <div className="section-row">
-            <p className="metric-label">{view.mixTitle}</p>
-            <p className="muted">Current status</p>
-          </div>
-          <div className="bubbles">
-            {view.mix.length === 0 ? <p className="muted">No activity recorded yet.</p> : null}
-            {view.mix.map((item, index) => (
-              <span key={item.label} className={`bubble ${bubbleTone(index)}`} style={{ width: bubbleSize(item.count, mixPeak), height: bubbleSize(item.count, mixPeak) }}>
-                {item.count}
-              </span>
-            ))}
-          </div>
-          <ul className="mix">
-            {view.mix.map((item, index) => (
-              <li key={item.label}>
-                <i className={`swatch ${bubbleTone(index)}`} />
-                {item.label} <strong>{share(item.count, view.mix.reduce((sum, slice) => sum + slice.count, 0))}%</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-      <section className="card" style={{ marginTop: 16 }}>
-        <div className="section-row">
-          <p className="metric-label">{view.listTitle}</p>
-          <p className="muted">{view.rows.length} shown</p>
-        </div>
-        {view.rows.length === 0 ? (
-          <p>No records are available for this view.</p>
-        ) : (
-          <div className="data-table-region" role="region" aria-label="Patient activity" tabIndex={0}><table className="ward-table">
-            <thead>
-              <tr>
-                <th scope="col">Record</th>
-                <th scope="col">Detail</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {view.rows.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.primary}</td>
-                  <td className="muted">{row.secondary}</td>
-                  <td>{row.href ? <a href={row.href}>Open</a> : "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table></div>
-        )}
-      </section>
-    </Shell>
-  );
-}
-
-function share(part: number, total: number) {
-  if (total <= 0) return 0;
-  return Math.round((part / total) * 100);
-}
-
-function bubbleSize(count: number, max: number) {
-  return `${72 + (count / max) * 88}px`;
-}
-
-function bubbleTone(index: number) {
-  return (["occupied", "open", "closed", "occupied"] as const)[index % 4];
+import type {CSSProperties} from "react";
+import {getDb,readDashboard} from "@curasphere/domain";
+import {Shell} from "@/components/shell";
+import {requireSession} from "@/lib/session";
+import {Icon,type IconName} from "@/components/icon";
+import {MetricCard,type MetricTone} from "@/components/metric-card";
+const tones:MetricTone[]=["teal","blue","amber","violet"];
+const colors=["#267c70","#6586c4","#b28542","#8b78b4","#697b86"];
+function metricIcon(label:string):IconName{const value=label.toLowerCase();if(value.includes("patient")||value.includes("staff")||value.includes("principal"))return "users";if(value.includes("appointment")||value.includes("visit"))return "calendar";if(value.includes("charge")||value.includes("payment")||value.includes("invoice"))return "wallet";if(value.includes("result")||value.includes("observation"))return "flask";if(value.includes("medication")||value.includes("pharmacy"))return "pill";if(value.includes("allerg"))return "shieldCheck";if(value.includes("referral"))return "handoff";if(value.includes("encounter"))return "stethoscope";if(value.includes("request")||value.includes("task")||value.includes("order"))return "checklist";if(value.includes("audit")||value.includes("access"))return "shieldCheck";return "activity";}
+export default async function DashboardPage(){
+ const ctx=await requireSession(),view=readDashboard(getDb(),ctx),total=view.mix.reduce((sum,item)=>sum+item.count,0),now=new Date();
+ let angle=0;const segments=view.mix.map((item,index)=>{const start=angle;angle+=total?item.count/total*360:0;return `${colors[index%colors.length]} ${start}deg ${angle}deg`;});
+ const shortcuts=[...new Map(view.metrics.map(item=>[item.href,item])).values()].slice(0,3);
+ return <Shell ctx={ctx} current="dashboard"><div className="dashboard-welcome"><div><p className="eyebrow">YOUR WORKSPACE, AT A GLANCE</p><h2>Welcome back, {ctx.displayName.split(" ")[0]}.</h2><p>Your facility’s activity, patient records, and care workflows in one view.</p></div><div className="dashboard-context"><span className="workspace-context"><Icon name="building" size={15}/>{ctx.facilityName??ctx.organizationName}</span><time dateTime={now.toISOString()}>{new Intl.DateTimeFormat("en-GB",{weekday:"long",day:"numeric",month:"long",timeZone:"UTC"}).format(now)} · UTC</time></div></div>
+ <div className="metric-grid">{view.metrics.slice(0,4).map((item,index)=><MetricCard key={item.label} label={item.label} value={item.count} detail={item.detail} href={item.href} icon={metricIcon(item.label)} tone={tones[index%tones.length]} featured={index===0}/>)}</div>
+ <div className="dash-grid"><section className="card dashboard-activity"><header className="panel-heading"><div><p className="eyebrow">FACILITY RECORDS</p><h2>Activity overview</h2><p>Explore the records behind each count.</p></div><span className="panel-count">{view.metrics.length} categories</span></header><div className="activity-categories">{view.metrics.map(item=><a key={item.label} href={item.href}><span className="activity-icon"><Icon name={metricIcon(item.label)} size={18}/></span><span>{item.label}</span><strong>{item.count.toLocaleString("en-US")}</strong><span aria-hidden="true">↗</span></a>)}</div></section>
+ <section className="card dashboard-distribution"><header className="panel-heading"><div><p className="eyebrow">RECORD DISTRIBUTION</p><h2>{view.mixTitle}</h2><p>Current status across your records.</p></div></header>{total>0?<><div className="status-donut" aria-hidden="true" style={{"--distribution":`conic-gradient(${segments.join(",")})`} as CSSProperties}><div><strong>{total.toLocaleString("en-US")}</strong><span>Total records</span></div></div><ul className="status-legend">{view.mix.map((item,index)=><li key={item.label}><span className="legend-marker" style={{background:colors[index%colors.length]}} aria-hidden="true"/><span>{item.label.replaceAll("-"," ")}</span><strong>{item.count}</strong><small>{Math.round(item.count/total*100)}%</small></li>)}</ul></>:<div className="dashboard-empty"><Icon name="chart" size={30}/><p>No activity recorded yet.</p></div>}<div className="dashboard-source-note"><Icon name="fileSearch" size={16}/><span>Counts reflect your authorized record scope.</span></div></section></div>
+ {shortcuts.length>0&&<section className="dashboard-shortcuts" aria-label="Workspace shortcuts">{shortcuts.map(item=><a key={item.href} href={item.href}><span className="activity-icon"><Icon name={metricIcon(item.label)}/></span><span><strong>Open {item.label.toLowerCase()}</strong><small>{item.detail}</small></span><span aria-hidden="true">→</span></a>)}</section>}
+ <section className="card dashboard-records"><header className="panel-heading"><div><p className="eyebrow">YOUR FACILITY</p><h2>{view.listTitle}</h2></div><span className="panel-count">{view.rows.length} shown</span></header>{view.rows.length===0?<div className="dashboard-empty"><Icon name="fileSearch" size={28}/><p>No records are available for this view.</p></div>:<div className="data-table-region" role="region" aria-label="Patient activity" tabIndex={0}><table className="ward-table"><thead><tr><th scope="col">Record</th><th scope="col">Detail</th><th scope="col">Action</th></tr></thead><tbody>{view.rows.map(row=><tr key={row.id}><td><span className="dashboard-record-name"><span className="record-avatar" aria-hidden="true">{row.primary.split(" ").filter(Boolean).slice(0,2).map(word=>word[0]).join("")}</span>{row.primary}</span></td><td className="muted">{row.secondary}</td><td>{row.href?<a className="table-action" href={row.href}>Open <span aria-hidden="true">↗</span></a>:"—"}</td></tr>)}</tbody></table></div>}</section></Shell>;
 }

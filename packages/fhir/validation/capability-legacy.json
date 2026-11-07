@@ -1,0 +1,170 @@
+{
+  "resourceType": "CapabilityStatement",
+  "id": "curasphere-local",
+  "url": "https://curasphere.local/fhir/CapabilityStatement/curasphere-local",
+  "version": "1.0.0",
+  "name": "CuraSphereLegacy",
+  "title": "Legacy facility chart API; distinct from current clinical source mappings",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-04",
+  "kind": "instance",
+  "software": {
+    "name": "CuraSphere local simulation",
+    "version": "1.0.0"
+  },
+  "implementation": {
+    "description": "Legacy facility chart API; distinct from current clinical source mappings",
+    "url": "http://127.0.0.1:3000/api/fhir/r4"
+  },
+  "fhirVersion": "4.0.1",
+  "format": [
+    "application/fhir+json"
+  ],
+  "rest": [
+    {
+      "mode": "server",
+      "security": {
+        "description": "Local directory session cookie. This legacy boundary accepts no SMART bearer. Current-source app authorization is documented at the separate source boundary."
+      },
+      "resource": [
+        {
+          "type": "Patient",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        },
+        {
+          "type": "Observation",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            },
+            {
+              "code": "create"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "patient",
+              "type": "reference"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        },
+        {
+          "type": "Condition",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "patient",
+              "type": "reference"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        },
+        {
+          "type": "AllergyIntolerance",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "patient",
+              "type": "reference"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        },
+        {
+          "type": "MedicationStatement",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "patient",
+              "type": "reference"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        },
+        {
+          "type": "Encounter",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "patient",
+              "type": "reference"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        },
+        {
+          "type": "Subscription",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "create"
+            }
+          ],
+          "operation": [
+            {
+              "name": "events",
+              "definition": "urn:curasphere:operation-events"
+            }
+          ],
+          "documentation": "Legacy chart projection, not the current-source profile. Search is bounded to 200 rows; no paged search, update, delete, history or general FHIR transaction."
+        }
+      ],
+      "operation": [
+        {
+          "name": "export",
+          "definition": "urn:curasphere:operation-export",
+          "documentation": "Custom facility NDJSON job/poll operation. Not the HL7 Bulk Data protocol. Signed partner delivery and reviewed batches use separate custom interfaces."
+        }
+      ]
+    }
+  ]
+}

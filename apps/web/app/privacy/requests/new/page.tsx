@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { requireSession } from "@/lib/session";
@@ -7,17 +9,17 @@ export default async function NewPrivacyRequestPage({ searchParams }: { searchPa
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("privacy.request.create")) {
-    return <Shell ctx={ctx} current="requests"><h1 className="page-title">Submitting a privacy request is limited to the request workflow.</h1></Shell>;
+    return <Shell ctx={ctx} current="requests"><PageHeader section="Privacy requests" href="/privacy/requests" icon="shieldCheck"><h1 className="page-title">Submitting a privacy request is limited to the request workflow.</h1></PageHeader></Shell>;
   }
   return (
     <Shell ctx={ctx} current="requests">
-      <h1 className="page-title">Submit a privacy request</h1>
+      <PageHeader section="Privacy requests" href="/privacy/requests" icon="shieldCheck"><h1 className="page-title">Submit a privacy request</h1></PageHeader>
       <p>Select the subject and request type. Verify identity before releasing any records; email alone is insufficient.</p>
       {query.error ? <p>The request was not recorded. Check the subject and authority.</p> : null}
       <form action="/api/privacy/requests" method="post">
         <input type="hidden" name="idempotencyKey" value={`dsr${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`} />
         <label>Request type
-          <select name="requestType" defaultValue="access">
+          <select aria-label="Request type" name="requestType" defaultValue="access">
             <option value="access">Access</option>
             <option value="portability">Portability</option>
             <option value="correction">Correction</option>

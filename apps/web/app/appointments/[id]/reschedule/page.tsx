@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, facilityClock, getDb, listSlots, readAppointment } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -21,9 +23,7 @@ export default async function ReschedulePage({ params, searchParams }: { params:
   const slots = appointment.practitioner_id && appointment.category ? listSlots(getDb(), actor, appointment.practitioner_id, date, appointment.category).filter((slot) => slot.startsAt !== appointment.starts_at) : [];
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Reschedule</h1>
-      <p className="lede">The current time stays reserved until the replacement time is saved.</p>
+      <PageHeader section="Appointments" href="/appointments" icon="calendar" eyebrow={<>{ctx.facilityName}</>} description={<>The current time stays reserved until the replacement time is saved.</>}><h1 className="page-title">Reschedule</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <p>Current time: {clockLabel(appointment.starts_at, timeZone)}. Status: {appointment.status}. Version {appointment.version}.</p>
       <form action={`/appointments/${id}/reschedule`} method="get">

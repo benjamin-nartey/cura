@@ -1,3 +1,5 @@
+import { registerIntegrationConnection,createIntegrationSubscription,exportIntegrationObservation } from "../../packages/domain/src/integrations.ts";
+import { get } from "../../packages/domain/src/db.ts";
 import { writeFileSync } from "node:fs";
 import { sourceScenario } from "../../packages/domain/test/fhir-source-fixtures.ts";
 import { previewSourceR4 } from "../../packages/domain/src/fhir-source.ts";
@@ -34,4 +36,9 @@ const authorizationCode=new URL(decideSmartAuthorization(db,doctor,pending.id,pe
 const token=exchangeSmartCode(db,doctor,{grant_type:"authorization_code",code:authorizationCode,client_id:app.id,redirect_uri:callback,code_verifier:proof});
 const delegated=records.map(record=>readSmartResource(db,doctor,token.access_token,record.type,sourceFhirId(doctor.organizationId,record.type,record.id)));
 writeFileSync(new URL("../../packages/fhir/validation/smart-delegated.json",import.meta.url),JSON.stringify({resourceType:"Bundle",type:"collection",entry:delegated.map(resource=>({fullUrl:`${smartAudience()}/${resource.resourceType}/${resource.id}`,resource}))},null,2)+"\n");
+process.env.CURASPHERE_INTEGRATION_KEY="synthetic-fixture-generator-root-01234567890123456789";
+const partner=registerIntegrationConnection(db,admin,{name:"Synthetic Validation Partner",endpoint:"http://127.0.0.1:19291/curasphere/webhook",idempotencyKey:"validation-partner-register"});
+const subscription=createIntegrationSubscription(db,doctor,partner.id,"pat_gh_kofi_a");
+const exported=records.filter(record=>record.type==="Observation").map(record=>{const job=exportIntegrationObservation(db,doctor,subscription.id,record.id);return JSON.parse(get<{payload:string}>(db,"SELECT payload FROM integration_outbox WHERE id=?",job.id)!.payload).resource;});
+writeFileSync(new URL("../../packages/fhir/validation/partner-export.json",import.meta.url),JSON.stringify({resourceType:"Bundle",type:"collection",entry:exported.map(resource=>({fullUrl:`https://curasphere.local/fhir/source/${resource.resourceType}/${resource.id}`,resource}))},null,2)+"\n");
 db.close();

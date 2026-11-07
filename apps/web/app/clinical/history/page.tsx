@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, sourceHistory } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { masterActor } from "@/lib/master";
@@ -21,8 +23,7 @@ export default async function HistoryPage({ searchParams }: { searchParams: Prom
   }
   return (
     <Shell ctx={ctx} current="clinical">
-      <h1 className="page-title">Source history</h1>
-      <p className="lede">Each version is stored. The current screen does not rewrite an earlier version.</p>
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<>Each version is stored. The current screen does not rewrite an earlier version.</>}><h1 className="page-title">Source history</h1></PageHeader>
       {failed ? <p role="alert">That history is not available.</p> : null}
       {rows.length === 0 && !failed ? <p>No source version is available.</p> : null}
       <ol>

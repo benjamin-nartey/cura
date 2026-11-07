@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, facilityClock, getDb, listMasterPatients, listPractitioners, listSlots, localToUtc } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -34,14 +36,12 @@ export default async function BookAppointmentPage({
   const offered = query.offered && slots.some((slot) => slot.startsAt === query.offered) ? query.offered : "";
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Book an appointment</h1>
-      <p className="lede">The saved time is the time the server commits. A conflict keeps the same practitioner.</p>
+      <PageHeader section="Appointments" href="/appointments" icon="calendar" eyebrow={<>{ctx.facilityName}</>} description={<>The saved time is the time the server commits. A conflict keeps the same practitioner.</>}><h1 className="page-title">Book an appointment</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form className="form-grid" action="/appointments/new" method="get">
+      <section className="page-form card"><form className="form-grid" action="/appointments/new" method="get">
         <label className="field">
           Patient
-          <select name="patient" defaultValue={query.patient ?? ""} required>
+          <select aria-label="Patient" name="patient" defaultValue={query.patient ?? ""} required>
             <option value="">Select a patient</option>
             {patients.map((patient) => (
               <option key={patient.id} value={patient.id}>
@@ -52,14 +52,14 @@ export default async function BookAppointmentPage({
         </label>
         <label className="field">
           Category
-          <select name="category" defaultValue={category}>
+          <select aria-label="Category" name="category" defaultValue={category}>
             <option value="follow-up">Follow-up, 20 minutes</option>
             <option value="new-visit">New visit, 30 minutes</option>
           </select>
         </label>
         <label className="field">
           Practitioner
-          <select name="practitioner" defaultValue={query.practitioner ?? ""} required>
+          <select aria-label="Practitioner" name="practitioner" defaultValue={query.practitioner ?? ""} required>
             <option value="">Select a practitioner</option>
             {practitioners.map((practitioner) => (
               <option key={practitioner.id} value={practitioner.id}>
@@ -75,7 +75,7 @@ export default async function BookAppointmentPage({
         <button className="btn-dark" type="submit">
           Show available times
         </button>
-      </form>
+      </form></section>
       {slotError ? <p role="alert">Available times could not be loaded.</p> : null}
       {query.date && query.practitioner && !slotError && slots.length === 0 ? <p>No open time remains for that practitioner on that day.</p> : null}
       {offered ? <p role="status">The previous time was taken. {clockLabel(offered, timeZone)} is still open for this practitioner.</p> : null}

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading,PageActions} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readPractitioner } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -26,20 +28,18 @@ export default async function PractitionerProfilePage({
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   return (
     <Shell ctx={ctx} current="practitioners">
-      <p className="eyebrow">{practitioner.role_type}</p>
-      <h1 className="page-title">{practitioner.display_name}</h1>
-      <p className="lede">
+      <PageHeader section="Practitioners" href="/practitioners" icon="users" eyebrow={<>{practitioner.role_type}</>} description={<>
         {practitioner.status} · version {practitioner.version} · {practitioner.verification_state}
-      </p>
+      </>}><h1 className="page-title">{practitioner.display_name}</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <section className="card">
-        <h2 style={{ marginTop: 0 }}>Credential</h2>
+        <SectionHeading icon="users"><h2 style={{ marginTop: 0 }}>Credential</h2></SectionHeading>
         <p>License: {practitioner.license_number ?? "Not recorded"}</p>
         <p>Issuer: {practitioner.license_issuer ?? "Not recorded"}</p>
         <p>Practitioner credentials require independent verification. Account access does not verify a professional license.</p>
       </section>
       <section className="card">
-        <h2 style={{ marginTop: 0 }}>Facilities</h2>
+        <SectionHeading icon="users"><h2 style={{ marginTop: 0 }}>Facilities</h2></SectionHeading>
         <ul>
           {practitioner.affiliations.map((affiliation) => (
             <li key={affiliation.facility_id}>
@@ -60,7 +60,7 @@ export default async function PractitionerProfilePage({
         ) : null}
       </section>
       <section className="card">
-        <h2 style={{ marginTop: 0 }}>Workforce identity</h2>
+        <SectionHeading icon="users"><h2 style={{ marginTop: 0 }}>Workforce identity</h2></SectionHeading>
         {practitioner.link ? (
           <p>
             {practitioner.link.user_id} · {practitioner.link.status}
@@ -80,9 +80,9 @@ export default async function PractitionerProfilePage({
           </form>
         ) : null}
       </section>
-      <p>
+      <PageActions>
         <a href="/practitioners">Back to practitioners</a>
-      </p>
+      </PageActions>
     </Shell>
   );
 }

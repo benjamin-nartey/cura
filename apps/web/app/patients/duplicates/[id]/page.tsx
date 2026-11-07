@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readDuplicateCandidate } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -40,16 +42,14 @@ export default async function DuplicateReviewPage({
   );
   return (
     <Shell ctx={ctx} current="patients">
-      <p className="eyebrow">Match reason: {candidate.reason}</p>
-      <h1 className="page-title">Compare records</h1>
-      <p className="lede">Opened by {candidate.opened_by}. Version {candidate.version}. Status {candidate.status}.</p>
+      <PageHeader section="Patients" href="/patients" icon="users" eyebrow={<>Match reason: {candidate.reason}</>} description={<>Opened by {candidate.opened_by}. Version {candidate.version}. Status {candidate.status}.</>}><h1 className="page-title">Compare records</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="split">
         {candidate.left ? side("Left record", candidate.left) : <p>The left record is not available.</p>}
         {candidate.right ? side("Right record", candidate.right) : <p>The right record is not available.</p>}
       </div>
       <section className="card">
-        <h2 style={{ marginTop: 0 }}>If these are merged</h2>
+        <SectionHeading icon="users"><h2 style={{ marginTop: 0 }}>If these are merged</h2></SectionHeading>
         <p>The retired identity stays in history with its identifiers. Conditions, encounters, observations, allergies, and medications stay on the retired record and are listed as blocked.</p>
       </section>
       {candidate.status !== "open" ? <p>This candidate is already decided.</p> : null}

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readPrivacyRequest } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,7 +12,7 @@ export default async function PrivacyRequestDetailPage({ params, searchParams }:
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("privacy.request.read")) {
-    return <Shell ctx={ctx} current="requests"><h1 className="page-title">Privacy requests are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="requests"><PageHeader section="Privacy requests" href="/privacy/requests" icon="shieldCheck"><h1 className="page-title">Privacy requests are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   try {
     const row = readPrivacyRequest(getDb(), privacyActor(ctx), id);
@@ -19,8 +21,7 @@ export default async function PrivacyRequestDetailPage({ params, searchParams }:
     const canExport = access.permissions.includes("privacy.export.run") && (row.status === "approved" || row.status === "partially_approved" || row.status === "processing" || row.status === "ready");
     return (
       <Shell ctx={ctx} current="requests">
-        <p className="eyebrow">{row.status}</p>
-        <h1 className="page-title">{row.request_type}</h1>
+        <PageHeader section="Privacy requests" href="/privacy/requests" icon="shieldCheck" eyebrow={<>{row.status}</>}><h1 className="page-title">{row.request_type}</h1></PageHeader>
         {query.error === "forbidden" && row.status === "verification_pending" ? <p>Verification did not succeed. Protected data was not released.</p> : null}
         {query.error === "forbidden" && row.status !== "verification_pending" ? <p>That action is not available for this account.</p> : null}
         {query.error === "conflict" ? <p>The request changed, expired, or is blocked. Refresh and use the current state.</p> : null}
@@ -93,7 +94,7 @@ export default async function PrivacyRequestDetailPage({ params, searchParams }:
       </Shell>
     );
   } catch (error) {
-    if (error instanceof NotFoundError) return <Shell ctx={ctx} current="requests"><h1 className="page-title">That privacy request is not available.</h1></Shell>;
+    if (error instanceof NotFoundError) return <Shell ctx={ctx} current="requests"><PageHeader section="Privacy requests" href="/privacy/requests" icon="shieldCheck"><h1 className="page-title">That privacy request is not available.</h1></PageHeader></Shell>;
     throw error;
   }
 }

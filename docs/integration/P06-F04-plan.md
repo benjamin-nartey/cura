@@ -1,0 +1,13 @@
+# P06-F04 — Bulk movement and reconciliation
+
+Local synthetic implementation only, under the existing simulation authority. Preserve formal Phase 06 NOT_STARTED and all production restrictions. F03 is locally verified; its uncommitted code/evidence must be retained. No F05 conformance/R5 work is included.
+
+Implement signed immutable import manifests (100 messages/256 KiB), clinician ownership and review, pages of at most ten independently committed items, durable cursor/lease/run idempotency, partial failure reports and cancellation. A crash after an item commit must preserve both its source change and cursor; resumption must never repeat the clinical event. Source/identity/permission gates remain authoritative. Invalid individual messages become durable quarantine outcomes; dependency/database outages stop progress rather than skip records.
+
+Bulk export captures an immutable manifest of at most 1,000 authorized patient Observation IDs/versions for an owned active subscription, then queues pages through the existing F03 outbox. A source version change becomes an explicit conflict rather than silently exporting another version. Completion means all manifest items accounted for, not remote delivery acknowledgement.
+
+Add controlled recovery of immutable quarantined receipts, explicit reviewed reconciliation of failed batch items, and delivery redrive with retained attempt history, stable receiver identity, CAS and at most three redrive generations. Never edit malformed source bytes to manufacture acceptance. Recheck current ownership, patient access, connection/subscription and session for recovery; terminal disabled/ended authority stays terminal.
+
+Expose owner-scoped, authenticated keyset pagination and reconciliation totals. Cursor tokens bind user/session/purpose/facility/filter, expire and contain no raw session or clinical facts. UI covers empty/loading/preview/attestation/progress/conflict/partial failure/cancel/recovery/offline states with existing workspace typography and responsive controls. Web workforce administration only; mobile regression required, native bulk administration N/A.
+
+Schema 51 is additive. Preserve original clinical, provenance and F03 rows. Record API/state/retention/rollback decisions in ADR-0074 and a runbook. Verify real file-backed interruption/restart, concurrent processing, duplicate runs, identity/version/permission failures, partial recovery, receiver deduplication after redrive, migration failure, browser/a11y/responsive behavior, prior suites, build and types. Evidence must distinguish technical verification from pending qualified reviews. Stop before F05.

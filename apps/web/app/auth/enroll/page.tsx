@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {SectionHeading} from "@/components/page-workspace";
 import { getDb, listPasskeys, readTotpStatus } from "@curasphere/domain";
 import { cookies } from "next/headers";
 import { Feedback } from "@/components/feedback";
@@ -20,7 +22,7 @@ export default async function EnrollPage({ searchParams }: { searchParams: Promi
     <Shell ctx={ctx} current="account" title="Authenticators">
       <section className="card account-card">
         <p className="eyebrow">Authenticator</p>
-        <h2>Enrollment</h2>
+        <SectionHeading icon="shieldCheck"><h2>Enrollment</h2></SectionHeading>
         <p className="lede">A second factor is checked by this application after the identity provider accepts the password. It does not grant another organization.</p>
         <Feedback error={feedback.error} notice={feedback.notice} />
         {status !== "active" ? (
@@ -59,7 +61,7 @@ export default async function EnrollPage({ searchParams }: { searchParams: Promi
             </button>
           </form>
         ) : null}
-        <h2>Passkeys</h2>
+        <SectionHeading icon="shieldCheck"><h2>Passkeys</h2></SectionHeading>
         <PasskeyPanel mode="register" />
         {passkeys.length === 0 ? <p role="status">No passkey is enrolled.</p> : null}
         {passkeys.map((item) => (

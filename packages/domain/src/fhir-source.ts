@@ -91,7 +91,7 @@ export function listSourceR4(db:AppDatabase,ctx:SessionContext,patientId:string)
   const permissions=effectivePermissions(db,ctx.userId,ctx.organizationId,ctx.facilityId).permissions;
   for(const [kind,binding] of Object.entries(bindings)) {
     const type=sourceType(kind);if(type==="Patient"||!permissions.includes(binding.permission))continue;
-    const candidates=all<{id:string}>(db,`SELECT id FROM ${binding.table} WHERE organization_id=? AND facility_id=? AND patient_id=? ORDER BY id LIMIT 30`,ctx.organizationId,ctx.facilityId,patientId);
+    const candidates=all<{id:string}>(db,`SELECT id FROM ${binding.table} WHERE organization_id=? AND facility_id=? AND patient_id=? ORDER BY ${type==="Encounter"||type==="ServiceRequest"?"created_at":"recorded_at"} DESC,id DESC LIMIT 30`,ctx.organizationId,ctx.facilityId,patientId);
     for(const candidate of candidates) {
       try{const row=facts(db,ctx,type,candidate.id);rows.push({type,id:row.id,label:String(row.display??row.status??type),version:row.version});}
       catch(error){if(!(error instanceof AppError) || !["forbidden","notfound"].includes(error.code))throw error;}

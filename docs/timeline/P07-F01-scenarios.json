@@ -1,0 +1,129 @@
+{
+  "feature": "P07-F01",
+  "dataClass": "synthetic",
+  "scope": "Local deterministic schema/read slice; no stream consumer or clinical action",
+  "scenarios": [
+    {
+      "id": "P07-F01-S01",
+      "masterScenario": "S01",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Actual clinical source recording, deterministic repeated read, every version backlink equals persisted snapshot",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "canonical events are deterministic"
+    },
+    {
+      "id": "P07-F01-S02",
+      "masterScenario": "S05",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Correction preserves old value/hash/pointer, adds new version and explicit historical flag",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "actual correction preserves"
+    },
+    {
+      "id": "P07-F01-S03",
+      "masterScenario": "S02",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Wrong tenant/facility/purpose/admin/revoked session denied",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "tenant, facility, purpose"
+    },
+    {
+      "id": "P07-F01-S04",
+      "masterScenario": "S09",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Removing source-specific permission hides events and saved backlink",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "source-specific permission removal"
+    },
+    {
+      "id": "P07-F01-S05",
+      "masterScenario": "S13",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Dependency unavailable and missing ledger chain cannot return empty success",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "dependency failure"
+    },
+    {
+      "id": "P07-F01-S06",
+      "masterScenario": "S11",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "File-backed database reopen yields identical canonical events/hash without projection writes",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "read-only reconstruction survives"
+    },
+    {
+      "id": "P07-F01-S07",
+      "masterScenario": "S02",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Malformed/unknown event and different real patient cannot resolve another source",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "invalid parameters"
+    },
+    {
+      "id": "P07-F01-S08",
+      "masterScenario": "S01",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "No source events returns explicit empty list without normal findings",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "empty permitted chart"
+    },
+    {
+      "id": "P07-F01-S09",
+      "masterScenario": "S18",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Date precision retained, invalid calendar time unavailable",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "date-only onset"
+    },
+    {
+      "id": "P07-F01-S10",
+      "masterScenario": "S11",
+      "preconditions": "Isolated sourceScenario() seeded GH/EU synthetic tenants and linked clinical sources",
+      "steps": "Corrupt JSON and >500 version history fail without silent truncation",
+      "expectedPersistence": "Authoritative source unchanged by read; audit only; corrections append immutable version",
+      "expectedSecurity": "Only active treatment/history/source-kind authority reads exact patient/facility facts",
+      "expectedRecovery": "Reopen/retry reproduces unchanged source evidence; unavailable until integrity/dependency restored",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "corrupt snapshot"
+    },
+    {
+      "id": "P07-F01-S11",
+      "masterScenario": "S01",
+      "preconditions": "35 earlier synthetic observations plus a recent actual source observation",
+      "steps": "Read existing authorized R4 source inventory",
+      "expectedPersistence": "No source writes; same 30-row bound per type",
+      "expectedSecurity": "Existing patient/type authorization retained",
+      "expectedRecovery": "Recent record remains selectable after retained history grows",
+      "testFile": "packages/domain/test/canonical-timeline.test.ts",
+      "testName": "source preview inventory retains recently recorded observations"
+    }
+  ],
+  "browserEvidence": "tools/e2e/p07-f01.spec.ts"
+}

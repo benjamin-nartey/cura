@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { getDb, noteDenial, readEvaluation } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -12,8 +14,7 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
     noteDenial(getDb(), ctx, "eval.read", "EvalDataset", ctx.organizationId);
     return (
       <Shell ctx={ctx} current="evaluation">
-        <p className="eyebrow">Evaluation</p>
-        <h1 className="page-title">Evaluation records are closed for this role.</h1>
+        <PageHeader section="Evaluation" href="/evaluation" icon="gauge" eyebrow={<>Evaluation</>}><h1 className="page-title">Evaluation records are closed for this role.</h1></PageHeader>
       </Shell>
     );
   }
@@ -24,22 +25,20 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
     <Shell ctx={ctx} current="evaluation">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Evaluation · {view.goldenVersion}</p>
-          <h1 className="page-title">{ctx.organizationName}</h1>
-          <p className="lede">{view.modelCard} {view.promptCard} {view.subgroupNote} {view.driftNote} {view.holdNote}</p>
+          <PageHeader section="Evaluation" href="/evaluation" icon="gauge" eyebrow={<>Evaluation · {view.goldenVersion}</>} description={<>{view.modelCard} {view.promptCard} {view.subgroupNote} {view.driftNote} {view.holdNote}</>}><h1 className="page-title">{ctx.organizationName}</h1></PageHeader>
         </div>
       </header>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form action="/api/evaluation/dataset" method="post" className="form-grid">
+      <section className="page-form card"><form action="/api/evaluation/dataset" method="post" className="form-grid">
         <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
         <button className="btn-line" type="submit">Store golden dataset</button>
-      </form>
+      </form></section>
       {view.datasets.length > 0 ? (
         <form action="/api/evaluation/run" method="post" className="form-grid" style={{ marginTop: 12 }}>
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Dataset
-            <select name="datasetId" required>
+            <select aria-label="Dataset" name="datasetId" required>
               {view.datasets.map((dataset) => (
                 <option key={dataset.id} value={dataset.id}>Version {dataset.version}</option>
               ))}
@@ -53,7 +52,7 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Passed run
-            <select name="runId" required>
+            <select aria-label="Passed run" name="runId" required>
               {view.runs.filter((run) => run.outcome === "passed").map((run) => (
                 <option key={run.id} value={run.id}>{run.outcome}</option>
               ))}
@@ -67,7 +66,7 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Waiting hold
-            <select name="approvalId" required>
+            <select aria-label="Waiting hold" name="approvalId" required>
               {waiting.map((item) => (
                 <option key={item.id} value={item.id}>{item.runId}</option>
               ))}
@@ -81,7 +80,7 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
           <label className="field">
             Signed run
-            <select name="runId" required>
+            <select aria-label="Signed run" name="runId" required>
               {signed.map((item) => (
                 <option key={item.id} value={item.runId}>{item.decision}</option>
               ))}
@@ -94,7 +93,7 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
         {view.runs.map((run) => (
           <section className="card wide" key={run.id}>
             <p className="eyebrow">{run.outcome} · {run.rollback.modelId} {run.rollback.status}</p>
-            <h2>Refusal suite</h2>
+            <SectionHeading icon="gauge"><h2>Refusal suite</h2></SectionHeading>
             <p>{run.rollback.note}</p>
             {run.cases.map((item) => (
               <p key={item.id} className="provenance">{item.id} · expected {item.expected} · actual {item.actual}</p>
@@ -104,7 +103,7 @@ export default async function EvaluationPage({ searchParams }: { searchParams: P
         {view.promotions.map((item) => (
           <section className="card" key={item.id}>
             <p className="eyebrow">{item.outcome}</p>
-            <h2>Promotion attempt</h2>
+            <SectionHeading icon="gauge"><h2>Promotion attempt</h2></SectionHeading>
             <p>{view.holdNote}</p>
           </section>
         ))}

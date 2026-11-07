@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readDryRun } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -9,7 +11,7 @@ export default async function RetentionDryRunPage({ searchParams }: { searchPara
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("retention.dry-run") && !access.permissions.includes("retention.job.read")) {
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">Retention previews are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Retention previews are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   let plan: ReturnType<typeof readDryRun> | null = null;
   if (query.id && access.permissions.includes("retention.dry-run")) {
@@ -22,8 +24,7 @@ export default async function RetentionDryRunPage({ searchParams }: { searchPara
   const dry = plan?.dry as { id?: string; eligible_count?: number; held_count?: number; review_count?: number; missing_count?: number; status?: string } | undefined;
   return (
     <Shell ctx={ctx} current="retention">
-      <h1 className="page-title">Retention preview</h1>
-      <p className="lede">This is a preview. It does not delete or archive anything until a separate execute step is authorized.</p>
+      <PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck" description={<>This is a preview. It does not delete or archive anything until a separate execute step is authorized.</>}><h1 className="page-title">Retention preview</h1></PageHeader>
       {query.error === "conflict" ? <p>That preview is stale, changed, or blocked by a newer hold or policy. Create another preview.</p> : null}
       {query.error === "forbidden" ? <p>This account cannot execute retention.</p> : null}
       {query.notice === "preview" ? <p>Preview completed. Counts below are from the stored plan.</p> : null}

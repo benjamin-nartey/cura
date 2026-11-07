@@ -1,0 +1,33 @@
+{
+  "dataClass": "synthetic",
+  "cases": [
+    {
+      "id": "happy",
+      "oracle": "Human-authored unverified claim retains exact source pointer and append-only version history."
+    },
+    {
+      "id": "uncited",
+      "oracle": "Question with no source remains unverified/uncited; no risk or care-gap conclusion."
+    },
+    {
+      "id": "adversarial",
+      "oracle": "Verified/model/author forgery rejected; foreign actor/patient cannot infer claim content."
+    },
+    {
+      "id": "drift",
+      "oracle": "Correction to newly created observation withholds previous dependent claim and history text; current revision can cite new source version."
+    },
+    {
+      "id": "downtime",
+      "oracle": "Offline, dependency failure, cancellation and late responses clear content without command replay."
+    },
+    {
+      "id": "concurrent",
+      "oracle": "Two actual processes replay one command or serialize a single expected revision, never overwrite."
+    },
+    {
+      "id": "migration",
+      "oracle": "Partial schema-58 failure rolls back, retains schema-57 sources, and retry succeeds."
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readRetentionJob } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -9,7 +11,7 @@ export default async function RetentionJobPage({ params }: { params: Promise<{ i
   const { id } = await params;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("retention.job.read")) {
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">Retention jobs are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Retention jobs are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   try {
     const result = readRetentionJob(getDb(), retentionActor(ctx), id);
@@ -17,8 +19,7 @@ export default async function RetentionJobPage({ params }: { params: Promise<{ i
     const items = result.items;
     return (
       <Shell ctx={ctx} current="retention">
-        <p className="eyebrow">{job.status}</p>
-        <h1 className="page-title">{job.job_type}</h1>
+        <PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck" eyebrow={<>{job.status}</>}><h1 className="page-title">{job.job_type}</h1></PageHeader>
         <p>Success {job.success_count}. Skipped {job.skip_count}. Failed {job.failure_count}. Retries {job.retry_count}.</p>
         {items.length === 0 ? <p>No item outcomes are stored yet.</p> : null}
         <div className="list">
@@ -28,6 +29,6 @@ export default async function RetentionJobPage({ params }: { params: Promise<{ i
     );
   } catch (error) {
     if (!(error instanceof NotFoundError)) throw error;
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">That retention job is not available.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">That retention job is not available.</h1></PageHeader></Shell>;
   }
 }

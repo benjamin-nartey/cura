@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions} from "@/components/page-workspace";
 import { effectivePermissions, getDb, retentionOverview } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { retentionActor } from "@/lib/retention";
@@ -8,16 +10,14 @@ export default async function RetentionOverviewPage({ searchParams }: { searchPa
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("retention.policy.read") && !access.permissions.includes("legal-hold.read")) {
-    return <Shell ctx={ctx} current="retention"><h1 className="page-title">Retention records are limited to authorized staff.</h1></Shell>;
+    return <Shell ctx={ctx} current="retention"><PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck"><h1 className="page-title">Retention records are limited to authorized staff.</h1></PageHeader></Shell>;
   }
   const overview = access.permissions.includes("retention.policy.read")
     ? retentionOverview(getDb(), retentionActor(ctx))
     : { active: 0, archived: 0, disposed: 0, eligible: 0, held: 0, activeHolds: 0, failedJobs: 0 };
   return (
     <Shell ctx={ctx} current="retention">
-      <p className="eyebrow">Experimental retention</p>
-      <h1 className="page-title">Data retention</h1>
-      <p className="lede">Synthetic development policies only. A preview is not a deletion. Formal Phase 03 is not authorized.</p>
+      <PageHeader section="Retention" href="/privacy/retention" icon="shieldCheck" eyebrow={<>Experimental retention</>} description={<>Synthetic development policies only. A preview is not a deletion. Formal Phase 03 is not authorized.</>}><h1 className="page-title">Data retention</h1></PageHeader>
       {query.error === "forbidden" ? <p>That action is not available for this account.</p> : null}
       {query.error === "conflict" ? <p>The preview is stale or a hold changed. Generate a new preview.</p> : null}
       {query.error === "invalid" ? <p>The submitted values were not accepted.</p> : null}
@@ -34,10 +34,10 @@ export default async function RetentionOverviewPage({ searchParams }: { searchPa
         <p>Jobs with failures {overview.failedJobs}</p>
       </div>
       {overview.active === 0 && overview.disposed === 0 ? <p>No retention records are available for this organization.</p> : null}
-      <p><a href="/privacy/retention/policies">Policy matrix</a></p>
-      <p><a href="/privacy/retention/holds">Legal holds</a></p>
-      <p><a href="/privacy/retention/dry-run">Retention preview</a></p>
-      <p><a href="/privacy/retention/jobs">Jobs</a></p>
+      <PageActions><a href="/privacy/retention/policies">Policy matrix</a></PageActions>
+      <PageActions><a href="/privacy/retention/holds">Legal holds</a></PageActions>
+      <PageActions><a href="/privacy/retention/dry-run">Retention preview</a></PageActions>
+      <PageActions><a href="/privacy/retention/jobs">Jobs</a></PageActions>
       {access.permissions.includes("retention.audit.read") ? <p><a href="/privacy/retention/activity">Activity</a></p> : null}
       {access.permissions.includes("retention.evaluate") ? (
         <form action="/api/privacy/retention/records" method="post">

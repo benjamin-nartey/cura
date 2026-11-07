@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { Shell } from "@/components/shell";
 import { emergencyContext, syntheticEligibility } from "@/lib/emergency";
 
@@ -8,8 +10,7 @@ export default async function EmergencyRestrictedPage() {
     <Shell ctx={ctx} current="emergency" title="Restricted access">
       <header className="chart-head">
         <div>
-          <p className="eyebrow">Access</p>
-          <h1 className="page-title">Restricted access</h1>
+          <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck" eyebrow={<>Access</>}><h1 className="page-title">Restricted access</h1></PageHeader>
         </div>
       </header>
       {eligibility.eligible ? (

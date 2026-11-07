@@ -168,3 +168,5 @@ export function unmapSourceR4(resource: unknown): {type:SourceType;facts:SourceF
   if(sourceCanonical(mapSourceR4(type,facts,baseline))!==sourceCanonical(r))bad("unmapped fields, references, profile or immutable workflow state");
   return {type,facts,baseline};
 }
+
+export { uri as sourceSystemUri };

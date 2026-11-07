@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readObservation } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -22,10 +24,9 @@ export default async function CorrectObservationPage({ params, searchParams }: {
   if (!row) redirect("/clinical");
   return (
     <Shell ctx={ctx} current="clinical">
-      <h1 className="page-title">Correct an observation</h1>
-      <p className="lede">The current value stays in history. Saving creates a new version.</p>
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<>The current value stays in history. Saving creates a new version.</>}><h1 className="page-title">Correct an observation</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
-      <form className="form-grid" action={`/api/clinical/observations/${id}/correct`} method="post">
+      <section className="page-form card"><form className="form-grid" action={`/api/clinical/observations/${id}/correct`} method="post">
         <input type="hidden" name="expectedVersion" value={String(row.version)} />
         <p>Current version {String(row.version)}. {row.value_quantity === null || row.value_quantity === undefined ? "Enter both blood-pressure components." : `Current quantity ${row.value_quantity} ${row.unit_code ?? ""}.`}</p>
         <label className="field">Corrected quantity
@@ -38,10 +39,10 @@ export default async function CorrectObservationPage({ params, searchParams }: {
           <input name="diastolic" type="number" step="1" />
         </label>
         <label className="field">Reason
-          <select name="reason" required><option value="entry-error">Entry error</option><option value="amended">Amendment</option></select>
+          <select aria-label="Reason" name="reason" required><option value="entry-error">Entry error</option><option value="amended">Amendment</option></select>
         </label>
         <button className="btn-dark" type="submit">Save correction</button>
-      </form>
+      </form></section>
     </Shell>
   );
 }

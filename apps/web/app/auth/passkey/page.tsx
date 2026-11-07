@@ -1,3 +1,4 @@
+import {PageHeader} from "@/components/page-workspace";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { PasskeyPanel } from "@/components/passkey-panel";
@@ -13,7 +14,7 @@ export default async function PasskeyPage() {
     <main className="gate" id="content">
       <section className="panel card">
         <p className="eyebrow">Passkey</p>
-        <h1>{mode === "register" ? "Register a passkey" : "Sign in with a passkey"}</h1>
+        <PageHeader section="Account security" href="/login" icon="shieldCheck">        <h1>{mode === "register" ? "Register a passkey" : "Sign in with a passkey"}</h1></PageHeader>
         <p className="lede">The authenticator must sign a challenge from this server. A cancelled prompt does not create a session.</p>
         <PasskeyPanel mode={mode} />
       </section>

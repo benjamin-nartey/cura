@@ -1,3 +1,4 @@
+import {PageHeader} from "@/components/page-workspace";
 import { currentEmergencyGrant, getDb, readSyntheticEmergency } from "@curasphere/domain";
 import { redirect } from "next/navigation";
 import { EmergencyActive } from "@/components/emergency-active";
@@ -17,6 +18,7 @@ export default async function EmergencyActivePage() {
   }
   return (
     <Shell ctx={ctx} current="emergency" title="Emergency access active">
+      <PageHeader section="Emergency access" href="/emergency" icon="shieldCheck" description="Access remains limited to the approved grant, its resource scope, and its expiry."><h1 className="page-title">Time-limited emergency access</h1></PageHeader>
       <EmergencyActive grantId={grant.id} resourceName={record.display_name} summary={record.summary} expiresAt={grant.expires_at} requestId={grant.request_id} />
     </Shell>
   );

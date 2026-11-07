@@ -16,3 +16,6 @@ export const sourceProfile = {
   sourceContext: "https://curasphere.local/fhir/StructureDefinition/source-context",
   mode: "local-synthetic-read-only",
 } as const;
+
+export * from "./conformance";
+export { PROFILE_ARTIFACTS } from "./artifacts.generated";

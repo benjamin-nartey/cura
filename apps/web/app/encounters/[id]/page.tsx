@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, facilityClock, getDb, listMasterPatients, listPractitioners, readVisitEncounter } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -27,9 +29,7 @@ export default async function EncounterPage({ params, searchParams }: { params: 
   const practitioner = row ? listPractitioners(getDb(), masterActor(ctx)).find((item) => item.id === row.practitioner_id) : undefined;
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Encounter</h1>
-      <p className="lede">This workspace records the visit lifecycle. It does not record diagnoses, observations, or orders.</p>
+      <PageHeader section="Visits" href="/appointments" icon="stethoscope" eyebrow={<>{ctx.facilityName}</>} description={<>This workspace records the visit lifecycle. It does not record diagnoses, observations, or orders.</>}><h1 className="page-title">Encounter</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       {failed || !row ? <p role="alert">That encounter is not available.</p> : null}
       {row ? (
@@ -47,7 +47,7 @@ export default async function EncounterPage({ params, searchParams }: { params: 
           <p>{row.started_at ? `Started ${clockLabel(row.started_at, timeZone)}` : "Not started"}</p>
           <p>{row.ended_at ? `Ended ${clockLabel(row.ended_at, timeZone)}` : "Not ended"}</p>
           {access.permissions.includes("encounter.close") && row.status === "in-progress" ? <a href={`/encounters/${row.id}/close`}>Close encounter</a> : null}
-          <h2>History</h2>
+          <SectionHeading icon="stethoscope"><h2>History</h2></SectionHeading>
           {row.events.length === 0 ? <p>Encounter history is not available for this role.</p> : (
             <ol>
               {row.events.map((event) => (

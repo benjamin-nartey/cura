@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading,RecordFacts,DetailFact} from "@/components/page-workspace";
 import { effectivePermissions, facilityClock, getDb, listMasterPatients, listPractitioners, readAppointment } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -29,26 +31,12 @@ export default async function AppointmentDetailPage({ params, searchParams }: { 
   const allowed = new Set(access.permissions);
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Appointment</h1>
+      <PageHeader section="Appointments" href="/appointments" icon="calendar" eyebrow={<>{ctx.facilityName}</>}><h1 className="page-title">Appointment</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       {failed || !appointment ? <p role="alert">That appointment is not available.</p> : null}
       {appointment ? (
         <>
-          <div className="card">
-            <p>
-              <strong>{patient ? `${patient.given_name} ${patient.family_name}` : "Patient"}</strong>
-            </p>
-            <p>{practitioner?.display_name ?? "Practitioner"}</p>
-            <p>{clockLabel(appointment.starts_at, timeZone)}</p>
-            <p>Category: {appointment.category}</p>
-            <p>
-              Status: <strong>{appointment.status}</strong>
-            </p>
-            <p>{appointment.arrived_at ? `Arrived ${clockLabel(appointment.arrived_at, timeZone)}` : "Arrival has not been recorded."}</p>
-            <p>{appointment.encounter ? <a href={`/encounters/${appointment.encounter.id}`}>Encounter {appointment.encounter.status}</a> : "No encounter is linked."}</p>
-            <p className="muted">Version {appointment.version}</p>
-          </div>
+          <section className="card appointment-record"><div><SectionHeading icon="users"><h2>Visit details</h2></SectionHeading><div className="agenda-person"><span className="record-profile-avatar" aria-hidden="true">{patient?.given_name[0]??'P'}{patient?.family_name[0]??''}</span><div><strong>{patient?`${patient.given_name} ${patient.family_name}`:'Patient'}</strong><small>{practitioner?.display_name??'Practitioner'}</small>{patient&&<a href={`/patients/${patient.id}/identity`}>Patient identity record</a>}</div></div><div className="page-note">{clockLabel(appointment.starts_at,timeZone)} · {timeZone}</div></div><RecordFacts><DetailFact label="Category">{appointment.category}</DetailFact><DetailFact label="Status"><span className="record-status">{appointment.status}</span></DetailFact><DetailFact label="Arrival">{appointment.arrived_at?`Arrived ${clockLabel(appointment.arrived_at,timeZone)}`:'Arrival has not been recorded.'}</DetailFact><DetailFact label="Encounter">{appointment.encounter?<a href={`/encounters/${appointment.encounter.id}`}>Encounter {appointment.encounter.status}</a>:'No encounter is linked.'}</DetailFact><DetailFact label="Record version">{appointment.version}</DetailFact></RecordFacts></section>
           <div className="split">
             {allowed.has("appointment.confirm") && appointment.status === "requested" ? (
               <form action={`/api/appointments/${appointment.id}`} method="post">
@@ -81,7 +69,7 @@ export default async function AppointmentDetailPage({ params, searchParams }: { 
               <input type="hidden" name="version" value={appointment.version} />
               <label className="field">
                 Cancellation reason
-                <select name="reason" required>
+                <select aria-label="Cancellation reason" name="reason" required>
                   <option value="patient-request">Patient request</option>
                   <option value="clinic-request">Clinic request</option>
                   <option value="entered-in-error">Entered in error</option>
@@ -98,14 +86,14 @@ export default async function AppointmentDetailPage({ params, searchParams }: { 
               <button className="btn-dark" type="submit">Record no-show</button>
             </form>
           ) : null}
-          <h2>History</h2>
+          <section className="page-section card"><SectionHeading icon="calendar"><h2>History</h2></SectionHeading>
           <ol>
             {appointment.events.map((event) => (
               <li key={`${event.version}-${event.created_at}`}>
                 {event.from_status} to {event.to_status} · {event.reason} · {event.actor_id} · {clockLabel(event.created_at, timeZone)} · version {event.version}
               </li>
             ))}
-          </ol>
+          </ol></section>
         </>
       ) : null}
     </Shell>

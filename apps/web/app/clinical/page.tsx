@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listAllergies, listConditions, listMasterPatients, listMedicationOrders, listObservations, listPatientEncounters, readVisitEncounter } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -45,13 +47,11 @@ export default async function ClinicalPage({ searchParams }: { searchParams: Pro
   const base = `patient=${query.patient ?? ""}&encounter=${query.encounter ?? ""}`;
   return (
     <Shell ctx={ctx} current="clinical">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Clinical entries</h1>
-      <p className="lede">These are source entries recorded by a person. The system does not diagnose or recommend treatment.</p>
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" eyebrow={<>{ctx.facilityName}</>} description={<>These are source entries recorded by a person. The system does not diagnose or recommend treatment.</>}><h1 className="page-title">Clinical entries</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <form className="search" action="/clinical" method="get">
         <label className="field">Patient
-          <select name="patient" defaultValue={query.patient ?? ""} required>
+          <select aria-label="Patient" name="patient" defaultValue={query.patient ?? ""} required>
             <option value="">Select a patient</option>
             {patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.given_name} {patient.family_name}</option>)}
           </select>
@@ -80,15 +80,15 @@ export default async function ClinicalPage({ searchParams }: { searchParams: Pro
               <a href={`/clinical/medications/new?${base}`}>Draft medication</a>
             </p>
           ) : null}
-          <h2>Conditions</h2>
-          {conditions.length === 0 ? <p>No condition entry.</p> : <ul>{conditions.map((row) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=condition&id=${row.id}`}>History</a> · <a href={`/clinical/coding/condition/${row.id}`}>Coding provenance</a></li>)}</ul>}
-          <h2>Allergies</h2>
-          {allergies.length === 0 ? <p>No allergy information is recorded. Unknown status is not the same as no known allergies.</p> : <ul>{allergies.map((row) => <li key={row.id}>{row.display} · {row.finding} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=allergy&id=${row.id}`}>History</a> · <a href={`/clinical/coding/allergy/${row.id}`}>Coding provenance</a></li>)}</ul>}
-          <h2>Vital signs and observations</h2>
-          {observations.length === 0 ? <p>No observation is recorded.</p> : <ul>{observations.map((row) => <li key={row.id}><a href={`/clinical/observations/${row.id}`}>{row.display}</a> · {row.status} · version {row.version}</li>)}</ul>}
-          <h2>Medication drafts</h2>
+          <section className="page-section card"><SectionHeading icon="stethoscope"><h2>Conditions</h2></SectionHeading>
+          {conditions.length === 0 ? <p>No condition entry.</p> : <ul>{conditions.map((row) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=condition&id=${row.id}`}>History</a> · <a href={`/clinical/coding/condition/${row.id}`}>Coding provenance</a></li>)}</ul>}</section>
+          <section className="page-section card"><SectionHeading icon="stethoscope"><h2>Allergies</h2></SectionHeading>
+          {allergies.length === 0 ? <p>No allergy information is recorded. Unknown status is not the same as no known allergies.</p> : <ul>{allergies.map((row) => <li key={row.id}>{row.display} · {row.finding} · {row.verification_status} · version {row.version} · <a href={`/clinical/history?kind=allergy&id=${row.id}`}>History</a> · <a href={`/clinical/coding/allergy/${row.id}`}>Coding provenance</a></li>)}</ul>}</section>
+          <section className="page-section card"><SectionHeading icon="stethoscope"><h2>Vital signs and observations</h2></SectionHeading>
+          {observations.length === 0 ? <p>No observation is recorded.</p> : <ul>{observations.map((row) => <li key={row.id}><a href={`/clinical/observations/${row.id}`}>{row.display}</a> · {row.status} · version {row.version}</li>)}</ul>}</section>
+          <section className="page-section card"><SectionHeading icon="stethoscope"><h2>Medication drafts</h2></SectionHeading>
           <p><strong>Synthetic draft — not a valid prescription</strong></p>
-          {orders.length === 0 ? <p>No medication draft.</p> : <ul>{orders.map((row) => <li key={row.id}><a href={`/clinical/medications/${row.id}`}>{row.display}</a> · {row.dose_quantity} {row.dose_unit} · {row.status}</li>)}</ul>}
+          {orders.length === 0 ? <p>No medication draft.</p> : <ul>{orders.map((row) => <li key={row.id}><a href={`/clinical/medications/${row.id}`}>{row.display}</a> · {row.dose_quantity} {row.dose_unit} · {row.status}</li>)}</ul>}</section>
         </>
       ) : null}
     </Shell>

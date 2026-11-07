@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { ClinicalCodePicker } from "@/components/clinical-code-picker";
 import { effectivePermissions, getDb, getClinicalCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -15,9 +17,8 @@ export default async function NewMedicationPage({ searchParams }: { searchParams
   const choices = getClinicalCodeChoices(getDb(),ctx,"medication-order");
   return (
     <Shell ctx={ctx} current="clinical">
-      <h1 className="page-title">Medication draft</h1>
-      <p className="lede"><strong>Synthetic draft — not a valid prescription.</strong> Nothing is signed, transmitted, or dispensed.</p>
-      <form className="form-grid" action="/api/clinical/medication-orders" method="post">
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<><strong>Synthetic draft — not a valid prescription.</strong> Nothing is signed, transmitted, or dispensed.</>}><h1 className="page-title">Medication draft</h1></PageHeader>
+      <section className="page-form card"><form className="form-grid" action="/api/clinical/medication-orders" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <input type="hidden" name="practitionerId" value={encounter.practitioner_id} />
@@ -26,7 +27,7 @@ export default async function NewMedicationPage({ searchParams }: { searchParams
           <input name="dose" type="number" min={1} max={4000} required />
         </label>
         <button className="btn-dark" type="submit">Save draft</button>
-      </form>
+      </form></section>
     </Shell>
   );
 }

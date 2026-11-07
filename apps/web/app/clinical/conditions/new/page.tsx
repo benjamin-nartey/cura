@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { ClinicalCodePicker } from "@/components/clinical-code-picker";
 import { effectivePermissions, getDb, listPractitioners, getClinicalCodeChoices, readVisitEncounter } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -18,26 +20,25 @@ export default async function NewConditionPage({ searchParams }: { searchParams:
   const choices = getClinicalCodeChoices(getDb(),ctx,"condition");
   return (
     <Shell ctx={ctx} current="clinical">
-      <h1 className="page-title">Record a condition</h1>
-      <p className="lede">Choose a catalog term. This screen does not infer a diagnosis from vital signs.</p>
-      <form className="form-grid" action="/api/clinical/conditions" method="post">
+      <PageHeader section="Clinical records" href="/clinical" icon="stethoscope" description={<>Choose a catalog term. This screen does not infer a diagnosis from vital signs.</>}><h1 className="page-title">Record a condition</h1></PageHeader>
+      <section className="page-form card"><form className="form-grid" action="/api/clinical/conditions" method="post">
         <input type="hidden" name="patientId" value={query.patient} />
         <input type="hidden" name="encounterId" value={query.encounter} />
         <ClinicalCodePicker label="Term" choices={choices}/>
         <label className="field">Clinical status
-          <select name="clinicalStatus" defaultValue="active"><option value="active">Active problem</option><option value="historical">Historical problem</option></select>
+          <select aria-label="Clinical status" name="clinicalStatus" defaultValue="active"><option value="active">Active problem</option><option value="historical">Historical problem</option></select>
         </label>
         <label className="field">Verification
-          <select name="verificationStatus" defaultValue="unconfirmed"><option value="unconfirmed">Unconfirmed</option><option value="confirmed">Confirmed by the author</option></select>
+          <select aria-label="Verification" name="verificationStatus" defaultValue="unconfirmed"><option value="unconfirmed">Unconfirmed</option><option value="confirmed">Confirmed by the author</option></select>
         </label>
         <label className="field">Practitioner
-          <select name="practitionerId" defaultValue={encounter.practitioner_id} required>{practitioners.map((row) => <option key={row.id} value={row.id}>{row.display_name}</option>)}</select>
+          <select aria-label="Practitioner" name="practitionerId" defaultValue={encounter.practitioner_id} required>{practitioners.map((row) => <option key={row.id} value={row.id}>{row.display_name}</option>)}</select>
         </label>
         <label className="field">Onset date
           <input name="onsetDate" type="date" />
         </label>
         <button className="btn-dark" type="submit">Save condition</button>
-      </form>
+      </form></section>
     </Shell>
   );
 }

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listTelemetryRules } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { privacyActor } from "@/lib/privacy";
@@ -7,12 +9,12 @@ export default async function TelemetryRulesPage() {
   const ctx = await requireSession();
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("privacy.rule.read")) {
-    return <Shell ctx={ctx} current="telemetry"><h1 className="page-title">Detection rules are limited to authorized reviewers.</h1></Shell>;
+    return <Shell ctx={ctx} current="telemetry"><PageHeader section="Privacy telemetry" href="/privacy/telemetry" icon="shieldCheck"><h1 className="page-title">Detection rules are limited to authorized reviewers.</h1></PageHeader></Shell>;
   }
   const rules = listTelemetryRules(getDb(), privacyActor(ctx));
   return (
     <Shell ctx={ctx} current="telemetry">
-      <h1 className="page-title">Detection rules</h1>
+      <PageHeader section="Privacy telemetry" href="/privacy/telemetry" icon="shieldCheck"><h1 className="page-title">Detection rules</h1></PageHeader>
       <p>Review detection thresholds and their pending policy approval. Data scrubbing remains mandatory.</p>
       {rules.length === 0 ? <p>No detection rules are stored.</p> : null}
       <div className="list">

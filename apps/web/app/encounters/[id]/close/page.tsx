@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readVisitEncounter } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -16,9 +18,7 @@ export default async function CloseEncounterPage({ params, searchParams }: { par
   const encounter = readVisitEncounter(getDb(), masterActor(ctx), id);
   return (
     <Shell ctx={ctx} current="appointments">
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">Close encounter</h1>
-      <p className="lede">Closing records the end time and makes ordinary lifecycle edits read-only. It does not create a diagnosis or a note.</p>
+      <PageHeader section="Visits" href="/appointments" icon="stethoscope" eyebrow={<>{ctx.facilityName}</>} description={<>Closing records the end time and makes ordinary lifecycle edits read-only. It does not create a diagnosis or a note.</>}><h1 className="page-title">Close encounter</h1></PageHeader>
       <Feedback error={feedback.error} notice={feedback.notice} />
       <div className="card">
         <p>Encounter {encounter.id}</p>

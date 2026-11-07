@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
 import { requireSession } from "@/lib/session";
@@ -9,18 +11,18 @@ export default async function CanaryConsolePage({ searchParams }: { searchParams
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (process.env.CURASPHERE_ENV === "production" || process.env.CURASPHERE_ENV === "staging" || !access.permissions.includes("privacy.telemetry.test")) {
-    return <Shell ctx={ctx} current="telemetry"><h1 className="page-title">The canary console is limited to the local privacy test role.</h1></Shell>;
+    return <Shell ctx={ctx} current="telemetry"><PageHeader section="Privacy telemetry" href="/privacy/telemetry" icon="shieldCheck"><h1 className="page-title">The canary console is limited to the local privacy test role.</h1></PageHeader></Shell>;
   }
   return (
     <Shell ctx={ctx} current="telemetry">
-      <h1 className="page-title">Telemetry validation console</h1>
+      <PageHeader section="Privacy telemetry" href="/privacy/telemetry" icon="shieldCheck"><h1 className="page-title">Telemetry validation console</h1></PageHeader>
       <p>The console runs a stored fixture. It does not echo the fixture value.</p>
       {query.notice === "pass" ? <p>Scenario {query.scenario} passed. The stored event does not contain the marker.</p> : null}
       {query.notice === "fail" ? <p>Scenario {query.scenario} failed closed. The raw value was not stored.</p> : null}
       {query.error ? <p>The canary check did not run.</p> : null}
       <form action="/api/privacy/telemetry/canary" method="post">
         <label>Scenario
-          <select name="scenarioId" defaultValue="P03-F05-S04">
+          <select aria-label="Scenario" name="scenarioId" defaultValue="P03-F05-S04">
             {SCENARIOS.map((id) => <option key={id} value={id}>{id}</option>)}
           </select>
         </label>

@@ -53,7 +53,7 @@ function entry(organizationId: string, action: string) {
 
 test("P03-S01 a new database carries the sealed access ledger", () => {
   const database = db();
-  assert.equal(healthcheck(database).schemaVersion, 49);
+  assert.equal(healthcheck(database).schemaVersion, 63);
   const first = appendAccessLedger(database, entry(DEMO_GH.organizationId, "synthetic.read"));
   const second = appendAccessLedger(database, entry(DEMO_GH.organizationId, "ai.tool"));
   assert.equal(first.previousHash, "ledger-genesis");
@@ -142,7 +142,7 @@ test("P03-S06 ledger rollback returns to schema 32 and the next open upgrades ag
   assert.equal(rolled.version, 32);
   database.close();
   const upgraded = createDatabase(file);
-  assert.equal(healthcheck(upgraded).schemaVersion, 49);
+  assert.equal(healthcheck(upgraded).schemaVersion, 63);
   assert.equal(verifyAccessLedger(upgraded, DEMO_GH.organizationId).intact, true);
   upgraded.close();
 });

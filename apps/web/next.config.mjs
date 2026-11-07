@@ -14,7 +14,7 @@ if (process.env.CURASPHERE_ENV !== "production" && process.env.CURASPHERE_ENV !=
 const nextConfig = {
   distDir: process.env.CURASPHERE_NEXT_DIST ?? ".next",
   allowedDevOrigins: ["127.0.0.1", "localhost"],
-  transpilePackages: ["@curasphere/domain", "@curasphere/contracts"],
+  transpilePackages: ["@curasphere/domain", "@curasphere/contracts", "@curasphere/fhir"],
   logging: {
     incomingRequests: {
       ignore: [/\/api\/auth\/callback/],

@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, listPractitioners } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -25,9 +27,7 @@ export default async function PractitionersPage({ searchParams }: { searchParams
   }
   return (
     <Shell ctx={ctx} current="practitioners">
-      <p className="eyebrow">{ctx.organizationName}</p>
-      <h1 className="page-title">Practitioners</h1>
-      <p className="lede">A practitioner record is not a workforce account. A link does not grant access.</p>
+      <PageHeader section="Practitioners" href="/practitioners" icon="users" eyebrow={<>{ctx.organizationName}</>} description={<>A practitioner record is not a workforce account. A link does not grant access.</>}><h1 className="page-title">Practitioners</h1></PageHeader>
       <form className="search" action="/practitioners" method="get">
         <label className="field">
           Find a practitioner
@@ -40,19 +40,10 @@ export default async function PractitionersPage({ searchParams }: { searchParams
       <Feedback error={feedback.error} notice={feedback.notice} />
       {failed ? <p>The practitioner directory is unavailable.</p> : null}
       {!failed && rows.length === 0 ? <p>{q ? "No practitioner matches." : "No practitioner is recorded for this organization."}</p> : null}
-      <div className="list">
-        {rows.map((row) => (
-          <a className="row" key={row.id} href={`/practitioners/${row.id}`}>
-            <span className="person">{row.display_name}</span>
-            <span className="muted">
-              {row.role_type} · {row.status} · {row.verification_state} · {row.linked_user ? "account linked" : "no account"}
-            </span>
-          </a>
-        ))}
-      </div>
+      <div className="practitioner-grid">{rows.map(row=><a className="practitioner-card" key={row.id} href={`/practitioners/${row.id}`}><div className="practitioner-card-top"><span className="record-profile-avatar" aria-hidden="true">{row.display_name.split(' ').filter(Boolean).slice(0,2).map(part=>part[0]).join('')}</span><span className="record-status">{row.status}</span></div><h2>{row.display_name}</h2><p>{row.role_type}</p><div className="practitioner-note">Verification · {row.verification_state}</div><div className="practitioner-footer"><span>{row.linked_user?'Workforce account linked':'No workforce account linked'}</span><strong>View record →</strong></div></a>)}</div>
       {access.permissions.includes("practitioner.manage") ? (
         <section className="card" style={{ marginTop: 36, maxWidth: 520 }}>
-          <h2 style={{ marginTop: 0 }}>Create a practitioner</h2>
+          <SectionHeading icon="users"><h2 style={{ marginTop: 0 }}>Create a practitioner</h2></SectionHeading>
           <form className="form-grid" action="/api/practitioners" method="post">
             <label className="field">
               Professional name

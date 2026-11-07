@@ -1,3 +1,15 @@
+import {EVIDENCE_INGESTION_SCHEMA} from "./evidence-ingestion-schema";
+import {GATEWAY_RUNTIME_SCHEMA} from "./gateway-runtime";
+import {GATEWAY_LIFECYCLE_SCHEMA} from "./gateway-lifecycle-schema";
+import { EVIDENCE_GRAPH_SCHEMA } from "./evidence-graph-schema";
+import { TWIN_REFRESH_SCHEMA } from "./twin-refresh-schema";
+import { TWIN_CONFLICT_SCHEMA } from "./twin-conflict-schema";
+import { TWIN_PROJECTION_SCHEMA } from "./twin-projection-schema";
+import { TWIN_EVIDENCE_SCHEMA } from "./twin-evidence-schema";
+import { TIMELINE_QUERY_SCHEMA } from "./timeline-query-schema";
+import { TIMELINE_PROJECTION_SCHEMA } from "./timeline-projection-schema";
+import { INTEGRATION_BATCH_SCHEMA } from "./integration-batch-schema";
+import { INTEGRATION_SCHEMA } from "./integration-schema";
 import { CODE_SYSTEM_REGISTRY_SCHEMA, TERMINOLOGY_VALIDATION_SCHEMA } from "./code-system-schema";
 import { SMART_SCHEMA } from "./smart-schema";
 import { mkdirSync } from "node:fs";
@@ -1907,8 +1919,8 @@ export function registerBilling(ensure: (db: AppDatabase) => void) {
 function migrate(db: AppDatabase) {
   const exists = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'schema_migrations'").get();
   const current = exists ? db.prepare("SELECT MAX(version) AS version FROM schema_migrations").get() as { version: number | null } : null;
-  if (current?.version === 49) return;
-  if (current?.version && current.version > 49) throw new Error("Unsupported database schema.");
+  if (current?.version === 63) return;
+  if (current?.version && current.version > 63) throw new Error("Unsupported database schema.");
   if (!current?.version || current.version < 44) {
     migrateLegacy(db);
     transaction(db, () => {
@@ -1938,7 +1950,35 @@ function migrate(db: AppDatabase) {
     db.exec(CLINICAL_CODING_SCHEMA);
     db.prepare("INSERT INTO schema_migrations (version) VALUES (48)").run();
   });
-  transaction(db,()=>{db.exec(SMART_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (49)").run();});
+  if(!current?.version || current.version<49) transaction(db,()=>{db.exec(SMART_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (49)").run();});
+  if(!current?.version || current.version<50) transaction(db,()=>{db.exec(INTEGRATION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (50)").run();});
+  if(!current?.version || current.version<51)transaction(db,()=>{db.exec(INTEGRATION_BATCH_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (51)").run();});
+  if(!current?.version || current.version<52)transaction(db,()=>{db.exec(TIMELINE_PROJECTION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (52)").run();});
+  if(!current?.version || current.version<53)transaction(db,()=>{db.exec(TIMELINE_QUERY_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (53)").run();});
+  if(!current?.version || current.version<54)transaction(db,()=>{db.exec(TWIN_EVIDENCE_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (54)").run();});
+  if(!current?.version || current.version<55)transaction(db,()=>{db.exec(TWIN_PROJECTION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (55)").run();});
+  if(!current?.version || current.version<56)transaction(db,()=>{db.exec(TWIN_CONFLICT_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (56)").run();});
+  if(!current?.version || current.version<57)transaction(db,()=>{db.exec(TWIN_REFRESH_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (57)").run();});
+  if(!current?.version || current.version<58)transaction(db,()=>{db.exec(EVIDENCE_GRAPH_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (58)").run();});
+  if(!current?.version || current.version<59)transaction(db,()=>{db.exec(EVIDENCE_INGESTION_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (59)").run();});
+  if(!current?.version || current.version<60)transaction(db,()=>{db.exec(GATEWAY_LIFECYCLE_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (60)").run();});
+  if (!current?.version || current.version < 61) transaction(db,()=>{db.exec(GATEWAY_RUNTIME_SCHEMA);db.prepare("INSERT INTO schema_migrations (version) VALUES (61)").run();});
+  if (!current?.version || current.version < 62) transaction(db, () => {
+    db.exec(`CREATE TABLE gateway_trace_metadata (
+      trace_id TEXT PRIMARY KEY REFERENCES gateway_attempts(id),
+      provider TEXT,
+      latency_ms INTEGER NOT NULL CHECK (latency_ms >= 0),
+      citations_json TEXT NOT NULL CHECK (json_valid(citations_json))
+    )`);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (62)").run();
+  });
+  transaction(db, () => {
+    db.exec(`CREATE TABLE agent_execution_controls (
+      organization_id TEXT PRIMARY KEY REFERENCES organizations(id),
+      stopped INTEGER NOT NULL CHECK (stopped IN (0,1))
+    )`);
+    db.prepare("INSERT INTO schema_migrations (version) VALUES (63)").run();
+  });
 }
 
 function migrateLegacy(db: AppDatabase) {
@@ -5069,15 +5109,23 @@ CREATE INDEX IF NOT EXISTS idx_reservations_practitioner ON scheduling_reservati
 CREATE INDEX IF NOT EXISTS idx_appointments_facility ON appointments(organization_id, facility_id, starts_at);
 `;
 
+const transactionDepth = new WeakMap<AppDatabase, number>();
 export function transaction<T>(db: AppDatabase, fn: () => T): T {
-  db.exec("BEGIN IMMEDIATE");
+  const depth = transactionDepth.get(db) ?? 0;
+  const nested = db.isTransaction || depth > 0;
+  const savepoint = `command_${crypto.randomUUID().replaceAll("-", "")}`;
+  db.exec(nested ? `SAVEPOINT ${savepoint}` : "BEGIN IMMEDIATE");
+  transactionDepth.set(db,depth+1);
   try {
     const result = fn();
-    db.exec("COMMIT");
+    db.exec(nested ? `RELEASE SAVEPOINT ${savepoint}` : "COMMIT");
     return result;
   } catch (error) {
-    db.exec("ROLLBACK");
+    if(nested) { db.exec(`ROLLBACK TO SAVEPOINT ${savepoint}`); db.exec(`RELEASE SAVEPOINT ${savepoint}`); }
+    else db.exec("ROLLBACK");
     throw error;
+  } finally {
+    transactionDepth.set(db,depth);
   }
 }
 

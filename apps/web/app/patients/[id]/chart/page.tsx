@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader,PageActions,SectionHeading} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readUnifiedChart } from "@curasphere/domain";
 import { Feedback } from "@/components/feedback";
 import { Shell } from "@/components/shell";
@@ -29,7 +31,7 @@ export default async function UnifiedChartPage({
   if (!chart && failed) {
     return (
       <Shell ctx={ctx} current="patients" compactMobile>
-        <h1 className="page-title">Patient chart</h1>
+        <PageHeader section="Patients" href="/patients" icon="users"><h1 className="page-title">Patient chart</h1></PageHeader>
         <p role="alert">That patient chart is not available for this facility.</p>
       </Shell>
     );
@@ -38,7 +40,7 @@ export default async function UnifiedChartPage({
   if (chart.superseded) {
     return (
       <Shell ctx={ctx} current="patients" compactMobile>
-        <h1 className="page-title">Patient chart</h1>
+        <PageHeader section="Patients" href="/patients" icon="users"><h1 className="page-title">Patient chart</h1></PageHeader>
         <p role="alert">{chart.notice}</p>
         {chart.survivorId ? <p><a href={`/patients/${chart.survivorId}/chart`}>Open surviving record</a></p> : null}
       </Shell>
@@ -59,15 +61,15 @@ export default async function UnifiedChartPage({
   const patient = chart.patient;
   return (
     <Shell ctx={ctx} current="patients" compactMobile>
-      <p className="eyebrow">{ctx.facilityName}</p>
-      <h1 className="page-title">{patient.given_name} {patient.family_name}</h1>
+      <PageHeader section="Patients" href="/patients" icon="users" eyebrow={<>{ctx.facilityName}</>}><h1 className="page-title">{patient.given_name} {patient.family_name}</h1></PageHeader>
       <p><strong>Simulation record · Not for live clinical use.</strong></p>
       <p className="lede">MRN {patient.mrn} · {patient.registration_status} · facility context {ctx.facilityName}. {chart.notice}</p>
+      <PageActions><a href={`/patients/${id}/identity`}>Identity record</a> <a href={`/patients/${id}/evidence`}>Evidence claims</a> · <a href={`/patients/${id}/twin`}>Patient Twin</a> · <a href={`/patients/${id}/timeline`}>View version-linked clinical timeline</a></PageActions>
       <Feedback error={feedback.error} notice={feedback.notice} />
       {chart.failures?.length ? <p role="alert">Some chart sections could not load: {chart.failures.join(", ")}. <a href={`/patients/${id}/chart${chart.encounter ? `?encounter=${chart.encounter.id}` : ""}`}>Reload chart</a></p> : null}
       {chart.encounter ? (
         <div className="card">
-          <h2>Active encounter</h2>
+          <SectionHeading icon="users"><h2>Active encounter</h2></SectionHeading>
           <p>Status: <strong>{chart.encounter.status}</strong> · <a href={`/encounters/${chart.encounter.id}`}>Open encounter</a></p>
           {access.permissions.includes("work.order.submit") && chart.encounter.status === "in-progress" ? (
             <p>
@@ -81,16 +83,16 @@ export default async function UnifiedChartPage({
       ) : (
         <p>No encounter is selected. Open an appointment or encounter to continue the visit.</p>
       )}
-      <h2>Allergies</h2>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Allergies</h2></SectionHeading>
       {sections.allergies?.denied ? <p>Allergy list is not available for this role.</p> : null}
       {sections.allergies?.failed ? <p role="alert">Allergy list could not load.</p> : null}
       {!sections.allergies?.denied && !sections.allergies?.failed && allergies.length === 0 ? <p>No allergy entry is recorded. Unknown status is not the same as no known allergies.</p> : null}
-      <ul>{allergies.map((row: any) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version}</li>)}</ul>
-      <h2>Problems</h2>
+      <ul>{allergies.map((row: any) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version}</li>)}</ul></section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Problems</h2></SectionHeading>
       <SectionAccess value={sections.conditions} label="Problem list" />
       {!sections.conditions?.denied && !sections.conditions?.failed && conditions.length === 0 ? <p>No problem list entry is recorded.</p> : null}
-      <ul>{conditions.map((row: any) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version}</li>)}</ul>
-      <h2>Observations</h2>
+      <ul>{conditions.map((row: any) => <li key={row.id}>{row.display} · {row.clinical_status} · {row.verification_status} · version {row.version}</li>)}</ul></section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Observations</h2></SectionHeading>
       <SectionAccess value={sections.observations} label="Observations" />
       {!sections.observations?.denied && !sections.observations?.failed && observations.length === 0 ? <p>No observation is recorded.</p> : null}
       <ul>
@@ -101,13 +103,13 @@ export default async function UnifiedChartPage({
             {access.permissions.includes("clinical.source.history.read") ? <> · <a href={`/clinical/history?kind=observation&id=${row.id}`}>History</a></> : null}
           </li>
         ))}
-      </ul>
-      <h2>Medication drafts</h2>
+      </ul></section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Medication drafts</h2></SectionHeading>
       <SectionAccess value={sections.medications} label="Medication drafts" />
       <p><strong>Synthetic draft — not a valid prescription.</strong></p>
       {!sections.medications?.denied && !sections.medications?.failed && medications.length === 0 ? <p>No medication draft is recorded.</p> : null}
-      <ul>{medications.map((row: any) => <li key={row.id}>{row.display} · {row.status} · executable {row.executable} · transmission {row.transmission}</li>)}</ul>
-      <h2>Pending work</h2>
+      <ul>{medications.map((row: any) => <li key={row.id}>{row.display} · {row.status} · executable {row.executable} · transmission {row.transmission}</li>)}</ul></section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Pending work</h2></SectionHeading>
       <SectionAccess value={sections.pending} label="Pending work" />
       {pending && Object.values(pending).every((rows) => Array.isArray(rows) && rows.length === 0) ? <p>No pending work is recorded for this patient.</p> : null}
       {pending ? (
@@ -117,8 +119,8 @@ export default async function UnifiedChartPage({
           {(pending.referrals ?? []).map((row: any) => <li key={row.id}><a href={`/work/referrals/${row.id}`}>{row.display}</a> · {row.status}</li>)}
           {(pending.plans ?? []).map((row: any) => <li key={row.id}><a href={`/work/plans/${row.id}`}>{row.display}</a> · {row.status}</li>)}
         </ul>
-      ) : null}
-      <h2>Orders, plans, referrals</h2>
+      ) : null}</section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Orders, plans, referrals</h2></SectionHeading>
       <SectionAccess value={sections.orders} label="Orders" />
       <SectionAccess value={sections.plans} label="Care plans" />
       <SectionAccess value={sections.referrals} label="Referrals" />
@@ -127,8 +129,8 @@ export default async function UnifiedChartPage({
         {orders.map((row: any) => <li key={row.id}><a href={`/work/orders/${row.id}`}>{row.display}</a> · {row.status}</li>)}
         {plans.map((row: any) => <li key={row.id}><a href={`/work/plans/${row.id}`}>{row.display}</a> · {row.status}</li>)}
         {referrals.map((row: any) => <li key={row.id}><a href={`/work/referrals/${row.id}`}>{row.display}</a> · {row.status}</li>)}
-      </ul>
-      <h2>Encounter history</h2>
+      </ul></section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Encounter history</h2></SectionHeading>
       <SectionAccess value={sections.encounters} label="Encounter history" />
       {Array.isArray(sections.encounters) && encounters.length === 0 ? <p>No visit encounter is recorded.</p> : encounters.length > 0 ? (
         <ol>
@@ -139,8 +141,8 @@ export default async function UnifiedChartPage({
             </li>
           ))}
         </ol>
-      ) : null}
-      <h2>Billing</h2>
+      ) : null}</section>
+      <section className="page-section card"><SectionHeading icon="users"><h2>Billing</h2></SectionHeading>
       <SectionAccess value={sections.charges ?? sections.billingStatus} label="Billing" />
       {sections.billingStatus?.denied && sections.charges === undefined ? <p>Financial details are not available for this role.</p> : null}
       {billingStatus ? <p>Open charges: {billingStatus.counts?.open ?? 0}. Locally finalized: {billingStatus.counts?.finalized ?? 0}. Amounts are hidden for this role.</p> : null}
@@ -153,7 +155,7 @@ export default async function UnifiedChartPage({
           ))}
         </ul>
       ) : Array.isArray(sections.charges) ? <p>No charge is recorded.</p> : null}
-      <p><a href={`/patients/${id}`}>Identity record</a></p>
+      <PageActions><a href={`/patients/${id}`}>Extended workspace</a></PageActions></section>
     </Shell>
   );
 }

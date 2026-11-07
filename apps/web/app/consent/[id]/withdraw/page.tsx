@@ -1,3 +1,5 @@
+/* Individual page workspace */
+import {PageHeader} from "@/components/page-workspace";
 import { effectivePermissions, getDb, readConsent } from "@curasphere/domain";
 import { NotFoundError } from "@curasphere/domain";
 import { Shell } from "@/components/shell";
@@ -10,13 +12,13 @@ export default async function WithdrawConsentPage({ params, searchParams }: { pa
   const query = await searchParams;
   const access = effectivePermissions(getDb(), ctx.userId, ctx.organizationId, ctx.facilityId);
   if (!access.permissions.includes("consent.withdraw")) {
-    return <Shell ctx={ctx} current="consent"><h1 className="page-title">Withdrawal is limited to an authorized privacy workflow.</h1></Shell>;
+    return <Shell ctx={ctx} current="consent"><PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">Withdrawal is limited to an authorized privacy workflow.</h1></PageHeader></Shell>;
   }
   try {
     const row = readConsent(getDb(), consentActor(ctx), id);
     return (
       <Shell ctx={ctx} current="consent">
-        <h1 className="page-title">Withdraw consent</h1>
+        <PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">Withdraw consent</h1></PageHeader>
         <p>This withdraws future {row.purpose} processing for {row.subject_id}. It does not erase the grant history or a message that was already delivered.</p>
         {query.error ? <p>The withdrawal was not applied. Refresh the record and try again.</p> : null}
         <form action={`/api/consents/${row.id}/withdraw`} method="post">
@@ -29,6 +31,6 @@ export default async function WithdrawConsentPage({ params, searchParams }: { pa
     );
   } catch (error) {
     if (!(error instanceof NotFoundError)) throw error;
-    return <Shell ctx={ctx} current="consent"><h1 className="page-title">That consent record is not available.</h1></Shell>;
+    return <Shell ctx={ctx} current="consent"><PageHeader section="Consent" href="/consent" icon="shieldCheck"><h1 className="page-title">That consent record is not available.</h1></PageHeader></Shell>;
   }
 }

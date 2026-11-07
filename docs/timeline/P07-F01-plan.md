@@ -1,0 +1,13 @@
+# P07-F01 canonical timeline schema
+
+Authority: product-owner continuation after Phase 06 local engineering exit; local synthetic implementation only. Formal phases/reviews remain unchanged. Risk C conservatively: derived clinical display, never clinical action.
+
+Story: an authorized clinician inspects deterministic events and the exact immutable source version behind each event. Reuse the existing source_versions ledger for conditions, allergies, observations and medication drafts. Preserve the old legacy timeline. No independent timeline table or migration is necessary: this feature defines a versioned read contract over existing durable source facts. Encounter/order materialization and other mutable source families remain explicit later-phase work; no claims of their canonical coverage. No F02 consumer, F03 filter/diff or F05 health implementation here.
+
+Contract v1 includes event identity, kind, event time/precision or explicit unknown, independently recorded time, fixed narrative template, source ID/version/ledger ID/hash, prior version, author, facility, encounter and inherited visibility. Observation event time is effectiveAt; condition onset is date-precision; unknown clinical time stays null (recorded time is only an explicit sorting fallback). No inferred normal findings, LLM narrative or derived treatment advice. Archived versions remain labeled as such.
+
+Enforce live session, exact tenant/facility, treatment authorization, patient membership, source-kind permission and history permission before any ledger query. Reauthorize every source inspection; no patient/context switch through an event ID. Bound read to 500 versions and reject overflow without partial results. Corrupt/missing ledger data returns unavailable, never a normal/empty timeline. Structured audits contain IDs/outcomes only, no values or snapshots.
+
+Implement authenticated no-store same-origin GET API, staff chart link and basic accessible source-event list with loading/empty/error/retry/cancel and exact-version inspection. No offline clinical cache. Mobile remains existing chart/API parity with responsive browser timeline; native offline timeline is outside F01.
+
+Verify real source writes/correction and immutable historical pointer resolution; repeat hashes; wrong tenant/facility/purpose/role/session; unknown/bad time; empty/dependency/overflow/corrupt ledger; restart persistence; source immutability; actual browser API/UI, Axe and narrow screens. Run full domain and relevant regression/build/types/lint. Record technical evidence separately from pending qualified reviews. Stop after F01 to report before proceeding.
