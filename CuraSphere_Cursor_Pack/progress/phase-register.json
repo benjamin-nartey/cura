@@ -451,34 +451,30 @@
       "source_exit_criteria": [
         {
           "text": "Agents cannot exceed manifest permissions",
-          "evidence": ["../docs/agents/P11-closeout.md"],
+          "evidence": [],
           "status": "PENDING"
         },
         {
           "text": "Retries are idempotent",
-          "evidence": ["../docs/agents/P11-closeout.md"],
+          "evidence": [],
           "status": "PENDING"
         },
         {
           "text": "Human approval survives process/server failure",
-          "evidence": ["../docs/agents/P11-closeout.md"],
+          "evidence": [],
           "status": "PENDING"
         }
       ],
       "completed_features": [],
-      "executed_test_commands": [
-        "node --import tsx --test tools/agents/temporal.test.ts",
-        "node --import tsx --import ./packages/domain/test/dev-env.ts --test tools/agents/migration.test.ts",
-        "npm run build --workspace @curasphere/web"
-      ],
-      "test_evidence": ["../docs/agents/P11-closeout.md"],
-      "rollback_evidence": ["../docs/agents/P11-closeout.md"],
+      "executed_test_commands": [],
+      "test_evidence": [],
+      "rollback_evidence": [],
       "security_and_privacy_approval": null,
       "clinical_approval": null,
       "architecture_approval": null,
       "human_authorization_to_start_next": null,
       "accepted_at": null,
-      "blockers": ["Prerequisite phase acceptance and qualified review", "Receptionist scheduling agent scenario remains unverified", "Hosted worker identity and recovery targets"]
+      "blockers": []
     },
     {
       "phase": 12,

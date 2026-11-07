@@ -19,8 +19,24 @@ test("actual Kafka interruption retains durable pointers; accelerated thirty-min
  // Accelerate clinical-fixture time only. Kafka transport clocks and retention use real wall time.
  function at<T>(work:()=>T):T{mock.timers.enable({apis:['Date'],now:simulationNow});try{return work();}finally{mock.timers.reset();}}
  const ctx=()=>readSession(db,sid)!;
+ async function waitForBroker() {
+  let lastError:unknown;
+  const readyUntil = performance.now()+90000;
+  while (performance.now() < readyUntil) {
+    try {
+      await createTimelineTopic(config);
+      // Topic metadata can be available before the offsets coordinator has recovered.
+      await consumeTimelinePointers(config,async()=>{throw new Error("The test topic must be empty before publication.");},8_000);
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+    await new Promise(resolve => setTimeout(resolve,500));
+  }
+  throw new Error("Kafka group coordinator did not become ready.",{cause:lastError});
+ }
  try{
-  await createTimelineTopic(config);
+  await waitForBroker();
   const original=at(()=>readCanonicalTimeline(db,ctx(),patient)),pointers=at(()=>timelineDeliveryPointers(db,ctx(),patient));
   docker('stop','curasphere-local-kafka-1');stopped=true;
   await assert.rejects(()=>publishTimelinePointers(config,pointers));
@@ -32,13 +48,17 @@ test("actual Kafka interruption retains durable pointers; accelerated thirty-min
   assert.equal(delayed.health.lagSeconds,1800);assert.ok(delayed.health.alerts.some(a=>a.code==='projection-lag'));assert.equal(delayed.events.length,0);
   db.close();db=createDatabase(file);
   docker('start','curasphere-local-kafka-1');stopped=false;
-  let ready=false,lastError:unknown;const readyUntil=performance.now()+90000;
-  while(performance.now()<readyUntil){try{await createTimelineTopic(config);ready=true;break;}catch(error){lastError=error;await new Promise(r=>setTimeout(r,500));}}
-  assert.equal(ready,true,String(lastError));assert.ok(at(ctx));
+  await waitForBroker();
+  assert.ok(at(ctx));
   const retained=at(()=>timelineDeliveryPointers(db,ctx(),patient));assert.equal(retained.length,6);
   await publishTimelinePointers(config,retained);await publishTimelinePointers(config,retained);
   // Application failure must not commit a Kafka offset; retry the same retained messages.
-  await assert.rejects(()=>consumeTimelinePointers(config,async()=>{throw Error('isolated SQLite dependency failure');},45000));
+  let applicationReached = false;
+  await assert.rejects(()=>consumeTimelinePointers(config,async()=>{
+    applicationReached = true;
+    throw Error('isolated SQLite dependency failure');
+  },45000));
+  assert.equal(applicationReached,true,"The failed delivery must reach the application.");
   const consumed=await consumeTimelinePointers(config,async v=>{at(()=>applyTimelineDelivery(db,ctx(),patient,v));},45000);
   assert.equal(consumed.consumed,12);
   const first=at(()=>readTimelineProjection(db,ctx(),patient)),canonical=at(()=>readCanonicalTimeline(db,ctx(),patient));
